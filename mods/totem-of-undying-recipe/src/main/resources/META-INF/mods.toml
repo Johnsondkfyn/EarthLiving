@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[64,)"
+license="Academic Free License v3.0"
+
+[[mods]]
+modId="totem_of_undying_recipe"
+version="2.0.0"
+displayName="Totem of Undying Recipe"
+authors="thori, MCreator; updated by Johna"
+description='''Updated Forge 26.1.2 version of the Totem of Undying recipe mod.'''
+
+[[dependencies.totem_of_undying_recipe]]
+    modId="forge"
+    mandatory=true
+    versionRange="[64,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.totem_of_undying_recipe]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[26.1.2,26.2,)"
+    ordering="NONE"
+    side="BOTH"

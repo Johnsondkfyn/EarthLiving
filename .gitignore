@@ -1,0 +1,49 @@
+# Build output
+build/
+.gradle/
+out/
+target/
+
+# Packaged binaries and downloaded plugins
+*.war
+*.zip
+*.7z
+*.rar
+
+# Keep Gradle wrapper jars if they are intentionally included.
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+
+# Minecraft runtime data
+world/
+world_nether/
+world_the_end/
+server-runtime/plugins/
+runtime/plugins/
+logs/
+cache/
+libraries/
+versions/
+crash-reports/
+banned-ips.json
+banned-players.json
+ops.json
+usercache.json
+whitelist.json
+
+# Secrets and local config
+*.key
+*.pem
+*.ppk
+*.env
+*.secret
+secrets/
+private/
+server.properties
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

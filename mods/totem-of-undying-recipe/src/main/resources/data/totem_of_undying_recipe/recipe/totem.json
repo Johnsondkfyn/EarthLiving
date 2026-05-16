@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "totem_of_undying_recipe:totemfragment",
+    "b": "minecraft:emerald",
+    "c": "minecraft:diamond"
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "result": {
+    "id": "minecraft:totem_of_undying"
+  }
+}

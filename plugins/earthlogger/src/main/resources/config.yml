@@ -1,0 +1,3 @@
+database-file: earthlogger.db
+lookup-limit: 10
+log-creative-actions: true

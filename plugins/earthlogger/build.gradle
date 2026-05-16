@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.6'
+}
+
+group = 'dk.johna.earthlogger'
+version = '1.0.0'
+
+base {
+    archivesName = 'EarthLogger'
+}
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
+    implementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+
+tasks.shadowJar {
+    archiveClassifier.set('')
+    mergeServiceFiles()
+}
+
+tasks.build {
+    dependsOn tasks.shadowJar
+}

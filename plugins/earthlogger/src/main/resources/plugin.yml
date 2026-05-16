@@ -1,0 +1,17 @@
+name: EarthLogger
+version: 1.0.0
+main: dk.johna.earthlogger.EarthLoggerPlugin
+api-version: '1.21'
+author: Johna
+description: Simple block history logger for Earth Living.
+
+commands:
+  elog:
+    description: EarthLogger admin commands.
+    usage: /elog <inspect|lookup|status|help>
+    permission: earthlogger.admin
+
+permissions:
+  earthlogger.admin:
+    description: Allows using EarthLogger inspection and lookup commands.
+    default: op
