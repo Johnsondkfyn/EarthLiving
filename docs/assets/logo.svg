@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Earth Living logo</title>
+  <desc id="desc">A geometric earth mark with land, water, and a rising horizon.</desc>
+  <defs>
+    <linearGradient id="sky" x1="16" x2="80" y1="12" y2="82" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7fb1c8"/>
+      <stop offset="1" stop-color="#284f5a"/>
+    </linearGradient>
+    <linearGradient id="land" x1="20" x2="82" y1="70" y2="28" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9fc46b"/>
+      <stop offset="1" stop-color="#415d43"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="20" fill="#101715"/>
+  <circle cx="48" cy="48" r="34" fill="url(#sky)"/>
+  <path d="M20 54c10-7 16-8 24-4 6 3 11 3 18-1 7-4 13-5 19-2a34 34 0 0 1-61 7Z" fill="url(#land)"/>
+  <path d="M24 65c9-5 16-4 23 0 7 5 17 6 28 0a34 34 0 0 1-51 0Z" fill="#d39a62"/>
+  <path d="M28 34h40M23 48h50M48 15c-7 9-10 20-10 33s3 24 10 33M48 15c7 9 10 20 10 33s-3 24-10 33" fill="none" stroke="#f5f1e8" stroke-opacity=".38" stroke-width="2"/>
+  <circle cx="48" cy="48" r="34" fill="none" stroke="#f5f1e8" stroke-opacity=".7" stroke-width="3"/>
+</svg>
