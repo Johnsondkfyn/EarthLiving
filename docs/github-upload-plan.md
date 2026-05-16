@@ -26,7 +26,7 @@ Recommended next steps:
 
 As the project grows, split work into:
 
-- `mods/` for Minecraft Forge/Fabric mods
+- `plugins/` for Paper plugin source code
 - `plugins/` for Paper plugins
 - `server-config/` for safe example configs
 - `docs/` for server plans and operating notes

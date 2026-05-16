@@ -5,10 +5,10 @@ Earth Living is a realistic Minecraft Earth server project.
 This repository is for source code, server notes, and safe configuration examples.
 It must not contain world files, backups, server logs with IP addresses, passwords, SSH keys, or private server access details.
 
+Earth Living is built as a Paper server. Public code in this repository should focus on Paper plugins, server documentation, and safe configuration examples.
+
 ## Contents
 
-- `mods/simple-ruby-mod` - Forge ruby mod made during early testing.
-- `mods/totem-of-undying-recipe` - Updated Forge recipe mod.
 - `plugins/giveaway` - Paper giveaway plugin updated for modern Paper.
 - `plugins/earthlogger` - Custom Paper logging plugin made from scratch.
 - `server-config/coordinator` - Coordinator plugin config notes for the Earth map.
@@ -31,13 +31,14 @@ The server is planned around:
 
 Do commit:
 
-- plugin and mod source code
+- Paper plugin source code
 - Gradle build files
 - documentation
 - safe example configs
 
 Do not commit:
 
+- client-side mod projects unless the server direction changes
 - Minecraft world/map folders
 - generated backups
 - downloaded plugin jars
@@ -48,7 +49,7 @@ Do not commit:
 
 ## Build Notes
 
-Each mod/plugin folder is currently a separate Gradle project.
+Each plugin folder is currently a separate Gradle project.
 Build from inside the relevant folder.
 
 Examples:
@@ -56,11 +57,4 @@ Examples:
 ```powershell
 cd plugins/earthlogger
 gradle build
-```
-
-or, where a wrapper exists:
-
-```powershell
-cd mods/simple-ruby-mod
-./gradlew build
 ```
