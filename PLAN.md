@@ -105,6 +105,59 @@ Notion viser **70** rækker som `Ikke startet`. Nedenfor er de navngivne rækker
 | Towny eller claim-system | Gameplay | https://www.notion.so/3619c23d643a809d856ad1d79e569d6c |
 | Flere realistiske gameplay plugins | Gameplay | https://www.notion.so/3619c23d643a801cbe8ccf814a6c221b |
 
+## Senere plan: Custom Pterodactyl Panel
+
+Startdato: **2026-05-18**
+
+Formaalet er at lave et Earth Living admin/control panel ovenpaa Pterodactyl, saa serverdrift, roadmap, BlueMap og sikkerhed kan samles et sted uden at aendre Pterodactyl-kernen unodigt.
+
+### Fase 1: Pterodactyl foundation
+
+- Installere eller gennemgaa standard Pterodactyl Panel og Wings.
+- Sikre at Minecraft-serveren kan styres via Pterodactyl: start, stop, restart og console.
+- Tjekke Java/Paper startup, RAM, disk, allocations og server variables.
+- Saette sikre roller/adgange op til owner/admin/staff.
+- Dokumentere login, domane, HTTPS og backup-placering.
+
+### Fase 2: Earth Living branding
+
+- Tilfoeje Earth Living navn, logo, favicon og farver.
+- Lave simpelt custom login-look, der matcher websitet.
+- Undgaa tunge tredjeparts-themes, der kan goere updates og sikkerhed svaerere.
+- Holde Pterodactyl saa standard som muligt under motorhjelmen.
+
+### Fase 3: Nyttige drift-vaerktoejer
+
+- Server health dashboard: online/offline, CPU, RAM, disk, uptime, TPS/MSPT hvis muligt.
+- Backup monitor: seneste backup, backup-stoerrelse, backup-alder og fejl-advarsler.
+- Restart/crash log: seneste restart, crashes, downtime og vigtige haendelser.
+- Plugin overview: installerede plugins, versioner, status og korte noter.
+- Security checklist: whitelist, OP-liste, RCON, firewall, SSH, permissions og backups.
+- Config/deployment log: hvad der sidst er aendret paa serveren.
+
+### Fase 4: Map view og BlueMap
+
+- Tilfoeje tydeligt link til BlueMap.
+- Lave en Map-side, hvor BlueMap kan vises direkte i panelet eller dashboardet.
+- Vise BlueMap status: online/offline, sidste render-aktivitet, tile count og diskforbrug.
+- Senere: landgraenser, region notes, coordinates bookmarks og steder der skal bygges.
+
+### Fase 5: Roadmap og community tools
+
+- Roadmap widget med Notion/GitHub-tal: completed, in progress og not started.
+- Current focus-widget med de vigtigste opgaver lige nu.
+- Changelog/devlog fra GitHub commits eller manuelle updates.
+- Whitelist manager til testspillere.
+- Discord/staff overview senere: reports, alerts, roller og whitelist/verification.
+
+### Foerste prioritet den 18. maj
+
+1. Afgor om vi bruger standard Pterodactyl med branding eller et separat Earth Living dashboard ovenpaa API'et.
+2. Tjek serverens krav og sikkerhed foer installation.
+3. Saet basis-panel op og forbind Minecraft-serveren.
+4. Tilfoej BlueMap-link og backup-status som de foerste custom elementer.
+5. Dokumenter alle credentials/hemmeligheder uden for GitHub.
+
 ## Importnote
 
 Notion-visningen viser 85 rækker: 5 `I gang`, 10 `Færdig` og 70 `Ikke startet`. Connector-søgningen returnerede ikke alle 85 rækker med navn i én samlet eksport, så denne fil bruger de korrekte Notion-tal og inkluderer alle navngivne rækker, der blev returneret under eksporten.
