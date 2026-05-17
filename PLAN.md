@@ -19,6 +19,8 @@ Kilde: https://www.notion.so/2e79c23d643a806eb703c25882182865
 | Ikke startet | 70 |
 | I alt | 85 |
 
+Opdatering 2026-05-17: Velocity proxy med servervalg er tilføjet i Notion som `I gang`. Den nye faktiske status er derfor mindst **6 I gang** og **86 rækker i alt**, hvis alle tidligere Notion-rækker stadig findes.
+
 ## I gang
 
 | Projekt | Prioritet | Notion |
@@ -28,6 +30,39 @@ Kilde: https://www.notion.so/2e79c23d643a806eb703c25882182865
 | BlueMap world render | Ikke angivet | https://www.notion.so/3619c23d643a8023aa0af1357584e8ec |
 | Landgrænser research | Ikke angivet | https://www.notion.so/3619c23d643a803fae9ce333ca1fe317 |
 | Ekstra I gang-række | Ikke angivet | Vises i Notion, men blev ikke returneret med navn af connector-søgningen. |
+| Velocity proxy med servervalg | Høj | https://www.notion.so/3639c23d643a8152a370dc0aa3c373df |
+
+## I gang: Velocity proxy og servervalg
+
+Formaalet er at bruge **Velocity** som faelles indgang til Earth Living-netvaerket, saa spillere senere kan joine samme IP/domane og vaelge mellem forskellige servertyper.
+
+### Foerste struktur
+
+- **Velocity proxy:** faelles front door og routing.
+- **Earth Living:** realistisk Paper-server med Earth map, realisme-systemer, BlueMap og roadmap-funktioner.
+- **Standard Survival:** separat klassisk survival-server, saa almindelig survival ikke blandes sammen med Earth Living-regler og tunge realism features.
+- **Test server:** bruges til plugin-test, Paper/Java-kompatibilitet og staging foer produktion.
+
+### Pterodactyl status
+
+- Velocity egg er importeret i Pterodactyl under Minecraft nest.
+- Server oprettet: **Earth Living Velocity**.
+- Server UUID: `89919e61-bbba-44a7-8030-7b0439954c6f`.
+- Panel short id: `89919e61`.
+- Allocation: `earthliving-node:25567`.
+- Image: `ghcr.io/pterodactyl/yolks:java_25`.
+- RAM: `768 MiB`, Disk: `1 GiB`, CPU limit: `50%`.
+- Install status: installeret i Pterodactyl `2026-05-17 19:31:55`.
+- Velocity jar: rettet manuelt til PaperMC Downloads API, version `3.4.0-SNAPSHOT` build `559`.
+- Status: oprettet som in-progress infrastruktur uden at aendre den nuvaerende Paper testserver.
+
+### Naeste skridt
+
+1. Start Velocity og bekraeft at proxyen booter rent.
+2. Saet `velocity.toml` op med forwarding, MOTD og serverliste.
+3. Opret senere Standard Survival som separat Paper-server.
+4. Opret eller flyt Earth Living real-server bag Velocity, naar BlueMap/render og migration er klar.
+5. Skift offentlig spillerindgang til Velocity, naar proxy, forwarding og backend-servere er testet.
 
 ## Færdig
 
