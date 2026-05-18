@@ -71,6 +71,9 @@ Opdatering 2026-05-18: Flere tekniske fundament-opgaver er nu udført på live-s
 - Bukkit plugin-query er slået fra, så pluginlisten ikke eksponeres via query.
 - `rate-limit=15` er sat som mild join-spam beskyttelse.
 - Paper Anti-Xray er slået til med `engine-mode: 2` og `lava-obscures: true`.
+- FarmControl 1.3.0 er lagt på serveren som blød farm limiter.
+- FarmControl er sat op uden aktive kill-profiler og uden ClearLag-style item/entity cleanup.
+- Hopper-check, item/XP merge og entity-collision er justeret for mindre farm-lag.
 - Firewall og `fail2ban` er aktive på hosten.
 - Det næste store sikkerhedslag bør være Velocity som eneste offentlige Minecraft-indgang, anti-bot på proxy-laget og direkte backend-adgang lukket.
 
@@ -132,6 +135,7 @@ Formaalet er at bruge **Velocity** som faelles indgang til Earth Living-netvaerk
 | Pterodactyl panel customisering og Marketplace | https://www.notion.so/3649c23d643a81308047c91c35ad1168 |
 | PassportBorders fundet og forberedt til test | https://www.notion.so/3649c23d643a815e8f4cc21a90834ca8 |
 | Security hardening: whitelist, query, RCON og Anti-Xray | https://www.notion.so/3649c23d643a81a28e47c4fadc3160a4 |
+| Farm limiter og performance hardening | https://www.notion.so/3649c23d643a81b0a04fc5d38536b30c |
 | EarthLogger v1 | https://www.notion.so/3619c23d643a805b9437cb695f716eea |
 | LuckPerms admin setup | https://www.notion.so/3619c23d643a80d68b72f2a4a4381f9d |
 | Coordinator plugin installeret | https://www.notion.so/3619c23d643a808a9e1cd59dcc6088e3 |
@@ -152,6 +156,7 @@ Notion viser **70** rækker som `Ikke startet`. Nedenfor er de navngivne rækker
 | Checkpoints og pas-grænseposter | Landgrænser | https://www.notion.so/3649c23d643a8196ada7c6304dd127dd |
 | Velocity som eneste offentlige Minecraft-indgang | Sikkerhed | https://www.notion.so/3649c23d643a81f5b67bde3012f88bf2 |
 | Anti-bot og anti-cheat lag til offentlig launch | Sikkerhed | https://www.notion.so/3649c23d643a81718908dff900ff4e2a |
+| FarmControl test og balance efter første farms | Performance | https://www.notion.so/3649c23d643a8188a083f77b73dcec5a |
 | Klima forskelligt fra land til land | Klima | https://www.notion.so/3619c23d643a807eae00e7f0ac6a755b |
 | Region-baserede sæsoner | Klima | https://www.notion.so/3619c23d643a80d2b3e7d5e5e63dc3f2 |
 | Vejrzoner for Grønland, Island og andre lande | Klima | https://www.notion.so/3619c23d643a804f9cd2dd823bc34936 |

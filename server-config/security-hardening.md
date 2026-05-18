@@ -14,6 +14,12 @@ Updated: 2026-05-18
 - Paper Anti-Xray is enabled in `config/paper-world-defaults.yml`
 - Paper Anti-Xray uses `engine-mode: 2`
 - Paper Anti-Xray has `lava-obscures: true`
+- FarmControl 1.3.0 is installed from Modrinth.
+- FarmControl is configured as a soft farm governor, not as a ClearLag-style cleaner.
+- No FarmControl `kill` profile is enabled by default.
+- Hopper checks are reduced from every tick to every 8 ticks.
+- Entity collision pressure is reduced.
+- Item/XP merge radius is increased slightly.
 
 Backup before live config edit:
 
@@ -30,7 +36,25 @@ This is a strong private-development baseline:
 - Plugin names are no longer exposed through Bukkit query config.
 - Paper packet limiter is still enabled.
 - Paper Anti-Xray is ready after the next server restart.
+- FarmControl is ready after the next server restart.
 - Server firewall and `fail2ban` are active on the host.
+
+## Farm Limiter Policy
+
+Use FarmControl before considering ClearLag-style cleanup.
+
+Enabled profiles:
+
+- Soft animal farm nerf: remove random movement and collisions near dense animal farms.
+- Animal breeding limit: stop breeding when too many same-type animals are close together.
+- Villager breeder limit: stop breeding when villagers are too dense.
+- Reactive animal/villager nerf: only kicks in when MSPT is high.
+
+Disabled by default:
+
+- Any profile that kills animals or villagers.
+- Generic item clearing.
+- Scheduled entity deletion.
 
 ## Next Security Layers
 

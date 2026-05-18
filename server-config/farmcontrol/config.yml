@@ -1,0 +1,66 @@
+# Earth Living FarmControl baseline.
+# Conservative: reduce farm cost without deleting player mobs/items.
+version: 9
+cycle-period: 600
+start-up-delay: 2400
+world-settings:
+  default:
+    profiles:
+      proactive:
+        - earthliving-soft-nerf-animal-farms
+        - earthliving-limit-animal-breeding
+        - earthliving-limit-villager-breeders
+      reactive:
+        - earthliving-hard-nerf-animal-farms
+        - earthliving-hard-nerf-villager-farms
+    reactive-mode-settings:
+      trigger-mspt-threshold: 45.0
+      untrigger-mspt-threshold: 35.0
+      untrigger-settings:
+        minimum-cycles-before-undo: 10
+        maximum-undos-per-cycle: 40
+        entity-undo-weight:
+          default: 1
+          villager: 5
+    exclusion-settings:
+      tamed: true
+      named: true
+      love-mode: true
+      leashed: true
+      patrol-leader: false
+      pickupable: true
+      mounted: true
+      younger-than: 1200
+      type:
+        - chest_boat
+        - minecart_chest
+        - trident
+      metadata:
+        - Elitemob
+        - Elitemobs_NPC
+        - Supermob
+        - infernalMetadata
+        - NPC
+        - shopkeeper
+    action-settings:
+      undo-on:
+        default:
+          interact: false
+          damage: false
+          target: false
+          tempt: false
+        remove-ai:
+          interact: true
+          damage: true
+          target: true
+        remove-awareness:
+          interact: true
+          damage: true
+          target: true
+        disable-collisions:
+          tempt: true
+        disable-breeding:
+          interact: false
+          tempt: false
+mspt-tracker-settings:
+  collection-period: 1200

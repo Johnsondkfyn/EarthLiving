@@ -1,0 +1,61 @@
+# Earth Living FarmControl profiles.
+# No kill profiles are enabled by default.
+profiles:
+  earthliving-soft-nerf-animal-farms:
+    group:
+      types:
+        - "category:animal"
+      count: 18
+      distance: 6
+    actions:
+      - remove-random-movement
+      - disable-collisions
+
+  earthliving-limit-animal-breeding:
+    group:
+      types:
+        - "category:animal"
+      count: 24
+      distance: 6
+      pure: true
+    actions:
+      - disable-breeding
+
+  earthliving-limit-villager-breeders:
+    group:
+      types:
+        - "villager"
+      count: 16
+      distance: 10
+    actions:
+      - disable-breeding
+
+  earthliving-hard-nerf-animal-farms:
+    group:
+      types:
+        - "category:animal"
+      count: 26
+      distance: 6
+    actions:
+      - remove-awareness
+      - disable-collisions
+
+  earthliving-hard-nerf-villager-farms:
+    group:
+      types:
+        - "villager"
+      count: 18
+      distance: 10
+    actions:
+      - remove-random-movement
+      - disable-collisions
+
+  earthliving-trim-animal-farms-disabled:
+    group:
+      types:
+        - "category:animal"
+      count: 40
+      distance: 6
+      pure: true
+    actions:
+      - kill
