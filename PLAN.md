@@ -64,6 +64,16 @@ Opdatering 2026-05-18: Flere tekniske fundament-opgaver er nu udført på live-s
 - BlueMap marker config og WorldGuard region config er gemt som repo-artefakter.
 - PassportBorders-kildekode og konfiguration er gemt i repoen, så pluginet ikke kun ligger i gammel chat-backup.
 
+## Sikkerhedsfokus 2026-05-18
+
+- Earth Living Main er hærdet som privat udviklingsserver: whitelist, enforce-whitelist og online-mode er aktivt.
+- RCON og query er slået fra.
+- Bukkit plugin-query er slået fra, så pluginlisten ikke eksponeres via query.
+- `rate-limit=15` er sat som mild join-spam beskyttelse.
+- Paper Anti-Xray er slået til med `engine-mode: 2` og `lava-obscures: true`.
+- Firewall og `fail2ban` er aktive på hosten.
+- Det næste store sikkerhedslag bør være Velocity som eneste offentlige Minecraft-indgang, anti-bot på proxy-laget og direkte backend-adgang lukket.
+
 ## I gang
 
 | Projekt | Prioritet | Notion |
@@ -121,6 +131,7 @@ Formaalet er at bruge **Velocity** som faelles indgang til Earth Living-netvaerk
 | Landgrænse-system med polygoner | https://www.notion.so/3619c23d643a808c9a26ceae643ca197 |
 | Pterodactyl panel customisering og Marketplace | https://www.notion.so/3649c23d643a81308047c91c35ad1168 |
 | PassportBorders fundet og forberedt til test | https://www.notion.so/3649c23d643a815e8f4cc21a90834ca8 |
+| Security hardening: whitelist, query, RCON og Anti-Xray | https://www.notion.so/3649c23d643a81a28e47c4fadc3160a4 |
 | EarthLogger v1 | https://www.notion.so/3619c23d643a805b9437cb695f716eea |
 | LuckPerms admin setup | https://www.notion.so/3619c23d643a80d68b72f2a4a4381f9d |
 | Coordinator plugin installeret | https://www.notion.so/3619c23d643a808a9e1cd59dcc6088e3 |
@@ -139,6 +150,8 @@ Notion viser **70** rækker som `Ikke startet`. Nedenfor er de navngivne rækker
 | Alkohol-system med barer og licenser | Regler | https://www.notion.so/3619c23d643a80af9503e10b930b0ae6 |
 | Visuelle grænser/mure | Landgrænser | https://www.notion.so/3619c23d643a805e85e8d584bf539a1e |
 | Checkpoints og pas-grænseposter | Landgrænser | https://www.notion.so/3649c23d643a8196ada7c6304dd127dd |
+| Velocity som eneste offentlige Minecraft-indgang | Sikkerhed | https://www.notion.so/3649c23d643a81f5b67bde3012f88bf2 |
+| Anti-bot og anti-cheat lag til offentlig launch | Sikkerhed | https://www.notion.so/3649c23d643a81718908dff900ff4e2a |
 | Klima forskelligt fra land til land | Klima | https://www.notion.so/3619c23d643a807eae00e7f0ac6a755b |
 | Region-baserede sæsoner | Klima | https://www.notion.so/3619c23d643a80d2b3e7d5e5e63dc3f2 |
 | Vejrzoner for Grønland, Island og andre lande | Klima | https://www.notion.so/3619c23d643a804f9cd2dd823bc34936 |
