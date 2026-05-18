@@ -1,0 +1,537 @@
+:root {
+  --el-carbon: #0b1110;
+  --el-panel: #121a18;
+  --el-panel-2: #17211e;
+  --el-line: rgba(214, 194, 143, 0.18);
+  --el-green: #7d9b55;
+  --el-green-2: #4f7d63;
+  --el-gold: #d6c28f;
+  --el-text: #edf3ec;
+  --el-muted: #9fad9f;
+}
+
+body.skin-blue,
+body.skin-blue .wrapper {
+  background:
+    radial-gradient(circle at 80% 0%, rgba(125, 155, 85, 0.16), transparent 32rem),
+    linear-gradient(180deg, #0d1412 0%, var(--el-carbon) 100%) !important;
+}
+
+.skin-blue .main-header .navbar,
+.skin-blue .main-header .logo,
+.skin-blue .main-sidebar,
+.skin-blue .left-side {
+  background: rgba(8, 13, 12, 0.94) !important;
+  border-color: rgba(214, 194, 143, 0.12) !important;
+}
+
+.skin-blue .main-header .logo {
+  color: var(--el-gold) !important;
+  letter-spacing: 0 !important;
+}
+
+.skin-blue .sidebar-menu > li.header {
+  background: rgba(0, 0, 0, 0.28) !important;
+  color: var(--el-gold) !important;
+}
+
+.skin-blue .sidebar-menu > li > a {
+  position: relative;
+  overflow: hidden;
+  margin: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: #cbd8cb !important;
+  transform: translateY(0);
+  transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease, border-color 150ms ease, background 150ms ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.26),
+    0 4px 0 rgba(4, 7, 6, 0.42),
+    0 8px 18px rgba(0, 0, 0, 0.12) !important;
+}
+
+.skin-blue .sidebar-menu > li.active > a,
+.skin-blue .sidebar-menu > li:hover > a {
+  background: linear-gradient(90deg, rgba(125, 155, 85, 0.32), rgba(79, 125, 99, 0.12)) !important;
+  border-color: rgba(214, 194, 143, 0.22) !important;
+  color: #fff !important;
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+    0 6px 0 rgba(4, 7, 6, 0.52),
+    0 12px 22px rgba(0, 0, 0, 0.2) !important;
+}
+
+.skin-blue .sidebar-menu > li > a::after {
+  content: "";
+  position: absolute;
+  inset: 1px 1px auto 1px;
+  height: 45%;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0));
+}
+
+.skin-blue .sidebar-menu > li > a::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  bottom: -40%;
+  left: -80%;
+  width: 52%;
+  pointer-events: none;
+  opacity: 0;
+  transform: skewX(-22deg);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(246, 232, 177, 0.55),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.skin-blue .sidebar-menu > li > a:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 0 14px rgba(246, 232, 177, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.26),
+    0 3px 0 rgba(4, 7, 6, 0.54),
+    0 0 18px rgba(214, 194, 143, 0.22) !important;
+}
+
+.skin-blue .sidebar-menu > li > a:active::before {
+  animation: earthliving-button-flash 420ms ease-out;
+}
+
+.skin-blue .sidebar-menu > li.header,
+.skin-blue .sidebar-menu > li.admin-earthliving-note {
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
+.content-wrapper,
+.right-side {
+  background:
+    linear-gradient(rgba(11, 17, 16, 0.86), rgba(11, 17, 16, 0.94)),
+    url('/assets/svgs/earthliving-logo.svg') calc(100% - 2rem) calc(100% - 2rem) / 15rem auto no-repeat !important;
+  color: var(--el-text);
+}
+
+.box,
+.modal-body,
+.modal-footer,
+.modal-header,
+.extension-btn,
+.plugin-card {
+  background: rgba(18, 26, 24, 0.92) !important;
+  border-color: var(--el-line) !important;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24) !important;
+}
+
+.box-header,
+.box-footer {
+  border-color: var(--el-line) !important;
+}
+
+.btn-primary,
+.btn-success,
+.plugin-actions .btn-primary {
+  background: linear-gradient(135deg, var(--el-green), var(--el-green-2)) !important;
+  border-color: rgba(214, 194, 143, 0.35) !important;
+  color: #fff !important;
+}
+
+.btn-warning,
+.btn-info {
+  background:
+    radial-gradient(circle at 72% 14%, rgba(255, 216, 77, 0.18), transparent 4rem),
+    linear-gradient(135deg, var(--el-green), var(--el-green-2)) !important;
+  border-color: rgba(214, 194, 143, 0.35) !important;
+  color: #fff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.44);
+}
+
+.btn-default,
+.btn-gray-alt {
+  background: rgba(214, 194, 143, 0.12) !important;
+  border-color: rgba(214, 194, 143, 0.24) !important;
+  color: var(--el-text) !important;
+}
+
+.btn,
+.plugin-actions .btn,
+.earthliving-owner-rail a {
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease, border-color 150ms ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.24),
+    0 8px 0 rgba(4, 7, 6, 0.7),
+    0 14px 24px rgba(0, 0, 0, 0.22) !important;
+}
+
+.btn::after,
+.plugin-actions .btn::after,
+.earthliving-owner-rail a::after {
+  content: "";
+  position: absolute;
+  inset: 1px 1px auto 1px;
+  height: 42%;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0));
+}
+
+.btn::before,
+.plugin-actions .btn::before,
+.earthliving-owner-rail a::before {
+  content: "";
+  position: absolute;
+  top: -35%;
+  bottom: -35%;
+  left: -75%;
+  width: 48%;
+  pointer-events: none;
+  opacity: 0;
+  transform: skewX(-22deg);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(246, 232, 177, 0.72),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.btn:hover,
+.plugin-actions .btn:hover,
+.earthliving-owner-rail a:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.26),
+    0 10px 0 rgba(4, 7, 6, 0.76),
+    0 18px 30px rgba(0, 0, 0, 0.28) !important;
+}
+
+.btn:active,
+.plugin-actions .btn:active,
+.earthliving-owner-rail a:active {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 0 18px rgba(246, 232, 177, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.24),
+    0 8px 0 rgba(4, 7, 6, 0.7),
+    0 0 24px rgba(214, 194, 143, 0.34),
+    0 14px 24px rgba(0, 0, 0, 0.22) !important;
+}
+
+.btn:active::before,
+.plugin-actions .btn:active::before,
+.earthliving-owner-rail a:active::before {
+  animation: earthliving-button-flash 420ms ease-out;
+}
+
+@keyframes earthliving-button-flash {
+  0% {
+    left: -75%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    left: 130%;
+    opacity: 0;
+  }
+}
+
+.btn-primary,
+.btn-success,
+.earthliving-owner-rail a {
+  border-bottom-color: rgba(35, 54, 43, 0.95) !important;
+}
+
+.earthliving-owner-rail {
+  position: fixed;
+  right: 20px;
+  bottom: 18px;
+  z-index: 1040;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(214, 194, 143, 0.24);
+  border-radius: 8px;
+  background: rgba(10, 15, 14, 0.88);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(10px);
+}
+
+.earthliving-owner-rail a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--el-text);
+  background: linear-gradient(145deg, rgba(125, 155, 85, 0.72), rgba(55, 82, 66, 0.86));
+  border: 1px solid rgba(125, 155, 85, 0.22);
+  white-space: nowrap;
+}
+
+.earthliving-owner-rail a:hover {
+  color: #fff;
+  background: rgba(125, 155, 85, 0.34);
+}
+
+.earthliving-extension-page {
+  color: var(--el-text);
+}
+
+.earthliving-extension-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(214, 194, 143, 0.22);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(18, 26, 24, 0.96), rgba(33, 47, 40, 0.86)),
+    url('/assets/svgs/earthliving-logo.svg') 98% 50% / 11rem auto no-repeat;
+}
+
+.earthliving-extension-hero h2 {
+  margin: 6px 0 8px;
+  color: #fff;
+}
+
+.earthliving-extension-hero p {
+  max-width: 620px;
+  color: #cbd8cb;
+}
+
+.earthliving-kicker,
+.earthliving-extension-card span {
+  color: var(--el-gold);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.earthliving-extension-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.earthliving-extension-card {
+  min-height: 142px;
+  padding: 18px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(214, 194, 143, 0.18);
+  border-radius: 8px;
+  background: rgba(18, 26, 24, 0.88);
+}
+
+.earthliving-extension-card strong {
+  display: block;
+  margin: 8px 0;
+  color: #fff;
+  font-size: 18px;
+}
+
+.earthliving-extension-card p {
+  color: var(--el-muted);
+}
+
+.earthliving-policy-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.earthliving-policy-strip > div,
+.earthliving-market-section,
+.earthliving-market-item {
+  border: 1px solid rgba(214, 194, 143, 0.18);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(53, 244, 255, 0.08), transparent 7rem),
+    linear-gradient(145deg, rgba(18, 26, 24, 0.94), rgba(8, 13, 12, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.22),
+    0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+.earthliving-policy-strip > div {
+  padding: 14px 16px;
+}
+
+.earthliving-policy-strip span,
+.earthliving-market-item p,
+.earthliving-market-section header p {
+  color: var(--el-muted);
+}
+
+.earthliving-policy-strip span {
+  display: block;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--el-gold);
+}
+
+.earthliving-policy-strip strong {
+  color: #fff;
+}
+
+.earthliving-market-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.earthliving-market-section {
+  min-height: 100%;
+  margin-bottom: 18px;
+  padding: 16px;
+}
+
+.earthliving-market-section header {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.earthliving-market-section header > i {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(214, 194, 143, 0.2);
+  border-radius: 8px;
+  color: #fff7df;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 216, 77, 0.18), transparent 2.8rem),
+    linear-gradient(145deg, rgba(36, 55, 48, 0.94), rgba(10, 16, 15, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 16px rgba(53, 244, 255, 0.12);
+}
+
+.earthliving-market-section h3,
+.earthliving-market-item h4 {
+  margin: 0;
+  color: #fff;
+}
+
+.earthliving-market-section header p {
+  margin: 4px 0 0;
+}
+
+.earthliving-market-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  margin-top: 10px;
+}
+
+.earthliving-market-item p {
+  margin: 5px 0 0;
+}
+
+.earthliving-market-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  min-width: 118px;
+}
+
+.earthliving-badge,
+.earthliving-risk {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(214, 194, 143, 0.2);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(214, 194, 143, 0.12);
+}
+
+.earthliving-badge {
+  color: #fff7df;
+}
+
+.earthliving-risk-low {
+  border-color: rgba(125, 155, 85, 0.42);
+  background: rgba(125, 155, 85, 0.18);
+}
+
+.earthliving-risk-medium {
+  border-color: rgba(214, 194, 143, 0.42);
+  background: rgba(214, 194, 143, 0.16);
+}
+
+.earthliving-risk-high {
+  border-color: rgba(255, 112, 112, 0.42);
+  background: rgba(255, 112, 112, 0.16);
+}
+
+.earthliving-market-meta .btn {
+  min-width: 86px;
+}
+
+@media (max-width: 760px) {
+  .earthliving-owner-rail {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    justify-content: space-between;
+  }
+
+  .earthliving-owner-rail a {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 0 6px;
+  }
+
+  .earthliving-owner-rail span {
+    display: none;
+  }
+
+  .earthliving-extension-hero {
+    display: block;
+  }
+
+  .earthliving-policy-strip,
+  .earthliving-market-item {
+    grid-template-columns: 1fr;
+  }
+
+  .earthliving-market-meta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}

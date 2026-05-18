@@ -1,0 +1,28 @@
+scale: 5120
+tiles: 15
+check-worlds:
+  - world
+messages:
+  entered: "&aDu går ind i &f%country%&a."
+  denied: "&cDu skal bruge pas/visum for at komme ind i &f%country%&c."
+  wilderness: "&7Du forlader et land."
+menu:
+  enabled: true
+  slot: 8
+  item-name: "&aServer Menu"
+  item-material: NETHER_STAR
+  transport:
+    - "&eKobenhavn H &7- X 4290, Z -19004"
+    - "&eHamburg Hbf &7- X 3473, Z -18142"
+    - "&eFlere stationer kan tilfojes senere."
+services:
+  radius: 8
+  passport-office:
+    locations:
+      - "world,3477,64,-18166"
+  shop:
+    locations:
+      - "world,3477,64,-18166"
+  jobcenter:
+    locations:
+      - "world,3477,64,-18166"

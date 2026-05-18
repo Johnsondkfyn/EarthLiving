@@ -9,6 +9,7 @@ target/
 *.zip
 *.7z
 *.rar
+*.blueprint
 
 # Keep Gradle wrapper jars if they are intentionally included.
 *.jar
@@ -17,6 +18,8 @@ target/
 
 # Minecraft runtime data
 world/
+!worldguard-regions/
+!worldguard-regions/world/
 world_nether/
 world_the_end/
 server-runtime/plugins/
@@ -33,6 +36,7 @@ usercache.json
 whitelist.json
 
 # Secrets and local config
+EARTHLIVING_SERVER_INFO.md
 *.key
 *.pem
 *.ppk
@@ -47,3 +51,7 @@ server.properties
 Thumbs.db
 .idea/
 .vscode/
+
+# Temporary generated/downloaded source data
+_coordjar/
+data/

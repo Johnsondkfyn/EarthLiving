@@ -1,0 +1,25 @@
+name: PassportBorders
+version: 0.3.2
+main: dk.earthliving.passportborders.PassportBordersPlugin
+api-version: '1.21'
+author: Codex
+softdepend:
+  - LuckPerms
+  - Vault
+commands:
+  border:
+    description: Shows country border information.
+    usage: /border <info|list|reload>
+  menu:
+    description: Opens the server menu.
+    usage: /menu
+  passport:
+    description: Opens the passport menu.
+    usage: /passport
+permissions:
+  passportborders.admin:
+    description: Allows reloading PassportBorders.
+    default: op
+  passportborders.bypass:
+    description: Allows entering all countries.
+    default: op

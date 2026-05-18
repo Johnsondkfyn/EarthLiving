@@ -21,6 +21,49 @@ Kilde: https://www.notion.so/2e79c23d643a806eb703c25882182865
 
 Opdatering 2026-05-17: Velocity proxy med servervalg er tilføjet i Notion som `I gang`. Den nye faktiske status er derfor mindst **6 I gang** og **86 rækker i alt**, hvis alle tidligere Notion-rækker stadig findes.
 
+Opdatering 2026-05-18: Flere tekniske fundament-opgaver er nu udført på live-serveren. Tallene i Notion bør opdateres efter næste fulde Notion-sync, men den faktiske status er ændret for Pterodactyl, BlueMap, WorldGuard/landgrænser og PassportBorders.
+
+## Udført 2026-05-18
+
+### Pterodactyl og serverdrift
+
+- Pterodactyl Panel og Wings er sat op og bruges nu til Earth Living-serveren.
+- Den rigtige Earth Living-server er flyttet ind i Pterodactyl som **Earth Living Main**.
+- Serveren kører på **Paper 26.1.2 build 64** og **Java 25**.
+- Den gamle `minecraft.service` er stoppet/deaktiveret, og serverdata ligger nu i Pterodactyl volume.
+- Pterodactyl-panelet har fået Earth Living carbon-style, logo, forbedrede knapper, dashboard-grafer og admin Marketplace.
+- Notion: https://www.notion.so/3649c23d643a81308047c91c35ad1168
+
+### BlueMap og kort
+
+- BlueMap-render er færdig og fungerer offentligt på `http://159.195.149.253:8100/`.
+- BlueMap er proxyet via Nginx, så webappen kan åbnes udefra.
+- Hele verden har fået visuelt **Country Borders** overlay på BlueMap.
+- Starter Europe-landene er highlightet med tydelig cyan outline.
+- Antarktis/dateline-artefakten er filtreret væk fra overlayet.
+
+### Landgrænser og regioner
+
+- WorldEdit og WorldGuard er installeret på Earth Living Main.
+- Danmark blev først testet manuelt og derefter genereret automatisk som polygoner.
+- Starter Europe blev oprettet som WorldGuard country regions.
+- Hele verden er nu oprettet som **673 WorldGuard country regions** uden flags.
+- Regionerne fungerer som teknisk fundament og låser ikke spillere endnu.
+
+### PassportBorders
+
+- Det tidligere lavede plugin **PassportBorders 0.3.2** er fundet i chat-backup.
+- Plugin-koden er lagt ind i repoen under `plugins/passportborders/`.
+- Der er genereret ny `countries.yml` til PassportBorders med rigtige starter-Europe polygoner.
+- Pluginet er ikke aktiveret på live-serveren endnu, fordi pas/adgang først bør kobles på efter checkpoints og grænseposter.
+- Notion: https://www.notion.so/3649c23d643a815e8f4cc21a90834ca8
+
+### GitHub/repo
+
+- Nye generator-værktøjer er tilføjet under `tools/`.
+- BlueMap marker config og WorldGuard region config er gemt som repo-artefakter.
+- PassportBorders-kildekode og konfiguration er gemt i repoen, så pluginet ikke kun ligger i gammel chat-backup.
+
 ## I gang
 
 | Projekt | Prioritet | Notion |
@@ -73,6 +116,11 @@ Formaalet er at bruge **Velocity** som faelles indgang til Earth Living-netvaerk
 | Java 25 installeret | https://www.notion.so/3619c23d643a809e8752f42854b05446 |
 | Earth map importeret | https://www.notion.so/3619c23d643a80e2804fc26b8c4f09b3 |
 | BlueMap installeret | https://www.notion.so/3619c23d643a80998678d7a4f7344e65 |
+| BlueMap world render gennemført | https://www.notion.so/3619c23d643a8023aa0af1357584e8ec |
+| WorldEdit og WorldGuard fundament | https://www.notion.so/3619c23d643a800b97d6f061e2e98ae3 |
+| Landgrænse-system med polygoner | https://www.notion.so/3619c23d643a808c9a26ceae643ca197 |
+| Pterodactyl panel customisering og Marketplace | https://www.notion.so/3649c23d643a81308047c91c35ad1168 |
+| PassportBorders fundet og forberedt til test | https://www.notion.so/3649c23d643a815e8f4cc21a90834ca8 |
 | EarthLogger v1 | https://www.notion.so/3619c23d643a805b9437cb695f716eea |
 | LuckPerms admin setup | https://www.notion.so/3619c23d643a80d68b72f2a4a4381f9d |
 | Coordinator plugin installeret | https://www.notion.so/3619c23d643a808a9e1cd59dcc6088e3 |
@@ -89,9 +137,8 @@ Notion viser **70** rækker som `Ikke startet`. Nedenfor er de navngivne rækker
 | Regler for voksenindhold og server-rating | Regler | https://www.notion.so/3619c23d643a80bcaef6d41cb56a3088 |
 | Rus-effekter med gameplay-risiko | Regler | https://www.notion.so/3619c23d643a80c3a3a7fe7ee181209f |
 | Alkohol-system med barer og licenser | Regler | https://www.notion.so/3619c23d643a80af9503e10b930b0ae6 |
-| WorldEdit og WorldGuard fundament | Landgrænser | https://www.notion.so/3619c23d643a800b97d6f061e2e98ae3 |
-| Landgrænse-system med polygoner | Landgrænser | https://www.notion.so/3619c23d643a808c9a26ceae643ca197 |
 | Visuelle grænser/mure | Landgrænser | https://www.notion.so/3619c23d643a805e85e8d584bf539a1e |
+| Checkpoints og pas-grænseposter | Landgrænser | https://www.notion.so/3649c23d643a8196ada7c6304dd127dd |
 | Klima forskelligt fra land til land | Klima | https://www.notion.so/3619c23d643a807eae00e7f0ac6a755b |
 | Region-baserede sæsoner | Klima | https://www.notion.so/3619c23d643a80d2b3e7d5e5e63dc3f2 |
 | Vejrzoner for Grønland, Island og andre lande | Klima | https://www.notion.so/3619c23d643a804f9cd2dd823bc34936 |
