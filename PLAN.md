@@ -23,6 +23,8 @@ Opdatering 2026-05-17: Velocity proxy med servervalg er tilføjet i Notion som `
 
 Opdatering 2026-05-18: Flere tekniske fundament-opgaver er nu udført på live-serveren. Tallene i Notion bør opdateres efter næste fulde Notion-sync, men den faktiske status er ændret for Pterodactyl, BlueMap, WorldGuard/landgrænser og PassportBorders.
 
+Opdatering 2026-05-18 aften: Discord-serveren er nu genopbygget til Earth Living-brandet. Den gamle serverstruktur er ryddet væk, nye Earth Living-kanaler og roller er oprettet, logoet er sat ind, og regler/velkomst/roadmap/BlueMap-info er skrevet ind som foundation.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -63,6 +65,18 @@ Opdatering 2026-05-18: Flere tekniske fundament-opgaver er nu udført på live-s
 - Nye generator-værktøjer er tilføjet under `tools/`.
 - BlueMap marker config og WorldGuard region config er gemt som repo-artefakter.
 - PassportBorders-kildekode og konfiguration er gemt i repoen, så pluginet ikke kun ligger i gammel chat-backup.
+
+### Discord foundation
+
+- Discord-serveren er omdøbt og brandet som **Earth Living**.
+- Earth Living-logoet er sat på serveren.
+- De gamle kanaler blev ryddet væk, bortset fra Discords beskyttede community-kanaler.
+- Ny kanalstruktur er oprettet: start/info, Earth Living, community, support, voice og staff.
+- Regler, velkomsttekst, server-info, BlueMap-link, roadmap og launch/update-tekst er skrevet ind.
+- Nye roller er oprettet: Owner, Admin, Moderator, Builder, Tester og Member.
+- Gamle job/theme-roller blev slettet: Trucker og Miner.
+- `Minecraft Server Status` blev bevaret, fordi den ligner en bot/integration-rolle.
+- Næste Discord-fase er chat-sync, serverstatus/player count, whitelist/verification og staff alerts.
 
 ## Sikkerhedsfokus 2026-05-18
 
@@ -136,6 +150,7 @@ Formaalet er at bruge **Velocity** som faelles indgang til Earth Living-netvaerk
 | PassportBorders fundet og forberedt til test | https://www.notion.so/3649c23d643a815e8f4cc21a90834ca8 |
 | Security hardening: whitelist, query, RCON og Anti-Xray | https://www.notion.so/3649c23d643a81a28e47c4fadc3160a4 |
 | Farm limiter og performance hardening | https://www.notion.so/3649c23d643a81b0a04fc5d38536b30c |
+| Discord server foundation og branding | https://www.notion.so/3649c23d643a814a922efa0b5d9386f3 |
 | EarthLogger v1 | https://www.notion.so/3619c23d643a805b9437cb695f716eea |
 | LuckPerms admin setup | https://www.notion.so/3619c23d643a80d68b72f2a4a4381f9d |
 | Coordinator plugin installeret | https://www.notion.so/3619c23d643a808a9e1cd59dcc6088e3 |
