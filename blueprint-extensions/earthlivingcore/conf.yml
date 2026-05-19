@@ -3,7 +3,7 @@ info:
   identifier: "earthlivingcore"
   description: "Earth Living owner tools, carbon panel styling, and quick access shortcuts for the Pterodactyl admin panel."
   flags: ""
-  version: "1.0.0"
+  version: "1.1.0"
   target: "beta-2026-01"
   author: "Earth Living"
   icon: "icon.svg"

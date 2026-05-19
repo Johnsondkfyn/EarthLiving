@@ -10,6 +10,12 @@ EarthLivingCore saves reports in the server plugin data folder as:
 plugins/EarthLivingCore/reports.yml
 ```
 
+EarthLivingCore also exports a read-only panel file:
+
+```text
+plugins/EarthLivingCore/reports-panel.json
+```
+
 Each report includes:
 
 - id
@@ -40,7 +46,7 @@ The panel should read a safe exported report file from the server volume, then s
 ## Safe implementation path
 
 1. Keep Minecraft as the source of truth.
-2. Add an export file from EarthLivingCore, for example `reports-panel.yml` or `reports-panel.json`.
+2. Let EarthLivingCore export `reports-panel.json`.
 3. Let the Blueprint extension read only that exported file.
 4. Do not expose secrets, server credentials, private logs, or API tokens to the panel page.
 5. Add write actions later through a controlled command/API instead of letting the panel edit raw plugin files directly.

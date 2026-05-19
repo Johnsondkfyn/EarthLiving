@@ -51,6 +51,29 @@
             ],
         ],
     ];
+
+    $reportSources = [
+        'Test Server' => '/var/lib/pterodactyl/volumes/d554d2b4-ac4b-4b48-b004-35f1b73feadc/plugins/EarthLivingCore/reports-panel.json',
+        'Main Server' => '/var/lib/pterodactyl/volumes/0157164c-e4e1-4979-935c-d703ddd6706e/plugins/EarthLivingCore/reports-panel.json',
+    ];
+
+    $reportSourceName = 'Not connected';
+    $reportSourcePath = null;
+    $reportData = ['generatedAt' => null, 'openCount' => 0, 'reports' => []];
+
+    foreach ($reportSources as $sourceName => $sourcePath) {
+        if (is_readable($sourcePath)) {
+            $decodedReports = json_decode(file_get_contents($sourcePath), true);
+            if (is_array($decodedReports)) {
+                $reportSourceName = $sourceName;
+                $reportSourcePath = $sourcePath;
+                $reportData = array_merge($reportData, $decodedReports);
+                break;
+            }
+        }
+    }
+
+    $panelReports = array_slice($reportData['reports'] ?? [], 0, 8);
 @endphp
 
 <div class="earthliving-extension-page earthliving-marketplace-page">
@@ -63,6 +86,9 @@
             </p>
         </div>
         <div class="earthliving-extension-actions">
+            <a class="btn btn-success" href="#earthliving-report-center">
+                <i class="fa fa-flag"></i> Report Center
+            </a>
             <a class="btn btn-primary" href="{{ route('admin.plugins') }}">
                 <i class="fa fa-puzzle-piece"></i> Plugin Library
             </a>
@@ -86,6 +112,60 @@
             <strong>Velocity -> Earth Living / Survival / Test</strong>
         </div>
     </div>
+
+    <section id="earthliving-report-center" class="earthliving-report-center">
+        <header>
+            <div>
+                <span class="earthliving-kicker">Read-only alpha</span>
+                <h3>Report Center</h3>
+                <p>Minecraft reports exported by EarthLivingCore. Panel actions come later after the read-only flow is stable.</p>
+            </div>
+            <div class="earthliving-report-stats">
+                <div>
+                    <span>Source</span>
+                    <strong>{{ $reportSourceName }}</strong>
+                </div>
+                <div>
+                    <span>Open</span>
+                    <strong>{{ $reportData['openCount'] ?? 0 }}</strong>
+                </div>
+                <div>
+                    <span>Updated</span>
+                    <strong>{{ $reportData['generatedAt'] ?? 'No export yet' }}</strong>
+                </div>
+            </div>
+        </header>
+
+        @if (count($panelReports) === 0)
+            <article class="earthliving-report-empty">
+                <i class="fa fa-inbox"></i>
+                <div>
+                    <h4>No reports exported yet</h4>
+                    <p>Create a report in EarthOS on the test server, then refresh this panel page.</p>
+                    @if ($reportSourcePath)
+                        <small>{{ $reportSourcePath }}</small>
+                    @endif
+                </div>
+            </article>
+        @else
+            <div class="earthliving-report-list">
+                @foreach ($panelReports as $report)
+                    <article class="earthliving-report-card">
+                        <div class="earthliving-report-card-head">
+                            <strong>#{{ $report['id'] ?? '?' }} {{ $report['categoryTitle'] ?? 'Report' }}</strong>
+                            <span>{{ $report['status'] ?? 'unknown' }}</span>
+                        </div>
+                        <p>{{ $report['note'] ?? '' }}</p>
+                        <div class="earthliving-report-meta">
+                            <span><i class="fa fa-user"></i> {{ $report['playerName'] ?? 'Unknown' }}</span>
+                            <span><i class="fa fa-map-marker"></i> {{ $report['world'] ?? 'world' }} {{ $report['x'] ?? 0 }} {{ $report['y'] ?? 0 }} {{ $report['z'] ?? 0 }}</span>
+                            <span><i class="fa fa-clock-o"></i> {{ $report['createdAt'] ?? 'unknown' }}</span>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        @endif
+    </section>
 
     <div class="row earthliving-market-grid">
         @foreach ($marketplaceSections as $section)

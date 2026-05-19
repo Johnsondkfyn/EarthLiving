@@ -38,7 +38,7 @@ Create the central plugin/core layer for EarthLiving.
 
 ## Current implementation
 
-EarthLivingCore v0.3.0 has been started under `plugins/earthlivingcore/`.
+EarthLivingCore v0.4.0 has been started under `plugins/earthlivingcore/`.
 
 Current scope:
 
@@ -69,6 +69,7 @@ Current scope:
   - Admin Reports shows the latest reports for admins/operators
   - Clicking a report sends details in chat
   - Reports are saved to `reports.yml`
+  - Reports are exported read-only to `reports-panel.json` for the Pterodactyl panel
   - Saved data includes category, note, player, UUID, world, coordinates, timestamp and status
   - `/earthliving reports` shows the open report count for admins
 

@@ -34,6 +34,7 @@ public final class ReportService {
     private final JavaPlugin plugin;
     private final NotificationService notifications;
     private final File reportsFile;
+    private final File panelReportsFile;
     private final Map<UUID, ReportCategory> pendingReports = new ConcurrentHashMap<>();
     private FileConfiguration reports;
     private int nextId;
@@ -42,7 +43,9 @@ public final class ReportService {
         this.plugin = plugin;
         this.notifications = notifications;
         this.reportsFile = new File(plugin.getDataFolder(), "reports.yml");
+        this.panelReportsFile = new File(plugin.getDataFolder(), "reports-panel.json");
         load();
+        exportPanelReports();
     }
 
     public void open(Player player) {
@@ -212,9 +215,55 @@ public final class ReportService {
     private void save() {
         try {
             reports.save(reportsFile);
+            exportPanelReports();
         } catch (IOException exception) {
             notifications.console("Could not save reports.yml: " + exception.getMessage());
         }
+    }
+
+    private void exportPanelReports() {
+        try {
+            panelReportsFile.getParentFile().mkdirs();
+            java.nio.file.Files.writeString(panelReportsFile.toPath(), panelJson());
+        } catch (IOException exception) {
+            notifications.console("Could not export reports-panel.json: " + exception.getMessage());
+        }
+    }
+
+    private String panelJson() {
+        StringBuilder json = new StringBuilder();
+        json.append("{\n");
+        json.append("  \"generatedAt\": \"").append(jsonEscape(Instant.now().toString())).append("\",\n");
+        json.append("  \"openCount\": ").append(openReportCount()).append(",\n");
+        json.append("  \"reports\": [\n");
+
+        List<Integer> ids = reportIds();
+        for (int index = 0; index < ids.size(); index++) {
+            String id = String.valueOf(ids.get(index));
+            String path = "reports." + id;
+            json.append("    {\n");
+            json.append("      \"id\": ").append(id).append(",\n");
+            json.append("      \"status\": \"").append(jsonEscape(reports.getString(path + ".status", "unknown"))).append("\",\n");
+            json.append("      \"category\": \"").append(jsonEscape(reports.getString(path + ".category", "unknown"))).append("\",\n");
+            json.append("      \"categoryTitle\": \"").append(jsonEscape(reports.getString(path + ".category-title", "Unknown"))).append("\",\n");
+            json.append("      \"playerName\": \"").append(jsonEscape(reports.getString(path + ".player-name", "Unknown"))).append("\",\n");
+            json.append("      \"playerUuid\": \"").append(jsonEscape(reports.getString(path + ".player-uuid", ""))).append("\",\n");
+            json.append("      \"world\": \"").append(jsonEscape(reports.getString(path + ".world", "unknown"))).append("\",\n");
+            json.append("      \"x\": ").append(reports.getInt(path + ".x")).append(",\n");
+            json.append("      \"y\": ").append(reports.getInt(path + ".y")).append(",\n");
+            json.append("      \"z\": ").append(reports.getInt(path + ".z")).append(",\n");
+            json.append("      \"createdAt\": \"").append(jsonEscape(reports.getString(path + ".created-at", "unknown"))).append("\",\n");
+            json.append("      \"note\": \"").append(jsonEscape(reports.getString(path + ".note", ""))).append("\"\n");
+            json.append("    }");
+            if (index < ids.size() - 1) {
+                json.append(",");
+            }
+            json.append("\n");
+        }
+
+        json.append("  ]\n");
+        json.append("}\n");
+        return json.toString();
     }
 
     private void fillReportList(Inventory inventory, List<Integer> ids) {
@@ -314,5 +363,33 @@ public final class ReportService {
             return value == null ? "" : value;
         }
         return value.substring(0, maxLength - 3) + "...";
+    }
+
+    private String jsonEscape(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        StringBuilder escaped = new StringBuilder();
+        for (int index = 0; index < value.length(); index++) {
+            char character = value.charAt(index);
+            switch (character) {
+                case '"' -> escaped.append("\\\"");
+                case '\\' -> escaped.append("\\\\");
+                case '\b' -> escaped.append("\\b");
+                case '\f' -> escaped.append("\\f");
+                case '\n' -> escaped.append("\\n");
+                case '\r' -> escaped.append("\\r");
+                case '\t' -> escaped.append("\\t");
+                default -> {
+                    if (character < 0x20) {
+                        escaped.append(String.format("\\u%04x", (int) character));
+                    } else {
+                        escaped.append(character);
+                    }
+                }
+            }
+        }
+        return escaped.toString();
     }
 }

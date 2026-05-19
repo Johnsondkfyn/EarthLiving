@@ -1,6 +1,10 @@
-<link rel="stylesheet" href="/assets/extensions/earthlivingcore/admin.style.css?v=20260518-marketplace">
+<link rel="stylesheet" href="/assets/extensions/earthlivingcore/admin.style.css?v=20260519-reports">
 
 <div class="earthliving-owner-rail">
+    <a href="{{ url('/admin/extensions/earthlivingcore#earthliving-report-center') }}">
+        <i class="fa fa-flag"></i>
+        <span>Reports</span>
+    </a>
     <a href="{{ route('admin.plugins') }}">
         <i class="fa fa-flask"></i>
         <span>Plugin Gate</span>
