@@ -1,6 +1,7 @@
 package dk.earthliving.core.report;
 
 import dk.earthliving.core.notification.NotificationService;
+import dk.earthliving.core.notification.DiscordNotificationService;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,15 +34,17 @@ public final class ReportService {
 
     private final JavaPlugin plugin;
     private final NotificationService notifications;
+    private final DiscordNotificationService discordNotifications;
     private final File reportsFile;
     private final File panelReportsFile;
     private final Map<UUID, ReportCategory> pendingReports = new ConcurrentHashMap<>();
     private FileConfiguration reports;
     private int nextId;
 
-    public ReportService(JavaPlugin plugin, NotificationService notifications) {
+    public ReportService(JavaPlugin plugin, NotificationService notifications, DiscordNotificationService discordNotifications) {
         this.plugin = plugin;
         this.notifications = notifications;
+        this.discordNotifications = discordNotifications;
         this.reportsFile = new File(plugin.getDataFolder(), "reports.yml");
         this.panelReportsFile = new File(plugin.getDataFolder(), "reports-panel.json");
         load();
@@ -188,6 +191,16 @@ public final class ReportService {
         notifications.send(player, "&aReport #" + id + " created: &f" + category.title());
         notifications.send(player, "&7Location saved: &f" + location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ());
         notifications.console("Report #" + id + " created by " + player.getName() + " (" + category.id() + ").");
+        discordNotifications.reportCreated(
+                id,
+                category.title(),
+                player.getName(),
+                location.getWorld() == null ? "unknown" : location.getWorld().getName(),
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ(),
+                note.isBlank() ? "No note provided." : note
+        );
     }
 
     public int openReportCount() {

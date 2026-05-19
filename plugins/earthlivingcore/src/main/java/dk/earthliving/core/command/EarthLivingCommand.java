@@ -48,6 +48,41 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("event")) {
+            if (!sender.hasPermission("earthliving.admin")) {
+                notifications.send(sender, "&cYou do not have permission to announce events.");
+                return true;
+            }
+            if (args.length < 2) {
+                notifications.send(sender, "&eUsage: /" + label + " event <message>");
+                return true;
+            }
+            plugin.eventService().announceEvent(sender, joinArgs(args, 1));
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("restart")) {
+            if (!sender.hasPermission("earthliving.admin")) {
+                notifications.send(sender, "&cYou do not have permission to schedule restarts.");
+                return true;
+            }
+            if (args.length >= 2 && args[1].equalsIgnoreCase("cancel")) {
+                plugin.eventService().cancelRestart(sender);
+                return true;
+            }
+            if (args.length < 3) {
+                notifications.send(sender, "&eUsage: /" + label + " restart <minutes> <reason>");
+                notifications.send(sender, "&eUsage: /" + label + " restart cancel");
+                return true;
+            }
+            try {
+                plugin.eventService().scheduleRestart(sender, Integer.parseInt(args[1]), joinArgs(args, 2));
+            } catch (NumberFormatException exception) {
+                notifications.send(sender, "&cMinutes must be a whole number.");
+            }
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("earthos")) {
             if (!(sender instanceof Player player)) {
                 notifications.send(sender, "&cOnly players can open EarthOS.");
@@ -67,7 +102,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|earthos|reload>");
+        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|event|restart|earthos|reload>");
         return true;
     }
 
@@ -80,10 +115,23 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
         List<String> options = new ArrayList<>(List.of("status", "modules", "earthos"));
         if (sender.hasPermission("earthliving.admin")) {
             options.add("reports");
+            options.add("event");
+            options.add("restart");
             options.add("reload");
         }
 
         String input = args[0].toLowerCase();
         return options.stream().filter(option -> option.startsWith(input)).toList();
+    }
+
+    private String joinArgs(String[] args, int startIndex) {
+        StringBuilder joined = new StringBuilder();
+        for (int index = startIndex; index < args.length; index++) {
+            if (joined.length() > 0) {
+                joined.append(' ');
+            }
+            joined.append(args[index]);
+        }
+        return joined.toString();
     }
 }

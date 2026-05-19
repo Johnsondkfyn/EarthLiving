@@ -15,6 +15,15 @@ Connect Earth Living's Minecraft server and Discord in a controlled way without 
 - Posted short purpose messages in the new channels.
 - Made `staff-alerts` private for the owner while the bot setup is being prepared.
 - Captured the real Discord channel IDs for configuration.
+- Installed and connected DiscordSRV `1.30.5` on the Earth Living Test server.
+- Invited the `Minecraft Monitor` bot to the Earth Living Discord server.
+- Enabled the required bot intents for DiscordSRV.
+- Confirmed the bot posts server startup status in `server-status`.
+- Added EarthLivingCore `0.6.0` DiscordSRV bridge for random event announcements and restart countdown messages.
+- Tested event and restart countdown Discord messages on Earth Living Test.
+- Deployed DiscordSRV `1.30.5` and EarthLivingCore `0.6.0` to Earth Living Main after testing.
+- Removed the DiscordSRV jar and config from Earth Living Test after production deployment to avoid duplicate bot sessions.
+- Fixed the Earth Living Main Pterodactyl allocation issue: port `8100` is handled by nginx/BlueMap proxy, not by a Pterodactyl server allocation.
 
 ## Discord Channel IDs
 
@@ -55,17 +64,23 @@ Sources checked:
 
 ### Step 2: Install on test server first
 
-- Install DiscordSRV on the test server first.
-- Start with Minecraft-to-Discord chat enabled.
-- Keep Discord-to-Minecraft chat disabled until spam and moderation behavior is confirmed.
-- Keep remote console disabled.
+- DiscordSRV was installed and tested on the test server.
+- Minecraft-to-Discord chat is enabled and mapped to `minecraft-chat`.
+- Discord-to-Minecraft chat is disabled until spam and moderation behavior is confirmed.
+- Remote console is disabled.
+- Remaining test: send a real player chat message from the test server and confirm it appears in `minecraft-chat`.
 
 ### Step 3: Connect production
 
-- After the test server works, copy the cleaned config to Earth Living Main.
+- Completed: copied the cleaned DiscordSRV config and jar to Earth Living Main.
+- Completed: copied EarthLivingCore `0.6.0` to Earth Living Main.
+- Completed: confirmed Earth Living Main starts on `25565`.
+- Completed: confirmed DiscordSRV logs in and connects to Discord WebSocket on Earth Living Main.
+- Completed: confirmed BlueMap still serves through nginx after removing the incorrect `8100` Pterodactyl allocation from Main.
 - Turn on two-way chat only after staff confirms message formatting and moderation flow.
-- Add status messages to `server-status`.
-- Add staff alerts to `staff-alerts`.
+- Status messages are mapped to `server-status`.
+- Random events are mapped to `server-events`.
+- Add staff alerts to `staff-alerts` in a later pass.
 
 ### Step 4: Later features
 
@@ -74,6 +89,16 @@ Sources checked:
 - Player count bot presence.
 - Report and staff alert automation.
 - Automatic random event announcements to `server-events`.
+
+## Production Result - 2026-05-19
+
+- Earth Living Main runs DiscordSRV `1.30.5` and EarthLivingCore `0.6.0`.
+- DiscordSRV connected successfully: JDA login, WebSocket connection and finished loading were confirmed in the main server log.
+- Bot presence uses player count status through DiscordSRV.
+- Minecraft server port `159.195.149.253:25565` is reachable.
+- BlueMap is served by nginx at `http://bluemap.159.195.149.253.nip.io/`; ordinary GET requests return `200`.
+- Discord-to-Minecraft remains disabled for safety.
+- Discord console forwarding remains disabled.
 
 ## Security Rules
 

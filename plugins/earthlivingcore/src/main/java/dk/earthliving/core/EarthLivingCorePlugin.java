@@ -1,11 +1,14 @@
 package dk.earthliving.core;
 
 import dk.earthliving.core.command.EarthLivingCommand;
+import dk.earthliving.core.discord.DiscordBridgeService;
 import dk.earthliving.core.command.EarthOsCommand;
 import dk.earthliving.core.earthos.EarthOsListener;
 import dk.earthliving.core.earthos.EarthOsService;
+import dk.earthliving.core.event.EarthLivingEventService;
 import dk.earthliving.core.module.CoreModule;
 import dk.earthliving.core.module.ModuleRegistry;
+import dk.earthliving.core.notification.DiscordNotificationService;
 import dk.earthliving.core.notification.NotificationService;
 import dk.earthliving.core.report.ReportService;
 import org.bukkit.command.PluginCommand;
@@ -17,6 +20,9 @@ import java.util.Objects;
 public final class EarthLivingCorePlugin extends JavaPlugin {
     private ModuleRegistry moduleRegistry;
     private NotificationService notificationService;
+    private DiscordNotificationService discordNotificationService;
+    private DiscordBridgeService discordBridgeService;
+    private EarthLivingEventService eventService;
     private EarthOsService earthOsService;
     private ReportService reportService;
 
@@ -25,8 +31,11 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         saveDefaultConfig();
 
         notificationService = new NotificationService(this);
+        discordNotificationService = new DiscordNotificationService(this, notificationService);
+        discordBridgeService = new DiscordBridgeService(this, notificationService);
+        eventService = new EarthLivingEventService(this, notificationService, discordBridgeService);
         moduleRegistry = new ModuleRegistry();
-        reportService = new ReportService(this, notificationService);
+        reportService = new ReportService(this, notificationService, discordNotificationService);
         earthOsService = new EarthOsService(this, notificationService, reportService);
 
         registerModules();
@@ -64,6 +73,10 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
 
     public ReportService reportService() {
         return reportService;
+    }
+
+    public EarthLivingEventService eventService() {
+        return eventService;
     }
 
     private void registerModules() {

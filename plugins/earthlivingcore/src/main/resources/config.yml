@@ -36,7 +36,35 @@ modules:
   events: true
   reports: true
   passports: true
-  discord: false
+  discord: true
+
+discord:
+  discordsrv:
+    enabled: true
+  events:
+    default-message: "A random Earth Living event has started."
+    minecraft-format: "&6[Event] &f{message}"
+    discord-format: "**Random event started**\n{message}"
+  restart:
+    default-reason: "Server maintenance"
+    warning-seconds:
+      - 600
+      - 300
+      - 180
+      - 60
+      - 30
+      - 10
+    minecraft-format: "&cRestart in &f{time}&c: &7{reason}"
+    discord-format: "**Restart in {time}**\n{reason}"
+    now-minecraft-format: "&cRestarting now: &7{reason}"
+    now-discord-format: "**Restarting now**\n{reason}"
+    cancelled-format: "**Restart cancelled**"
+    execute-command:
+      enabled: false
+      command: "restart"
+  report-notifications:
+    enabled: false
+    webhook-url: ""
 
 messages:
   prefix: "&8[&6Earth Living&8] &r"

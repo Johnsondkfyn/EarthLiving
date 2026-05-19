@@ -31,6 +31,10 @@ Opdatering 2026-05-19: EarthOS hotbar-ikonet er valgt og gemt som projekt-asset 
 
 Opdatering 2026-05-19: EarthLivingCore v0.1.0 er startet som Paper-plugin under `plugins/earthlivingcore/`. Første version indeholder module registry, notification service, `/earthliving`, `/earthos`, hotbar EarthOS item og en placeholder EarthOS inventory menu.
 
+Opdatering 2026-05-19 aften: DiscordSRV `1.30.5` er installeret og forbundet på Earth Living Test med botten `Minecraft Monitor`. `server-status` modtager nu start/status-beskeder. `minecraft-chat` er mappet til Minecraft-to-Discord chat, mens Discord-to-Minecraft og console forwarding fortsat er slået fra for sikkerhed.
+
+Opdatering 2026-05-19 aften: DiscordSRV og EarthLivingCore `0.6.0` er flyttet fra test til **Earth Living Main**. Main booter rent på `25565`, DiscordSRV logger ind på Discord, player count presence/status er aktiv, og BlueMap kører fortsat bag nginx på `bluemap.159.195.149.253.nip.io`. Testserverens DiscordSRV-jar og config er fjernet, så botten kun forbindes fra main.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -96,7 +100,14 @@ Opdatering 2026-05-19: EarthLivingCore v0.1.0 er startet som Paper-plugin under 
 - Config-skabelon er gemt i `server-config/discordsrv/config.template.yml`.
 - Rollout-checkliste er gemt i `server-config/discordsrv/phase-2-rollout.md`.
 - `server-events` er reserveret til automatiske random events, konkurrencer og timed world incidents.
-- Real bot-token skal oprettes i Discord Developer Portal og må kun lægges på serveren, aldrig i GitHub.
+- Real bot-token er oprettet og lagt i testserverens private DiscordSRV config. Token må aldrig lægges i GitHub, Notion eller chat.
+- DiscordSRV `1.30.5` blev testet på Earth Living Test og flyttet til Earth Living Main efter godkendt test.
+- EarthLivingCore `0.6.0` kører på Main med DiscordSRV bridge, random event announcements og restart countdown-beskeder.
+- `server-status` modtager server start/status og restart countdowns.
+- `server-events` modtager `/earthliving event <message>` announcements.
+- `minecraft-chat` er mappet til Minecraft-to-Discord player chat. Discord-to-Minecraft er fortsat slået fra.
+- Discord console forwarding er fortsat slået fra.
+- Real bot-token ligger kun i main-serverens private DiscordSRV config. Token må aldrig lægges i GitHub, Notion eller chat.
 
 ## I gang 2026-05-19: EarthOS v1
 
