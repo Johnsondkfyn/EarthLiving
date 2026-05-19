@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class ReportService {
     public static final String MENU_TITLE = "EarthOS Reports";
@@ -24,6 +27,7 @@ public final class ReportService {
     private final JavaPlugin plugin;
     private final NotificationService notifications;
     private final File reportsFile;
+    private final Map<UUID, ReportCategory> pendingReports = new ConcurrentHashMap<>();
     private FileConfiguration reports;
     private int nextId;
 
@@ -52,13 +56,39 @@ public final class ReportService {
         int[] slots = {10, 11, 12, 14, 15, 16};
         for (int index = 0; index < slots.length; index++) {
             if (rawSlot == slots[index] && index < categories.length) {
-                create(player, categories[index]);
+                beginDraft(player, categories[index]);
                 return;
             }
         }
     }
 
-    public void create(Player player, ReportCategory category) {
+    public boolean hasPendingReport(Player player) {
+        return pendingReports.containsKey(player.getUniqueId());
+    }
+
+    public void submitPending(Player player, String message) {
+        ReportCategory category = pendingReports.remove(player.getUniqueId());
+        if (category == null) {
+            return;
+        }
+
+        if ("cancel".equalsIgnoreCase(message.trim())) {
+            notifications.send(player, "&eReport cancelled.");
+            return;
+        }
+
+        create(player, category, message.trim());
+    }
+
+    private void beginDraft(Player player, ReportCategory category) {
+        pendingReports.put(player.getUniqueId(), category);
+        player.closeInventory();
+        notifications.send(player, "&dCreating report: &f" + category.title());
+        notifications.send(player, "&7Write your note in chat now. Type &fcancel &7to stop.");
+        notifications.send(player, "&8Your next chat message will not be sent publicly.");
+    }
+
+    private void create(Player player, ReportCategory category, String note) {
         int id = nextId++;
         reports.set("next-id", nextId);
 
@@ -75,7 +105,7 @@ public final class ReportService {
         reports.set(path + ".y", location.getBlockY());
         reports.set(path + ".z", location.getBlockZ());
         reports.set(path + ".created-at", Instant.now().toString());
-        reports.set(path + ".note", "Quick report created from EarthOS. Text input will be added in a later version.");
+        reports.set(path + ".note", note.isBlank() ? "No note provided." : note);
         save();
 
         player.closeInventory();

@@ -6,14 +6,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 
 public final class EarthOsListener implements Listener {
+    private final Plugin plugin;
     private final EarthOsService earthOsService;
     private final ReportService reportService;
 
-    public EarthOsListener(EarthOsService earthOsService, ReportService reportService) {
+    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService) {
+        this.plugin = plugin;
         this.earthOsService = earthOsService;
         this.reportService = reportService;
     }
@@ -56,5 +60,20 @@ public final class EarthOsListener implements Listener {
             }
             player.updateInventory();
         }
+    }
+
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        if (!reportService.hasPendingReport(player)) {
+            return;
+        }
+
+        event.setCancelled(true);
+        String message = event.getMessage();
+        player.getServer().getScheduler().runTask(
+                plugin,
+                () -> reportService.submitPending(player, message)
+        );
     }
 }

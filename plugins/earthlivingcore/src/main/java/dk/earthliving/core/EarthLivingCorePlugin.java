@@ -31,7 +31,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
 
         registerModules();
         registerCommands();
-        getServer().getPluginManager().registerEvents(new EarthOsListener(earthOsService, reportService), this);
+        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService), this);
 
         notificationService.console("EarthLivingCore enabled with " + moduleRegistry.enabledModules().size() + " active modules.");
     }
