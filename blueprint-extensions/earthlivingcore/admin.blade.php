@@ -1,3 +1,26 @@
+<link rel="stylesheet" href="/assets/extensions/earthlivingcore/admin.style.css?v=20260519-reports-fix">
+<style>
+    .earthliving-extension-page {
+        color: #edf3ec;
+        background: #0b1110;
+        padding: 18px;
+        min-height: 100vh;
+    }
+
+    .earthliving-extension-page h2,
+    .earthliving-extension-page h3,
+    .earthliving-extension-page h4,
+    .earthliving-extension-page strong {
+        color: #ffffff;
+    }
+
+    .earthliving-extension-page p,
+    .earthliving-extension-page span,
+    .earthliving-extension-page small {
+        color: #cbd8cb;
+    }
+</style>
+
 @php
     $marketplaceSections = [
         [
