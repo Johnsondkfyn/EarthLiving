@@ -10,6 +10,7 @@ Connect Earth Living's Minecraft server and Discord in a controlled way without 
 
 - Added `server-status` for online/offline, restart and maintenance updates.
 - Added `minecraft-chat` for future Minecraft and Discord chat bridge.
+- Added `server-events` for future automatic random event announcements.
 - Added `staff-alerts` for private staff warnings and future automation alerts.
 - Posted short purpose messages in the new channels.
 - Made `staff-alerts` private for the owner while the bot setup is being prepared.
@@ -21,6 +22,7 @@ Connect Earth Living's Minecraft server and Discord in a controlled way without 
 | --- | --- | --- |
 | Minecraft chat bridge | `minecraft-chat` | `1506268822813016134` |
 | Server status | `server-status` | `1506268769314541639` |
+| Random server events | `server-events` | `1506271254661959761` |
 | Staff alerts | `staff-alerts` | `1506268923895484477` |
 | Bug reports | `bug-reports` | `1505977375907643502` |
 
@@ -71,6 +73,7 @@ Sources checked:
 - Role sync between LuckPerms and Discord roles.
 - Player count bot presence.
 - Report and staff alert automation.
+- Automatic random event announcements to `server-events`.
 
 ## Security Rules
 

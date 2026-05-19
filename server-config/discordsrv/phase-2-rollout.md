@@ -14,6 +14,7 @@
 10. Test Minecraft-to-Discord chat in `minecraft-chat`.
 11. Confirm status messages appear in `server-status`.
 12. Keep Discord-to-Minecraft disabled until spam/moderation behavior is approved.
+13. Later connect random event announcements to `server-events`.
 
 ## Production Rules
 
