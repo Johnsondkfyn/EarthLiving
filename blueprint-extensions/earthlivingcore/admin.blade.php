@@ -97,6 +97,10 @@
     }
 
     $panelReports = array_slice($reportData['reports'] ?? [], 0, 8);
+    $reportGeneratedAt = $reportData['generatedAt'] ?? null;
+    if (is_string($reportGeneratedAt) && strlen($reportGeneratedAt) > 19) {
+        $reportGeneratedAt = str_replace('T', ' ', substr($reportGeneratedAt, 0, 19));
+    }
 @endphp
 
 <div class="earthliving-extension-page earthliving-marketplace-page">
@@ -154,7 +158,7 @@
                 </div>
                 <div>
                     <span>Updated</span>
-                    <strong>{{ $reportData['generatedAt'] ?? 'No export yet' }}</strong>
+                    <strong>{{ $reportGeneratedAt ?? 'No export yet' }}</strong>
                 </div>
             </div>
         </header>

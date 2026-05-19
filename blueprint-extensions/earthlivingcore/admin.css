@@ -402,14 +402,18 @@ body.skin-blue .wrapper {
 }
 
 .earthliving-market-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: block;
 }
 
 .earthliving-market-section {
-  min-height: 100%;
   margin-bottom: 18px;
   padding: 16px;
+}
+
+.earthliving-market-grid > [class*="col-"] {
+  float: none !important;
+  width: 100% !important;
+  max-width: 980px;
 }
 
 .earthliving-market-section header {
@@ -510,8 +514,8 @@ body.skin-blue .wrapper {
 }
 
 .earthliving-report-center > header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 520px);
   gap: 18px;
   align-items: flex-start;
   margin-bottom: 14px;
@@ -528,12 +532,12 @@ body.skin-blue .wrapper {
 
 .earthliving-report-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(120px, auto));
+  grid-template-columns: 1.1fr 0.7fr 1.4fr;
   gap: 10px;
 }
 
 .earthliving-report-stats > div {
-  min-width: 120px;
+  min-width: 0;
   padding: 10px 12px;
   border: 1px solid rgba(214, 194, 143, 0.16);
   border-radius: 7px;
@@ -555,7 +559,10 @@ body.skin-blue .wrapper {
 }
 
 .earthliving-report-stats strong {
+  display: block;
   color: #fff;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
 }
 
 .earthliving-report-list {
