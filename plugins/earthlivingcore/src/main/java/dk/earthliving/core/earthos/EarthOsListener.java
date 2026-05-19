@@ -1,5 +1,6 @@
 package dk.earthliving.core.earthos;
 
+import dk.earthliving.core.report.ReportService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,9 +11,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public final class EarthOsListener implements Listener {
     private final EarthOsService earthOsService;
+    private final ReportService reportService;
 
-    public EarthOsListener(EarthOsService earthOsService) {
+    public EarthOsListener(EarthOsService earthOsService, ReportService reportService) {
         this.earthOsService = earthOsService;
+        this.reportService = reportService;
     }
 
     @EventHandler
@@ -39,13 +42,18 @@ public final class EarthOsListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!EarthOsService.MENU_TITLE.equals(event.getView().getTitle())) {
+        String title = event.getView().getTitle();
+        if (!EarthOsService.MENU_TITLE.equals(title) && !ReportService.MENU_TITLE.equals(title)) {
             return;
         }
 
         event.setCancelled(true);
         if (event.getWhoClicked() instanceof Player player) {
-            earthOsService.handleMenuClick(player, event.getRawSlot());
+            if (EarthOsService.MENU_TITLE.equals(title)) {
+                earthOsService.handleMenuClick(player, event.getRawSlot());
+            } else if (ReportService.MENU_TITLE.equals(title)) {
+                reportService.handleClick(player, event.getRawSlot());
+            }
             player.updateInventory();
         }
     }

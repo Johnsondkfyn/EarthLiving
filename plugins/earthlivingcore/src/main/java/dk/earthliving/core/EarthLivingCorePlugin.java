@@ -7,6 +7,7 @@ import dk.earthliving.core.earthos.EarthOsService;
 import dk.earthliving.core.module.CoreModule;
 import dk.earthliving.core.module.ModuleRegistry;
 import dk.earthliving.core.notification.NotificationService;
+import dk.earthliving.core.report.ReportService;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +18,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private ModuleRegistry moduleRegistry;
     private NotificationService notificationService;
     private EarthOsService earthOsService;
+    private ReportService reportService;
 
     @Override
     public void onEnable() {
@@ -24,11 +26,12 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
 
         notificationService = new NotificationService(this);
         moduleRegistry = new ModuleRegistry();
-        earthOsService = new EarthOsService(this, notificationService);
+        reportService = new ReportService(this, notificationService);
+        earthOsService = new EarthOsService(this, notificationService, reportService);
 
         registerModules();
         registerCommands();
-        getServer().getPluginManager().registerEvents(new EarthOsListener(earthOsService), this);
+        getServer().getPluginManager().registerEvents(new EarthOsListener(earthOsService, reportService), this);
 
         notificationService.console("EarthLivingCore enabled with " + moduleRegistry.enabledModules().size() + " active modules.");
     }
@@ -57,6 +60,10 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
 
     public EarthOsService earthOsService() {
         return earthOsService;
+    }
+
+    public ReportService reportService() {
+        return reportService;
     }
 
     private void registerModules() {

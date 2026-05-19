@@ -1,6 +1,7 @@
 package dk.earthliving.core.earthos;
 
 import dk.earthliving.core.notification.NotificationService;
+import dk.earthliving.core.report.ReportService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,11 +32,13 @@ public final class EarthOsService {
 
     private final JavaPlugin plugin;
     private final NotificationService notifications;
+    private final ReportService reportService;
     private final NamespacedKey itemKey;
 
-    public EarthOsService(JavaPlugin plugin, NotificationService notifications) {
+    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService) {
         this.plugin = plugin;
         this.notifications = notifications;
+        this.reportService = reportService;
         this.itemKey = new NamespacedKey(plugin, "earthos_device");
     }
 
@@ -85,7 +88,10 @@ public final class EarthOsService {
         inventory.setItem(SLOT_EVENTS, menuItem(Material.CLOCK, "&eServer Events", List.of("&7Random events and competitions")));
         inventory.setItem(SLOT_PASSPORT, menuItem(Material.PAPER, "&6Passport", List.of("&7Countries, access and travel")));
         inventory.setItem(SLOT_WALLET, menuItem(Material.EMERALD, "&aWallet", List.of("&7Economy placeholder")));
-        inventory.setItem(SLOT_REPORTS, menuItem(Material.WRITABLE_BOOK, "&dReports", List.of("&7Support and bug reports")));
+        inventory.setItem(SLOT_REPORTS, menuItem(Material.WRITABLE_BOOK, "&dReports", List.of(
+                "&7Create a quick report",
+                "&7Open reports: &f" + reportService.openReportCount()
+        )));
         inventory.setItem(SLOT_STATUS, menuItem(Material.REDSTONE_TORCH, "&cServer Status", List.of("&7Status, maintenance and updates")));
         inventory.setItem(SLOT_SETTINGS, menuItem(Material.COMPARATOR, "&fSettings", List.of("&7Player preferences")));
         player.openInventory(inventory);
@@ -103,7 +109,7 @@ public final class EarthOsService {
             case SLOT_EVENTS -> sendConfiguredLines(player, "earthos.events");
             case SLOT_PASSPORT -> sendConfiguredLines(player, "earthos.passport");
             case SLOT_WALLET -> sendConfiguredLines(player, "earthos.wallet");
-            case SLOT_REPORTS -> sendConfiguredLines(player, "earthos.reports");
+            case SLOT_REPORTS -> reportService.open(player);
             case SLOT_STATUS -> sendConfiguredLines(player, "earthos.server-status");
             case SLOT_SETTINGS -> {
                 giveDevice(player);

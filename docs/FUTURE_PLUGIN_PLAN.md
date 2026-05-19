@@ -38,7 +38,7 @@ Create the central plugin/core layer for EarthLiving.
 
 ## Current implementation
 
-EarthLivingCore v0.1.1 has been started under `plugins/earthlivingcore/`.
+EarthLivingCore v0.2.0 has been started under `plugins/earthlivingcore/`.
 
 Current scope:
 
@@ -59,6 +59,11 @@ Current scope:
   - Reports points players toward the Discord bug-reports flow for now
   - Server Status shows test server/runtime status
   - Settings refreshes the EarthOS hotbar device
+- First real EarthOS app:
+  - Reports opens a category menu
+  - Quick reports are saved to `reports.yml`
+  - Saved data includes category, player, UUID, world, coordinates, timestamp and status
+  - `/earthliving reports` shows the open report count for admins
 
 The first version is intentionally small. It is the backend/hub layer, while EarthOS is the player-facing interface.
 

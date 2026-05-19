@@ -38,6 +38,16 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("reports")) {
+            if (!sender.hasPermission("earthliving.admin")) {
+                notifications.send(sender, "&cYou do not have permission to view reports.");
+                return true;
+            }
+            notifications.send(sender, "&dOpen reports: &f" + plugin.reportService().openReportCount());
+            notifications.send(sender, "&7Reports are saved in the plugin data folder as reports.yml.");
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("earthos")) {
             if (!(sender instanceof Player player)) {
                 notifications.send(sender, "&cOnly players can open EarthOS.");
@@ -57,7 +67,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        notifications.send(sender, "&eUsage: /" + label + " <status|modules|earthos|reload>");
+        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|earthos|reload>");
         return true;
     }
 
@@ -69,6 +79,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
 
         List<String> options = new ArrayList<>(List.of("status", "modules", "earthos"));
         if (sender.hasPermission("earthliving.admin")) {
+            options.add("reports");
             options.add("reload");
         }
 
