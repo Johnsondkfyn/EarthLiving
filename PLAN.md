@@ -27,6 +27,8 @@ Opdatering 2026-05-18 aften: Discord-serveren er nu genopbygget til Earth Living
 
 Opdatering 2026-05-19: Discord fase 2 er startet. Kanalerne `server-status`, `minecraft-chat`, `server-events` og `staff-alerts` er oprettet, kanal-ID'er er dokumenteret, `staff-alerts` er gjort privat for owner, og DiscordSRV rollout/config-skabeloner er lagt i repoet uden bot-token.
 
+Opdatering 2026-05-19: EarthOS hotbar-ikonet er valgt og gemt som projekt-asset i flere størrelser under `docs/assets/earthos/`.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -93,6 +95,14 @@ Opdatering 2026-05-19: Discord fase 2 er startet. Kanalerne `server-status`, `mi
 - Rollout-checkliste er gemt i `server-config/discordsrv/phase-2-rollout.md`.
 - `server-events` er reserveret til automatiske random events, konkurrencer og timed world incidents.
 - Real bot-token skal oprettes i Discord Developer Portal og må kun lægges på serveren, aldrig i GitHub.
+
+## I gang 2026-05-19: EarthOS v1
+
+- EarthOS er planlagt som serverens primære in-game menu/device.
+- Hotbar-ikonet er valgt: gold/cyan globe-compass.
+- Asset-kopier er gemt under `docs/assets/earthos/`.
+- Første tekniske version bør være en inventory GUI med et `COMPASS` eller `CLOCK` item som EarthOS-device.
+- Første apps bør være Server Status, World Map/BlueMap, Events, Passport/Countries, Support & Reports og Settings.
 
 ## Sikkerhedsfokus 2026-05-18
 

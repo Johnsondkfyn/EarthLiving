@@ -81,6 +81,24 @@ EarthOS is the digital operating system for EarthLiving. It should replace comma
 - Admin panel screens
 - Settings app
 
+## Hotbar icon decision
+
+EarthOS should use the gold/cyan globe-compass icon as the hotbar menu device.
+
+Repository asset notes:
+
+- `docs/assets/earthos/earthos-hotbar-icon-original.png`
+- `docs/assets/earthos/earthos-hotbar-icon-128.png`
+- `docs/assets/earthos/earthos-hotbar-icon-64.png`
+- `docs/assets/earthos/earthos-hotbar-icon-32.png`
+- `docs/assets/earthos/earthos-hotbar-icon-16.png`
+
+Recommended item model:
+
+- Base item: `COMPASS` or `CLOCK`
+- Display name: `EarthOS`
+- Purpose: opens the Earth Living main menu from the hotbar
+
 ## Visual direction
 
 - Dark navy/black base
