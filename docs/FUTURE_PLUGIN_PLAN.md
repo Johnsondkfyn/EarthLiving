@@ -79,6 +79,7 @@ The first version is intentionally small. It is the backend/hub layer, while Ear
 EarthLivingCore should connect all major systems:
 
 - EarthOS menu/device
+- language/localization
 - transport
 - economy
 - player profile data
@@ -90,9 +91,6 @@ EarthLivingCore should connect all major systems:
 - world simulation systems
 - admin tools
 - future AI integrations
-
-## Notes
-EarthLivingCore should act as the internal API layer so other modules do not directly depend on every external plugin.
 
 ---
 
@@ -114,6 +112,7 @@ EarthOS is the digital operating system for EarthLiving. It should replace comma
 - News app
 - Profile app
 - Passport app
+- Language settings app
 - Region/city status app
 - Mining Authority app
 - Build/blueprint app
@@ -127,14 +126,6 @@ EarthOS is the digital operating system for EarthLiving. It should replace comma
 ## Hotbar icon decision
 
 EarthOS should use the gold/cyan globe-compass icon as the hotbar menu device.
-
-Repository asset notes:
-
-- `docs/assets/earthos/earthos-hotbar-icon-original.png`
-- `docs/assets/earthos/earthos-hotbar-icon-128.png`
-- `docs/assets/earthos/earthos-hotbar-icon-64.png`
-- `docs/assets/earthos/earthos-hotbar-icon-32.png`
-- `docs/assets/earthos/earthos-hotbar-icon-16.png`
 
 Recommended item model:
 
@@ -152,11 +143,92 @@ Recommended item model:
 
 ## GUI-first rule
 
-Players should not need commands for normal gameplay. EarthOS is the visible interface layer for reports, transport, economy, settings, notifications, mining, and server status. Admin debug commands can exist, but the main workflow should be GUI-based.
+Players should not need commands for normal gameplay. EarthOS is the visible interface layer for reports, transport, economy, language, settings, notifications, mining, and server status. Admin debug commands can exist, but the main workflow should be GUI-based.
 
 ---
 
-# 3. TransportModule
+# 3. EarthLanguageSystem
+
+## Goal
+Create a GUI-first language and localization system.
+
+## Purpose
+New players should choose their language through a GUI on first join, and EarthOS/messages should use that language. This is important for an Earth-map server with international regions and players.
+
+## First join workflow
+
+```text
+First join
+-> language selection GUI opens
+-> player chooses language
+-> language is saved by UUID
+-> EarthOS and server messages use the selected language
+```
+
+## Suggested languages
+
+- Dansk `da_DK`
+- English `en_US`
+- Deutsch `de_DE`
+- Svenska `sv_SE`
+- Norsk `no_NO`
+- Français `fr_FR`
+- Español `es_ES`
+
+## Language files
+
+Use language files instead of hardcoded text.
+
+```text
+plugins/EarthLivingCore/lang/
+├── da_DK.yml
+├── en_US.yml
+├── de_DE.yml
+├── sv_SE.yml
+└── no_NO.yml
+```
+
+Example keys:
+
+```yaml
+earthos.title: "EarthOS"
+earthos.settings.language: "Sprog"
+reports.created: "Din rapport #{id} er oprettet."
+transport.ticket_bought: "Du har købt billet til {destination}."
+server.restart_warning: "Serveren genstarter om {time}."
+```
+
+## Later language changes
+
+First language selection should be free. Later changes through EarthOS Settings can require a configurable fee and cooldown.
+
+Suggested defaults:
+
+| Rule | Default |
+|---|---|
+| First language selection | Free |
+| Grace period after first choice | 10 minutes |
+| Later change fee | 250 coins |
+| Cooldown | 24 hours |
+| Admin override | Free |
+
+The fee should be configurable and integrated with the economy provider.
+
+## Integrations
+
+EarthLanguageSystem should integrate with:
+
+- EarthOS
+- ReportModule
+- TransportModule
+- UpdateManagerModule
+- DynamicMediaNetwork
+- NPC dialogue
+- Discord messages later
+
+---
+
+# 4. TransportModule
 
 ## Goal
 Build the foundation for immersive transport.
@@ -188,28 +260,13 @@ EarthLiving should avoid teleport-only travel. Transport should feel like a livi
 
 ---
 
-# 4. EarthPulseModule
+# 5. EarthPulseModule
 
 ## Goal
 Create a world-consequence engine where cities and regions react to player actions.
 
 ## Purpose
 EarthPulse should make EarthLiving feel alive by connecting player activity, transport, reports, blueprints, tourism, property value, infrastructure, mining, economy, NPC activity, and city history into one world-state system.
-
-## Main idea
-
-Actions should create consequences.
-
-Example:
-
-```text
-Hotel completed in Copenhagen
--> tourism_score rises
--> commerce_score rises
--> transport demand rises
--> hotel/shop income rises
--> EarthOS shows Copenhagen as a tourism hotspot
-```
 
 ## Region/city scores
 
@@ -222,6 +279,8 @@ Hotel completed in Copenhagen
 | infrastructure_score | roads, utilities, stations and services |
 | tourism_score | landmarks, hotels, events and visitors |
 | mining_score | mining activity and resource production |
+| culture_score | local identity and region character |
+| public_service_score | police, fire, medical and maintenance coverage |
 | pollution_score | industry, traffic and environmental pressure |
 | reputation_score | overall region reputation |
 
@@ -236,24 +295,9 @@ Recommended model:
 10% visible NPC tourists when players are nearby
 ```
 
-Tourists can affect:
-
-- hotel income
-- shop demand
-- ticket sales
-- transport load
-- city popularity
-- region growth
-
-Visible tourist NPCs can walk near stations, landmarks and hotels, wait for trains, visit shops and use small dialogue lines.
-
-## EarthOS integration
-
-Players should see region status, tourism, commerce, safety, transport pressure, mining impact and current effects through EarthOS.
-
 ---
 
-# 5. EarthMiningSystem
+# 6. EarthMiningSystem
 
 ## Goal
 Create a balanced, realistic mining and resource distribution system for the Earth map.
@@ -265,8 +309,6 @@ EarthLiving should have mining that feels connected to the real world without cr
 
 All basic resources should be available globally, but certain regions should be better for specific resources.
 
-Example:
-
 ```text
 Iron can exist globally
 Sweden has a strong iron bonus
@@ -274,124 +316,6 @@ Chile has a strong copper bonus
 Saudi Arabia has a strong oil bonus
 South Africa has a gold/diamond bonus
 ```
-
-This keeps gameplay fair while still making geography matter.
-
-## Region resource profiles
-
-Use resource profiles per region/country.
-
-Example:
-
-```yaml
-sweden:
-  iron:
-    chance_bonus: 0.40
-    rich_deposit_bonus: 0.20
-
-chile:
-  copper:
-    chance_bonus: 0.55
-    mega_deposit_bonus: 0.10
-
-saudi_arabia:
-  oil:
-    chance_bonus: 0.60
-```
-
-## Deposit quality
-
-Deposits should have quality levels.
-
-| Quality | Meaning |
-|---|---|
-| poor | low yield |
-| normal | standard yield |
-| rich | high yield |
-| mega_deposit | rare, high-value industrial deposit |
-
-## Mine types
-
-- Surface deposits: small mining areas such as quarries, coal, salt, copper and stone.
-- Deep mines: larger underground mines requiring more investment.
-- Industrial extraction: oil, gas, lithium and uranium-style resources.
-- Mega deposits: large company-scale projects that require infrastructure.
-
-## Licenses and mining zones
-
-To avoid strip-mining and map destruction, mining should happen through controlled mining zones and mining licenses.
-
-Possible rules:
-
-- players mine inside approved mining zones
-- companies can buy or earn mining licenses
-- mega deposits require admin approval or region/company progression
-- mining zones can have depletion and maintenance
-
-## Depletion system
-
-Deposits should slowly deplete over time.
-
-Example:
-
-```text
-Kiruna Iron Deposit
-Deposit health: 82%
-Efficiency: High
-Expected lifetime: Long
-```
-
-Depletion should be slow enough to be fun, not annoying. The purpose is to create long-term trade and logistics, not punish players for using the system.
-
-## Economy and logistics integration
-
-Mining should connect to:
-
-- EarthLivingLogisticsSystem
-- TransportModule
-- EarthPulseModule
-- RealEstateValueEngine
-- DynamicMediaNetwork
-- Pterodactyl dashboard
-
-Example flow:
-
-```text
-Iron mined in Sweden
--> transported by train
--> shipped by harbor
--> processed in Germany
--> used by construction companies
-```
-
-## EarthOS integration
-
-Players should use EarthOS instead of commands.
-
-EarthOS app:
-
-```text
-EarthOS -> Mining Authority
-```
-
-The Mining Authority can show:
-
-- current region
-- resource bonuses
-- active mining zones
-- owned licenses
-- deposit quality
-- depletion status
-- export demand
-- market price trends
-
-## Balance rules
-
-- No single region should be mandatory for normal progression.
-- Region bonuses should create specialization, not total monopoly.
-- Mega deposits should be rare and infrastructure-heavy.
-- Most calculations should be simulated/cached for performance.
-- Visible effects should happen near players only.
 
 ## V1 scope
 
@@ -405,24 +329,430 @@ The Mining Authority can show:
 - admin-created mining zones
 - read-only Pterodactyl dashboard export
 
-## Later scope
+---
 
-- dynamic global commodity market
-- mining companies/corporations
-- oil/gas/lithium/uranium industrial extraction
-- logistics routes for mined goods
-- AI resource forecasting
-- EarthPulse effects such as pollution, worker demand and infrastructure pressure
+# 7. EarthCultureSystem
+
+## Goal
+Let regions develop culture and identity over time.
+
+## Purpose
+Different regions should feel distinct through bonuses, visual themes, local events and local identity rather than just coordinates on a map.
+
+## Examples
+
+- Japan-style regions can develop tech/neon/tourism bonuses.
+- European city regions can develop public transport and dense property bonuses.
+- American regions can develop vehicle/logistics/fuel bonuses.
+- Mining regions can develop industrial identity and export bonuses.
+
+## Integration
+
+- EarthPulse culture_score
+- DynamicMediaNetwork news
+- Tourism systems
+- EarthOS region profiles
+- AI city planner suggestions
 
 ---
 
-# 6. EarthPassportSystem
+# 8. DynamicWeatherDisasterSystem
+
+## Goal
+Create persistent climate and disaster systems.
+
+## Purpose
+EarthLiving should have regional weather/disaster events that affect transport, tourism, infrastructure, mining, power and public services.
+
+## Examples
+
+- sandstorms in desert regions
+- hurricanes in coastal regions
+- floods in river/coastal cities
+- snowstorms in northern regions
+- heatwaves in warm regions
+- earthquakes in selected seismic zones
+
+## Effects
+
+- visibility changes
+- flight/ship/train delays
+- infrastructure damage
+- power demand spikes
+- tourism drops
+- repair contracts/events
+- EarthOS warnings
+
+---
+
+# 9. GovernmentCityAdministrationSystem
+
+## Goal
+Create city administration, budgets and public decision systems.
+
+## Purpose
+Large cities should be manageable by admins or trusted player governments through EarthOS, with budgets, project proposals and public votes.
+
+## Features
+
+- mayor/city admin roles
+- city budget
+- taxes/fees later
+- public project proposals
+- voting/polls
+- infrastructure spending
+- city policy settings
+
+## Integration
+
+- EarthOS City Administration app
+- RealEstateValueEngine
+- InfrastructureStressSystem
+- PublicServicesSystem
+- DynamicMediaNetwork
+
+---
+
+# 10. PublicServicesSystem
+
+## Goal
+Add police, ambulance, fire, garbage and maintenance service simulation.
+
+## Purpose
+Cities should need services to stay safe and functional. Missing public services should affect safety, reputation, tourism and infrastructure.
+
+## Services
+
+- police
+- ambulance/hospital
+- fire department
+- garbage/cleanup
+- road/rail maintenance
+- utility repair crews
+
+## Effects
+
+- safety_score changes
+- public_service_score changes
+- event response speed
+- tourism/reputation effects
+- maintenance jobs and contracts
+
+---
+
+# 11. DynamicTrafficSystem
+
+## Goal
+Simulate traffic and congestion around cities, stations and logistics routes.
+
+## Purpose
+Transport should react to demand. Busy regions should create congestion, station crowding and delay risk.
+
+## Features
+
+- station load
+- route congestion
+- rush-hour simulation
+- logistics bottlenecks
+- NPC crowd ambience near players
+- EarthOS traffic warnings
+
+---
+
+# 12. AirportSystem
+
+## Goal
+Create airport-specific systems for flights and international travel.
+
+## Purpose
+Airports are important for an Earth server and should be more than teleport menus.
+
+## Features
+
+- gates
+- arrivals/departures
+- boarding workflow
+- luggage/cargo later
+- customs/passport integration
+- runway traffic simulation
+- weather delay integration
+
+---
+
+# 13. EarthInternetSystem
+
+## Goal
+Make EarthOS function as the in-world digital internet.
+
+## Purpose
+Players and companies should use EarthOS for communication, services, ads and business tools.
+
+## Features
+
+- player mail/messages
+- company pages
+- ads and listings
+- service bookings
+- market listings
+- transport booking
+- government announcements
+
+---
+
+# 14. CompanyCorporationSystem
+
+## Goal
+Allow players to create and manage companies.
+
+## Purpose
+Companies should own and operate mines, logistics, shops, hotels, airlines, factories and construction projects.
+
+## Features
+
+- company creation
+- ownership/members
+- company wallet
+- permissions
+- assets
+- contracts/jobs
+- reputation
+- taxes/fees later
+
+---
+
+# 15. FinancialMarketSystem
+
+## Goal
+Create optional financial and commodity market gameplay.
+
+## Purpose
+EarthLiving can support deeper economy through commodities, company shares and city investments.
+
+## Features
+
+- commodity prices
+- mining futures later
+- company shares later
+- city bonds/investment later
+- market news
+
+## Safety note
+
+Keep this as gameplay economy only. Avoid real money gambling or real-world financial implications.
+
+---
+
+# 16. CrimeInvestigationSystem
+
+## Goal
+Create deeper crime, smuggling and investigation gameplay.
+
+## Purpose
+EarthLiving can support controlled illegal trade, smuggling risk and investigation gameplay without turning the server into chaos.
+
+## Features
+
+- smuggling routes
+- customs violations
+- illegal cargo flags
+- police reports
+- investigation cases
+- evidence logs
+- admin/police EarthOS database
+
+---
+
+# 17. HealthDiseaseSystem
+
+## Goal
+Create light health and disease/world condition simulation.
+
+## Purpose
+Pollution, disasters, heatwaves and crowded cities can affect health and hospital load without becoming annoying survival micromanagement.
+
+## Features
+
+- pollution effects
+- heatwave/cold exposure effects
+- flu/outbreak events
+- hospital/service load
+- EarthOS health warnings
+
+---
+
+# 18. EducationResearchSystem
+
+## Goal
+Add universities, research and technology bonuses.
+
+## Purpose
+Regions can specialize through universities and research facilities.
+
+## Bonuses
+
+- mining efficiency
+- transport efficiency
+- power efficiency
+- tourism/culture bonuses
+- logistics improvements
+- AI city planning upgrades
+
+---
+
+# 19. DynamicAdvertisingSystem
+
+## Goal
+Allow companies/cities to buy in-world and EarthOS advertising.
+
+## Purpose
+Ads can support commerce, events, transport lines and player companies.
+
+## Ad types
+
+- billboards
+- station ads
+- airport ads
+- EarthOS ads
+- Discord announcement slots if approved
+
+---
+
+# 20. SpaceSatelliteSystem
+
+## Goal
+Add satellites as high-level utility infrastructure.
+
+## Purpose
+Satellites can support map scanning, weather prediction, logistics tracking and disaster warnings.
+
+## Features
+
+- satellite launches later
+- weather forecast bonuses
+- logistics tracking
+- mining survey bonuses
+- disaster early warning
+- map scan overlays
+
+---
+
+# 21. UndergroundInfrastructureSystem
+
+## Goal
+Add underground infrastructure layers for cities.
+
+## Purpose
+Cities should have depth: metro, power cables, water/sewage, fiber/internet and utility tunnels.
+
+## Features
+
+- metro tunnels
+- power lines
+- water/sewage simulation later
+- fiber/internet network later
+- maintenance access
+- underground planning view in EarthOS Admin
+
+---
+
+# 22. TourismAttractionRatingSystem
+
+## Goal
+Rate attractions and tourist areas dynamically.
+
+## Purpose
+Tourism should respond to landmarks, nightlife, transport, safety, weather, pollution and culture.
+
+## Factors
+
+- landmark quality
+- nightlife
+- transport access
+- safety
+- weather/events
+- pollution
+- culture score
+
+---
+
+# 23. DynamicConstructionEconomy
+
+## Goal
+Make construction depend on materials, permits, workers and delays.
+
+## Purpose
+Large builds should feel like projects with supply chains and planning, especially for cities, stations, mines, factories and landmarks.
+
+## Features
+
+- permits
+- material demand
+- construction stages
+- worker shortages
+- logistics dependencies
+- delays and progress updates
+
+---
+
+# 24. EarthLivingTimeSimulation
+
+## Goal
+Create day/night and schedule-based city behavior.
+
+## Purpose
+Cities should feel different depending on time.
+
+## Examples
+
+- morning rush hour
+- evening commute
+- night tourism/nightlife
+- weekend events
+- workday logistics peaks
+
+---
+
+# 25. AICityPlanner
+
+## Goal
+Use AI to suggest improvements for cities and regions.
+
+## Purpose
+Admins should be able to ask for planning suggestions based on EarthPulse, traffic, infrastructure, reports, mining and economy data.
+
+## Example
+
+```text
+Copenhagen transport congestion is rising.
+Recommended:
+- add metro station
+- increase rail throughput
+- expand bus terminal
+```
+
+---
+
+# 26. ReputationGlobalInfluenceSystem
+
+## Goal
+Give cities and regions identity and influence.
+
+## Purpose
+Regions should become known for what they do well.
+
+## Examples
+
+- Tokyo: tech capital
+- Paris: tourism capital
+- Sweden: mining/export powerhouse
+- Rotterdam: logistics hub
+
+---
+
+# 27. EarthPassportSystem
 
 ## Goal
 Create passport, citizenship, visa and border gameplay.
-
-## Purpose
-EarthLiving is an Earth-map server, so travel and identity should feel connected to countries and regions without becoming boring paperwork cosplay. Humanity already invented enough of that.
 
 ## Features
 
@@ -435,25 +765,12 @@ EarthLiving is an Earth-map server, so travel and identity should feel connected
 - Country reputation
 - EarthOS Passport app
 
-## EarthOS example
-
-```text
-Passport
-Country: Denmark
-Status: Citizen
-Travel Visa: EU Zone
-Reputation: Trusted
-```
-
 ---
 
-# 7. DynamicMediaNetwork
+# 28. DynamicMediaNetwork
 
 ## Goal
 Generate live server news from actual world events.
-
-## Purpose
-EarthLiving should have a news system that reports what is happening in the world instead of static admin posts only.
 
 ## Sources
 
@@ -467,30 +784,12 @@ EarthLiving should have a news system that reports what is happening in the worl
 - events
 - maintenance/update messages
 
-## Example news
-
-```text
-Breaking News: Tourism rises in Copenhagen after a new harbor district opens.
-Mining News: Iron exports increase after a new Swedish mine opens.
-Transport Alert: Berlin Central has heavy train delays.
-Economy: Tokyo commercial activity increased by 12%.
-```
-
-## Integration
-
-- EarthOS News app
-- Discord announcement feed
-- Pterodactyl dashboard feed
-
 ---
 
-# 8. InfrastructureStressSystem
+# 29. InfrastructureStressSystem
 
 ## Goal
 Make cities require proper infrastructure as they grow.
-
-## Purpose
-Large cities should not grow forever without pressure. More players, transport, shops, mining industry and tourism should create load that must be solved with stations, routes, utilities and services.
 
 ## Effects
 
@@ -501,24 +800,12 @@ Large cities should not grow forever without pressure. More players, transport, 
 - increased maintenance costs
 - need for upgrades
 
-## Example
-
-```text
-Copenhagen Metro overloaded
--> train delay chance increases
--> commerce bonus drops near affected stations
--> EarthOS recommends metro expansion
-```
-
 ---
 
-# 9. RealEstateValueEngine
+# 30. RealEstateValueEngine
 
 ## Goal
 Create dynamic property and land values.
-
-## Purpose
-Land should have value based on the living world around it, not just arbitrary admin pricing.
 
 ## Value factors
 
@@ -532,25 +819,12 @@ Land should have value based on the living world around it, not just arbitrary a
 - region reputation
 - reports/problems nearby
 
-## Example
-
-```text
-Apartment near major station
--> high property value
-
-Shop in polluted low-traffic mining area
--> low property value
-```
-
 ---
 
-# 10. EarthLivingEventSimulator
+# 31. EarthLivingEventSimulator
 
 ## Goal
 Generate world events that affect gameplay.
-
-## Purpose
-The server should occasionally create global or regional events that change transport, tourism, mining, economy and city behavior.
 
 ## Event examples
 
@@ -563,25 +837,12 @@ The server should occasionally create global or regional events that change tran
 - copper shortage in Chile
 - transport outage in Berlin
 
-## Effects
-
-- transport delays
-- tourism changes
-- shop demand changes
-- mining/export changes
-- region alerts
-- EarthOS notifications
-- Discord news posts
-
 ---
 
-# 11. DigitalTwinSystem
+# 32. DigitalTwinSystem
 
 ## Goal
 Create an admin simulation view of the world state.
-
-## Purpose
-Admins should be able to see EarthLiving as a living system, almost like a Cities Skylines style management layer inside EarthOS Admin and Pterodactyl.
 
 ## Dashboard ideas
 
@@ -596,21 +857,12 @@ Admins should be able to see EarthLiving as a living system, almost like a Citie
 - transport bottlenecks
 - active events
 
-## Integration
-
-- EarthOS Admin
-- Pterodactyl Blueprint dashboard
-- future AI city planning suggestions
-
 ---
 
-# 12. LivingPowerGrid
+# 33. LivingPowerGrid
 
 ## Goal
 Add a simplified power/utility grid to cities.
-
-## Purpose
-Growing cities should need power and utilities, but not in an annoying micromanagement way. The system should create planning needs and world consequences.
 
 ## Features
 
@@ -622,444 +874,84 @@ Growing cities should need power and utilities, but not in an annoying micromana
 - mining/industrial power demand
 - transport and business effects during outages
 
-## Example
-
-```text
-Power demand exceeds supply in Tokyo
--> metro reliability drops
--> business bonus reduced
--> EarthOS recommends utility upgrade
-```
-
 ---
 
-# 13. DynamicNPCWorkforce
+# 34. DynamicNPCWorkforce
 
 ## Goal
 Create simulated and visible NPC workers that make cities feel active.
 
-## Purpose
-NPCs should not only stand still. Cities should have workers, commuters and service NPCs that reflect region activity, including mining and logistics workers.
-
-## Model
-
-Use simulated workforce as the main system and small visible NPC groups only near players.
-
-## Possible NPC behaviors
-
-- commute to stations
-- visit workplaces
-- go to shops
-- appear near factories, offices, hotels, mines and transport hubs
-- create visual rush-hour effects
-
-## Performance rule
-
-Do not spawn huge permanent NPC populations. Use simulation first and visible NPCs only as local ambience.
-
 ---
 
-# 14. EarthLivingLogisticsSystem
+# 35. EarthLivingLogisticsSystem
 
 ## Goal
 Create a cargo and supply-chain system across the Earth map.
 
-## Purpose
-Containers, ships, trains, trucks, ports, mines and warehouses should matter. Goods should move between regions and affect prices and business availability.
-
-## Example flow
-
-```text
-Shanghai factory
--> container ship
--> Rotterdam harbor
--> freight train
--> Berlin warehouse
--> local shop
-```
-
-Mining example:
-
-```text
-Kiruna iron mine
--> freight train
--> German steel factory
--> construction company
-```
-
-## Effects
-
-- shop stock depends on supply chains
-- port problems increase prices
-- freight routes become valuable
-- warehouses and harbors gain purpose
-- transport infrastructure affects economy
-- mining output feeds production chains
-
 ---
 
-# 15. MemoryHistorySystem
+# 36. MemoryHistorySystem
 
 ## Goal
 Let the world remember major events.
 
-## Purpose
-EarthLiving should build history over time. Cities should have timelines players can read through EarthOS.
-
-## Stored history examples
-
-- first harbor opened
-- major train failure
-- tourism boom
-- mining boom
-- city founded
-- landmark completed
-- major event/festival
-- large update/restart
-- famous player project completed
-
-## EarthOS example
-
-```text
-Copenhagen History
-- Harbor District opened
-- First InterCity line launched
-- Tourism boom reached 72%
-```
-
 ---
 
-# 16. ArchitectModule
+# 37. ArchitectModule
 
 ## Goal
 Create an admin-only system for generating and managing building blueprints/schematics.
 
-## Purpose
-Admins should be able to generate or manage structures for EarthLiving cities, infrastructure, stations, landmarks, ports, airports, mines, factories and special builds.
-
-## Main idea
-
-Admin command example:
-
-```text
-/architect generate "Copenhagen Central Station" preset:landmark style:minecraft_clean
-```
-
-System flow:
-
-```text
-Admin command
--> Async job
--> Building information lookup or manual metadata
--> Blueprint plan
--> Minecraft structure generation
--> .schem output
--> Preview placement
--> WorldEdit/FAWE paste or NPC builder construction
-```
-
-## Scale system for 1:326 Earth map
-
-Do not use real map scale directly for buildings. Use gameplay/cinematic presets.
-
-| Preset | Use case |
-|---|---|
-| compact | small landmarks or dense cities |
-| landmark | normal landmark builds |
-| cinematic | important large builds |
-| mega | rare centerpiece projects |
-
-## Notes
-Generated structures should be Minecraft interpretations, not guaranteed exact replicas.
-
 ---
 
-# 17. ArchitectPreviewModule
+# 38. ArchitectPreviewModule
 
 ## Goal
 Fix the WorldEdit placement problem with visual schematic preview.
 
-## Purpose
-Admins should be able to see where a schematic will be placed before confirming.
-
-## Features
-
-- Ghost preview
-- Bounding box
-- Move up/down/north/south/east/west
-- Rotate
-- Terrain detection
-- Collision warnings
-- Confirm/cancel workflow
-- Never place real blocks before confirmation
-
-## Commands
-
-```text
-/architect preview <schem>
-/architect move up 1
-/architect move down 1
-/architect rotate 90
-/architect confirm
-/architect cancel
-```
-
 ---
 
-# 18. BuilderNPCModule
+# 39. BuilderNPCModule
 
 ## Goal
 Allow NPCs to build schematics slowly block-by-block.
 
-## Purpose
-Instead of instantly pasting structures, EarthLiving can show construction happening visually in the world.
-
-## Features
-
-- Builder NPC job
-- Schematic input
-- Block-by-block building
-- Progress tracking
-- Pause/resume/cancel
-- Build speed config
-- Future material delivery integration
-
-## Example
-
-```text
-/architect buildnpc <schemId>
-```
-
 ---
 
-# 19. ReportModule
+# 40. ReportModule
 
 ## Goal
 Create a GUI-only reporting and support system for EarthLiving.
 
-## Purpose
-Players should be able to report bugs, player issues, transport problems, economy problems, mining problems, building/blueprint problems, and suggestions through EarthOS. Reports from Discord should also enter the same system.
-
-## Player workflow
-
-```text
-EarthOS
--> Support & Reports
--> Choose category
--> Temporary chat input, Anvil GUI, or Sign GUI for message
--> Report is created
--> Player can track status under My Reports
-```
-
-## Player-visible report status
-
-Players should be able to see their own reports and status in EarthOS.
-
-Statuses:
-
-| Status | Meaning |
-|---|---|
-| open | Report has been received |
-| reviewing | Admin/dev is reviewing |
-| waiting | More information or testing is needed |
-| sent_to_codex | Sent to Codex for investigation |
-| fixed_pending_deploy | Fix exists but needs deploy/restart |
-| deploying | Update is being deployed |
-| resolved | Issue has been resolved |
-| rejected | Report was rejected |
-| archived | Closed and stored |
-
-## Admin workflow
-
-Admins should manage reports through EarthOS Admin GUI and Pterodactyl Blueprint dashboard.
-
-Admin actions:
-
-- Set status
-- Set priority
-- Add admin reply
-- Assign report
-- Analyze with AI
-- Send to Codex
-- Create GitHub issue
-- Mark as resolved/rejected/archive
-
-## Data to store
-
-- Report ID
-- Source: Minecraft or Discord
-- Category
-- Player name
-- UUID
-- Discord user ID if relevant
-- Server/world
-- Coordinates
-- Message
-- Status
-- Priority
-- Assigned admin
-- Admin reply
-- Created/updated timestamps
-
 ---
 
-# 20. AI Report Pipeline
+# 41. AI Report Pipeline
 
 ## Goal
 Allow report investigation through the panel AI and Codex workflow.
 
-## Purpose
-A report should not just sit in a list. Admins should be able to ask the panel AI to analyze it, collect relevant context, and prepare a structured Codex handoff.
-
-## Flow
-
-```text
-Player report or Discord report
--> Report Center database
--> Pterodactyl Blueprint dashboard
--> Panel AI analyzes report
--> AI suggests possible cause and solution
--> Admin approves
--> Send to Codex
--> Codex checks code/config/logs
--> Codex creates patch/commit/PR
--> Report status updates
-```
-
-## AI context package
-
-When analyzing a report, the AI should receive safe, filtered context:
-
-- Report ID
-- Category
-- Player message
-- Location
-- Nearest relevant system if available, such as station or region
-- Relevant module
-- Recent safe logs
-- Recent changes if available
-- No secrets or private credentials
-
-## Codex handoff from panel
-
-Use the standard handoff format:
-
-```md
-## Goal
-Investigate and fix the report.
-
-## Why
-Explain why the issue matters.
-
-## Details
-Include report ID, module, logs, constraints, and safety rules.
-
-## Expected output
-Diagnosis, fix suggestion, code/config changes if safe, build/test result, and report update.
-```
-
 ---
 
-# 21. UpdateManagerModule
+# 42. UpdateManagerModule
 
 ## Goal
 Create update, maintenance, countdown, restart, and deploy management for EarthLiving.
 
-## Purpose
-When Codex or an admin creates a fix, players should be warned before deployment/restart. The system should connect report fixes with maintenance flow and EarthOS notifications.
-
-## Flow
-
-```text
-Codex creates fix
--> Build/test
--> Admin reviews in panel
--> Admin schedules deployment/restart
--> EarthOS warns players
--> Countdown starts
--> Auto-save
--> Maintenance mode
--> Server restart/deploy
--> Server comes online
--> Report status updates
--> Changelog/status message is sent
-```
-
-## Player-facing EarthOS features
-
-- Server status screen
-- Maintenance warning
-- Countdown display
-- Update reason
-- Expected downtime
-- Changelog after restart
-- Notification when a player's report is resolved
-
-## Admin-facing EarthOS/Pterodactyl features
-
-- Schedule restart
-- Start countdown
-- Cancel restart
-- Enable maintenance mode
-- Send server-wide message
-- Deploy update
-- Review Codex fix
-- Mark related reports as resolved after deploy
-
-## Countdown intervals
-
-Default warning points:
-
-- 10 minutes
-- 5 minutes
-- 3 minutes
-- 1 minute
-- 30 seconds
-- 10 seconds
-- 5 to 1 seconds
-
-## Report integration
-
-ReportModule should support deployment-related statuses:
-
-- fixed_pending_deploy
-- deploying
-- resolved
-
 ---
 
-# 22. Premium Plugin Licensing System
+# 43. Premium Plugin Licensing System
 
 ## Goal
 Plan future protection for plugins that may be sold publicly.
 
-## Purpose
-If EarthLiving tools are later released as premium Spigot/BuiltByBit resources, they should discourage unauthorized redistribution.
-
-## Protection ideas
-
-- Obfuscation
-- License API
-- Watermarked builds
-- Online premium features
-- Reasonable offline fallback
-- No destructive DRM
-
-## Important limitation
-
-No Java Minecraft plugin can be made impossible to crack. The goal is to make cracking inconvenient while giving paying users better support and updates.
-
 ---
 
-# 23. Pterodactyl + Blueprint Framework Integration
+# 44. Pterodactyl + Blueprint Framework Integration
 
 ## Goal
 Create admin tools inside Pterodactyl using Blueprint Framework.
 
-## Purpose
-EarthLiving should have a custom admin dashboard for project/server management.
-
-## Possible pages
+Possible pages:
 
 - EarthLiving dashboard
 - AI assistant page
@@ -1068,6 +960,7 @@ EarthLiving should have a custom admin dashboard for project/server management.
 - EarthPulse / region dashboard
 - Mining Authority dashboard
 - Digital Twin dashboard
+- Language/Localization dashboard
 - Transport dashboard
 - Architect job dashboard
 - Update Manager dashboard
@@ -1077,18 +970,14 @@ EarthLiving should have a custom admin dashboard for project/server management.
 
 ---
 
-# 24. ChatGPT + Codex Collaboration Workflow
+# 45. ChatGPT + Codex Collaboration Workflow
 
 ## Goal
 Keep ChatGPT and Codex aligned on the project.
 
-## Shared context
-
 Use `PROJECT_CONTEXT.md` when available.
 
-## Handoff format
-
-When ChatGPT has an idea for Codex, use:
+Handoff format:
 
 ```md
 ## Goal
@@ -1104,9 +993,7 @@ Important details, links, constraints, or risks.
 What should Codex produce or change?
 ```
 
-## Security reminder
-
-Do not include passwords, SSH keys, API keys, recovery codes, or private credentials.
+Security reminder: do not include passwords, SSH keys, API keys, recovery codes, or private credentials.
 
 ---
 
@@ -1114,31 +1001,38 @@ Do not include passwords, SSH keys, API keys, recovery codes, or private credent
 
 1. EarthLivingCore foundation - started as `plugins/earthlivingcore`
 2. EarthOS Version 1 inventory menu - started inside EarthLivingCore
-3. ReportModule GUI-only basics
-4. Player My Reports GUI and admin Report Center GUI
-5. EarthPulseModule V1 region scores and simulated tourists
-6. EarthMiningSystem V1 region profiles, deposits, mining zones and EarthOS Mining Authority
-7. DynamicMediaNetwork V1 news feed from reports/events/mining
-8. TransportModule basics
-9. EarthPassportSystem basics
-10. ArchitectModule V1 with manual/simple schematic generation
-11. InfrastructureStressSystem V1
-12. RealEstateValueEngine V1
-13. ArchitectPreviewModule
-14. BuilderNPCModule
-15. EarthLivingLogisticsSystem V1
-16. Pterodactyl Blueprint admin dashboard
-17. AI Report Pipeline
-18. UpdateManagerModule
-19. DigitalTwinSystem dashboard
-20. AI/web lookup for ArchitectModule
-21. Licensing system for future public plugins
+3. EarthLanguageSystem first-join language GUI
+4. ReportModule GUI-only basics
+5. Player My Reports GUI and admin Report Center GUI
+6. EarthPulseModule V1 region scores and simulated tourists
+7. EarthMiningSystem V1 region profiles, deposits, mining zones and EarthOS Mining Authority
+8. DynamicMediaNetwork V1 news feed from reports/events/mining
+9. TransportModule basics
+10. EarthPassportSystem basics
+11. CompanyCorporationSystem basics
+12. ArchitectModule V1 with manual/simple schematic generation
+13. InfrastructureStressSystem V1
+14. RealEstateValueEngine V1
+15. PublicServicesSystem V1
+16. DynamicTrafficSystem V1
+17. ArchitectPreviewModule
+18. BuilderNPCModule
+19. EarthLivingLogisticsSystem V1
+20. Pterodactyl Blueprint admin dashboard
+21. AI Report Pipeline
+22. UpdateManagerModule
+23. DigitalTwinSystem dashboard
+24. AICityPlanner
+25. AI/web lookup for ArchitectModule
+26. Licensing system for future public plugins
 
 ---
 
 # Open decisions
 
 - Which economy plugin or internal economy API should EarthLiving use?
+- Which languages should be supported at launch?
+- Should later language changes cost coins, and what should the default fee be?
 - Should EarthPulse use custom regions, WorldGuard regions, or a dedicated region database?
 - Should EarthMiningSystem use custom regions, biome/geology profiles, or admin-created zones first?
 - How many visible tourist NPCs should be allowed per loaded region?
@@ -1147,6 +1041,9 @@ Do not include passwords, SSH keys, API keys, recovery codes, or private credent
 - Should the power grid be light simulation only or tied to actual redstone/custom blocks?
 - Should mining use block replacement, custom drops, GUI jobs, or controlled resource nodes?
 - Should mega deposits require companies, licenses, transport infrastructure, or admin approval?
+- Should government/city administration be admin-only first or player-elected later?
+- Should crime/smuggling be limited to admin-controlled events first?
+- Should financial markets stay as commodity-only at first?
 - Should ArchitectModule use FAWE first or WorldEdit first?
 - Should NPC building use Citizens, FancyNpcs, or a custom NPC system?
 - Should EarthOS be DeluxeMenus first or fully custom GUI first?
