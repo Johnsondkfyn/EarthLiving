@@ -1,0 +1,29 @@
+name: EarthLivingCore
+version: 0.1.0
+main: dk.earthliving.core.EarthLivingCorePlugin
+api-version: '1.21'
+author: Codex
+description: Core foundation plugin for Earth Living systems.
+
+commands:
+  earthliving:
+    description: Earth Living core command.
+    usage: /earthliving <status|modules|reload|earthos>
+    aliases:
+      - el
+    permission: earthliving.command
+  earthos:
+    description: Opens the EarthOS menu.
+    usage: /earthos
+    permission: earthliving.earthos
+
+permissions:
+  earthliving.command:
+    description: Allows basic Earth Living commands.
+    default: true
+  earthliving.admin:
+    description: Allows EarthLivingCore admin commands.
+    default: op
+  earthliving.earthos:
+    description: Allows opening EarthOS.
+    default: true

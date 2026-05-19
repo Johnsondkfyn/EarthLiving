@@ -1,0 +1,21 @@
+earthos:
+  enabled: true
+  give-on-join: true
+  hotbar-slot: 8
+  material: COMPASS
+  display-name: "&6EarthOS"
+  custom-model-data: 260519
+  lore:
+    - "&7Open your Earth Living menu"
+    - "&7Map, events, passport, reports and settings"
+
+modules:
+  earthos: true
+  notifications: true
+  events: true
+  reports: true
+  passports: true
+  discord: false
+
+messages:
+  prefix: "&8[&6Earth Living&8] &r"

@@ -26,6 +26,7 @@ Recommended item:
 
 - Material: `CLOCK` or `COMPASS`
 - Display name: `EarthOS`
+- Custom model data: `260519`
 - Lore:
   - `Open your Earth Living menu`
   - `Map, events, passport, reports and settings`
@@ -47,6 +48,17 @@ Recommended texture size:
 
 - Start with `32x32` for Minecraft item texture readability.
 - Keep `64x64` and `128x128` for UI/menu assets.
+
+## Plugin Hook
+
+EarthLivingCore v0.1.0 uses this config by default:
+
+```yaml
+earthos:
+  material: COMPASS
+  display-name: "&6EarthOS"
+  custom-model-data: 260519
+```
 
 ## Notes
 

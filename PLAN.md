@@ -29,6 +29,8 @@ Opdatering 2026-05-19: Discord fase 2 er startet. Kanalerne `server-status`, `mi
 
 Opdatering 2026-05-19: EarthOS hotbar-ikonet er valgt og gemt som projekt-asset i flere størrelser under `docs/assets/earthos/`.
 
+Opdatering 2026-05-19: EarthLivingCore v0.1.0 er startet som Paper-plugin under `plugins/earthlivingcore/`. Første version indeholder module registry, notification service, `/earthliving`, `/earthos`, hotbar EarthOS item og en placeholder EarthOS inventory menu.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -103,6 +105,16 @@ Opdatering 2026-05-19: EarthOS hotbar-ikonet er valgt og gemt som projekt-asset 
 - Asset-kopier er gemt under `docs/assets/earthos/`.
 - Første tekniske version bør være en inventory GUI med et `COMPASS` eller `CLOCK` item som EarthOS-device.
 - Første apps bør være Server Status, World Map/BlueMap, Events, Passport/Countries, Support & Reports og Settings.
+
+## I gang 2026-05-19: EarthLivingCore v0.1.0
+
+- Plugin scaffold er oprettet i `plugins/earthlivingcore/`.
+- EarthLivingCore fungerer som backend/hjerne for EarthOS, events, reports, passports, notifications og Discord hooks.
+- Module registry er tilføjet med modulerne `earthos`, `notifications`, `events`, `reports`, `passports` og `discord`.
+- `/earthliving status`, `/earthliving modules`, `/earthliving reload` og `/earthos` er tilføjet.
+- EarthOS-device gives på join via hotbar slot `8`.
+- EarthOS-device bruger `COMPASS` med custom model data `260519`, så resource packen senere kan koble hotbar-ikonet på.
+- EarthOS placeholder-menu har knapper til World Map, Server Events, Passport, Wallet, Reports, Server Status og Settings.
 
 ## Sikkerhedsfokus 2026-05-18
 

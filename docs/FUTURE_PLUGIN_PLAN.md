@@ -36,6 +36,24 @@ Core ideas:
 ## Goal
 Create the central plugin/core layer for EarthLiving.
 
+## Current implementation
+
+EarthLivingCore v0.1.0 has been started under `plugins/earthlivingcore/`.
+
+Current scope:
+
+- Paper plugin bootstrap
+- Module registry
+- Notification service
+- `/earthliving status`
+- `/earthliving modules`
+- `/earthliving reload`
+- `/earthos`
+- EarthOS hotbar item on join
+- EarthOS placeholder inventory GUI
+
+The first version is intentionally small. It is the backend/hub layer, while EarthOS is the player-facing interface.
+
 ## Purpose
 EarthLivingCore should connect all major systems:
 
@@ -525,8 +543,8 @@ Do not include passwords, SSH keys, API keys, recovery codes, or private credent
 
 # Suggested development order
 
-1. EarthLivingCore foundation
-2. EarthOS Version 1 inventory menu
+1. EarthLivingCore foundation - started as `plugins/earthlivingcore`
+2. EarthOS Version 1 inventory menu - started inside EarthLivingCore
 3. ReportModule GUI-only basics
 4. Player My Reports GUI and admin Report Center GUI
 5. TransportModule basics
