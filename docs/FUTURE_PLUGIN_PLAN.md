@@ -38,7 +38,7 @@ Create the central plugin/core layer for EarthLiving.
 
 ## Current implementation
 
-EarthLivingCore v0.2.1 has been started under `plugins/earthlivingcore/`.
+EarthLivingCore v0.3.0 has been started under `plugins/earthlivingcore/`.
 
 Current scope:
 
@@ -60,10 +60,14 @@ Current scope:
   - Server Status shows test server/runtime status
   - Settings refreshes the EarthOS hotbar device
 - First real EarthOS app:
-  - Reports opens a category menu
+  - Reports opens a Report Center hub
+  - Create Report opens a category menu
   - Player chooses a category and then writes a note in chat
   - The next chat message is captured privately and saved as the report note
   - Players can type `cancel` to stop the report draft
+  - My Reports shows the player's latest reports in EarthOS
+  - Admin Reports shows the latest reports for admins/operators
+  - Clicking a report sends details in chat
   - Reports are saved to `reports.yml`
   - Saved data includes category, note, player, UUID, world, coordinates, timestamp and status
   - `/earthliving reports` shows the open report count for admins

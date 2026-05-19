@@ -47,7 +47,11 @@ public final class EarthOsListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         String title = event.getView().getTitle();
-        if (!EarthOsService.MENU_TITLE.equals(title) && !ReportService.MENU_TITLE.equals(title)) {
+        if (!EarthOsService.MENU_TITLE.equals(title)
+                && !ReportService.MENU_TITLE.equals(title)
+                && !ReportService.CREATE_MENU_TITLE.equals(title)
+                && !ReportService.MY_REPORTS_TITLE.equals(title)
+                && !ReportService.ADMIN_REPORTS_TITLE.equals(title)) {
             return;
         }
 
@@ -56,7 +60,11 @@ public final class EarthOsListener implements Listener {
             if (EarthOsService.MENU_TITLE.equals(title)) {
                 earthOsService.handleMenuClick(player, event.getRawSlot());
             } else if (ReportService.MENU_TITLE.equals(title)) {
-                reportService.handleClick(player, event.getRawSlot());
+                reportService.handleHubClick(player, event.getRawSlot());
+            } else if (ReportService.CREATE_MENU_TITLE.equals(title)) {
+                reportService.handleCreateClick(player, event.getRawSlot());
+            } else if (ReportService.MY_REPORTS_TITLE.equals(title) || ReportService.ADMIN_REPORTS_TITLE.equals(title)) {
+                reportService.handleReportListClick(player, event.getRawSlot());
             }
             player.updateInventory();
         }

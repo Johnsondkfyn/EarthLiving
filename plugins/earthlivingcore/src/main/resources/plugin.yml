@@ -1,5 +1,5 @@
 name: EarthLivingCore
-version: 0.2.1
+version: 0.3.0
 main: dk.earthliving.core.EarthLivingCorePlugin
 api-version: '1.21'
 author: Codex

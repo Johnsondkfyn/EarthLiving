@@ -2,7 +2,7 @@
 
 EarthLivingCore is the foundation plugin for Earth Living.
 
-Version: `0.2.1`
+Version: `0.3.0`
 
 ## Purpose
 
@@ -26,6 +26,7 @@ EarthLivingCore is the backend/hub layer behind:
 - EarthOS inventory menu with first click actions.
 - BlueMap link, server status, events, passport, wallet, reports and settings placeholders.
 - Reports app with category menu, chat notes, and report storage in `reports.yml`.
+- Reports hub with Create Report, My Reports, and Admin Reports views.
 
 ## Build
 
@@ -36,7 +37,7 @@ gradle build
 The output jar is expected under:
 
 ```text
-build/libs/EarthLivingCore-0.2.1.jar
+build/libs/EarthLivingCore-0.3.0.jar
 ```
 
 ## Notes
