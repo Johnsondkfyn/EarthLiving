@@ -25,6 +25,8 @@ Opdatering 2026-05-18: Flere tekniske fundament-opgaver er nu udført på live-s
 
 Opdatering 2026-05-18 aften: Discord-serveren er nu genopbygget til Earth Living-brandet. Den gamle serverstruktur er ryddet væk, nye Earth Living-kanaler og roller er oprettet, logoet er sat ind, og regler/velkomst/roadmap/BlueMap-info er skrevet ind som foundation.
 
+Opdatering 2026-05-19: Discord fase 2 er startet. Kanalerne `server-status`, `minecraft-chat` og `staff-alerts` er oprettet, kanal-ID'er er dokumenteret, `staff-alerts` er gjort privat for owner, og DiscordSRV rollout/config-skabeloner er lagt i repoet uden bot-token.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -77,6 +79,18 @@ Opdatering 2026-05-18 aften: Discord-serveren er nu genopbygget til Earth Living
 - Gamle job/theme-roller blev slettet: Trucker og Miner.
 - `Minecraft Server Status` blev bevaret, fordi den ligner en bot/integration-rolle.
 - Næste Discord-fase er chat-sync, serverstatus/player count, whitelist/verification og staff alerts.
+
+## I gang 2026-05-19: Discord integration phase 2
+
+- Nye Discord-kanaler:
+  - `minecraft-chat`: `1506268822813016134`
+  - `server-status`: `1506268769314541639`
+  - `staff-alerts`: `1506268923895484477`
+- `staff-alerts` er sat som privat kanal for owner under opsætning.
+- DiscordSRV er valgt som anbefalet plugin til chat bridge/status/account linking.
+- Config-skabelon er gemt i `server-config/discordsrv/config.template.yml`.
+- Rollout-checkliste er gemt i `server-config/discordsrv/phase-2-rollout.md`.
+- Real bot-token skal oprettes i Discord Developer Portal og må kun lægges på serveren, aldrig i GitHub.
 
 ## Sikkerhedsfokus 2026-05-18
 

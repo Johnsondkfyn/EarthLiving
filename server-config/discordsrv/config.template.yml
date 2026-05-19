@@ -1,0 +1,34 @@
+# Earth Living DiscordSRV config template.
+# Copy to plugins/DiscordSRV/config.yml on the server and replace placeholders there.
+# Do not commit the real bot token.
+
+BotToken: "PUT_REAL_BOT_TOKEN_ON_SERVER_ONLY"
+
+# DiscordSRV channel mapping.
+# `global` is the main Minecraft chat bridge.
+# Status/join/leave/death/awards are separated so the public chat channel stays clean.
+Channels: {"global": "1506268822813016134", "status": "1506268769314541639", "join": "1506268769314541639", "leave": "1506268769314541639", "deaths": "1506268769314541639", "awards": "1506268769314541639"}
+
+# Keep console disabled during phase 2.
+# Remote console can execute commands from Discord, so do not enable it until staff permissions are reviewed.
+DiscordConsoleChannelId: "0"
+
+DiscordInviteLink: "PUT_DISCORD_INVITE_HERE"
+
+# Start conservative: send Minecraft chat to Discord, but do not let Discord write into Minecraft
+# until the test server confirms formatting, spam behavior and moderation flow.
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelDiscordToMinecraft: false
+
+DiscordChatChannelTranslateMentions: false
+DiscordChatChannelAllowedMentions: []
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
+
+EnablePresenceInformation: true
+DiscordGameStatus: ["watching Earth Living", "watching the world map"]
+DiscordOnlineStatus: "ONLINE"
+StatusUpdateRateInMinutes: 2
+
+MetricsDisabled: false
+UpdateCheckDisabled: false

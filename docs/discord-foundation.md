@@ -26,9 +26,9 @@ Updated: 2026-05-18
 
 ## Next Phase
 
-- Lock down staff category permissions.
-- Add Discord chat sync for Minecraft.
-- Add server status and player count.
+- Lock down staff category permissions. Started: `staff-alerts` is private for the owner.
+- Add Discord chat sync for Minecraft. Prepared: `minecraft-chat` exists and has a channel ID.
+- Add server status and player count. Prepared: `server-status` exists and has a channel ID.
 - Add whitelist or verification flow.
-- Add report and staff alert flow.
+- Add report and staff alert flow. Prepared: `staff-alerts` exists and has a channel ID.
 - Later connect Discord roles to LuckPerms/supporter roles.
