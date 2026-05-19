@@ -38,7 +38,7 @@ Create the central plugin/core layer for EarthLiving.
 
 ## Current implementation
 
-EarthLivingCore v0.1.0 has been started under `plugins/earthlivingcore/`.
+EarthLivingCore v0.1.1 has been started under `plugins/earthlivingcore/`.
 
 Current scope:
 
@@ -50,7 +50,15 @@ Current scope:
 - `/earthliving reload`
 - `/earthos`
 - EarthOS hotbar item on join
-- EarthOS placeholder inventory GUI
+- EarthOS inventory GUI
+- First EarthOS click actions:
+  - World Map sends a clickable BlueMap link
+  - Server Events shows current event status/planned Discord event feed
+  - Passport explains the upcoming country/passport integration
+  - Wallet explains the upcoming economy integration
+  - Reports points players toward the Discord bug-reports flow for now
+  - Server Status shows test server/runtime status
+  - Settings refreshes the EarthOS hotbar device
 
 The first version is intentionally small. It is the backend/hub layer, while EarthOS is the player-facing interface.
 

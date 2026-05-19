@@ -5,9 +5,30 @@ earthos:
   material: COMPASS
   display-name: "&6EarthOS"
   custom-model-data: 260519
+  bluemap-url: "http://159.195.149.253:8100/"
+  discord-url: "https://discord.gg/"
   lore:
     - "&7Open your Earth Living menu"
     - "&7Map, events, passport, reports and settings"
+  server-status:
+    - "&aTest server is online."
+    - "&7Paper 26.1.2 + Java 25"
+    - "&7EarthLivingCore foundation active"
+  events:
+    - "&eNo public events are running yet."
+    - "&7Discord event announcements are planned next."
+  passport:
+    - "&6Passport system is planned."
+    - "&7Country access and border travel will connect here."
+  wallet:
+    - "&aWallet system is planned."
+    - "&7Economy and player balance will connect here."
+  reports:
+    - "&dReports are planned."
+    - "&7For now, use the Discord bug-reports channel."
+  settings:
+    - "&fSettings are planned."
+    - "&7Your EarthOS device has been refreshed."
 
 modules:
   earthos: true

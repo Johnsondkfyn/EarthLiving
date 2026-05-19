@@ -1,6 +1,9 @@
 package dk.earthliving.core.earthos;
 
 import dk.earthliving.core.notification.NotificationService;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -18,6 +21,13 @@ import java.util.List;
 
 public final class EarthOsService {
     public static final String MENU_TITLE = "EarthOS";
+    public static final int SLOT_MAP = 10;
+    public static final int SLOT_EVENTS = 11;
+    public static final int SLOT_PASSPORT = 12;
+    public static final int SLOT_WALLET = 13;
+    public static final int SLOT_REPORTS = 14;
+    public static final int SLOT_STATUS = 15;
+    public static final int SLOT_SETTINGS = 16;
 
     private final JavaPlugin plugin;
     private final NotificationService notifications;
@@ -71,14 +81,56 @@ public final class EarthOsService {
         }
 
         Inventory inventory = Bukkit.createInventory(player, 27, MENU_TITLE);
-        inventory.setItem(10, menuItem(Material.MAP, "&bWorld Map", List.of("&7BlueMap and country overview")));
-        inventory.setItem(11, menuItem(Material.CLOCK, "&eServer Events", List.of("&7Random events and competitions")));
-        inventory.setItem(12, menuItem(Material.PAPER, "&6Passport", List.of("&7Countries, access and travel")));
-        inventory.setItem(13, menuItem(Material.EMERALD, "&aWallet", List.of("&7Economy placeholder")));
-        inventory.setItem(14, menuItem(Material.WRITABLE_BOOK, "&dReports", List.of("&7Support and bug reports")));
-        inventory.setItem(15, menuItem(Material.REDSTONE_TORCH, "&cServer Status", List.of("&7Status, maintenance and updates")));
-        inventory.setItem(16, menuItem(Material.COMPARATOR, "&fSettings", List.of("&7Player preferences")));
+        inventory.setItem(SLOT_MAP, menuItem(Material.MAP, "&bWorld Map", List.of("&7Open BlueMap in chat")));
+        inventory.setItem(SLOT_EVENTS, menuItem(Material.CLOCK, "&eServer Events", List.of("&7Random events and competitions")));
+        inventory.setItem(SLOT_PASSPORT, menuItem(Material.PAPER, "&6Passport", List.of("&7Countries, access and travel")));
+        inventory.setItem(SLOT_WALLET, menuItem(Material.EMERALD, "&aWallet", List.of("&7Economy placeholder")));
+        inventory.setItem(SLOT_REPORTS, menuItem(Material.WRITABLE_BOOK, "&dReports", List.of("&7Support and bug reports")));
+        inventory.setItem(SLOT_STATUS, menuItem(Material.REDSTONE_TORCH, "&cServer Status", List.of("&7Status, maintenance and updates")));
+        inventory.setItem(SLOT_SETTINGS, menuItem(Material.COMPARATOR, "&fSettings", List.of("&7Player preferences")));
         player.openInventory(inventory);
+    }
+
+    public void handleMenuClick(Player player, int slot) {
+        player.closeInventory();
+
+        switch (slot) {
+            case SLOT_MAP -> sendClickableLink(
+                    player,
+                    "BlueMap",
+                    plugin.getConfig().getString("earthos.bluemap-url", "http://159.195.149.253:8100/")
+            );
+            case SLOT_EVENTS -> sendConfiguredLines(player, "earthos.events");
+            case SLOT_PASSPORT -> sendConfiguredLines(player, "earthos.passport");
+            case SLOT_WALLET -> sendConfiguredLines(player, "earthos.wallet");
+            case SLOT_REPORTS -> sendConfiguredLines(player, "earthos.reports");
+            case SLOT_STATUS -> sendConfiguredLines(player, "earthos.server-status");
+            case SLOT_SETTINGS -> {
+                giveDevice(player);
+                sendConfiguredLines(player, "earthos.settings");
+            }
+            default -> {
+            }
+        }
+    }
+
+    private void sendConfiguredLines(Player player, String path) {
+        List<String> lines = plugin.getConfig().getStringList(path);
+        if (lines.isEmpty()) {
+            notifications.send(player, "&7This EarthOS app is not configured yet.");
+            return;
+        }
+
+        for (String line : lines) {
+            notifications.send(player, line);
+        }
+    }
+
+    private void sendClickableLink(Player player, String label, String url) {
+        notifications.send(player, "&b" + label + ": &f" + url);
+        player.sendMessage(Component.text("Click here to open " + label)
+                .color(NamedTextColor.AQUA)
+                .clickEvent(ClickEvent.openUrl(url)));
     }
 
     private ItemStack createDevice() {

@@ -45,6 +45,7 @@ public final class EarthOsListener implements Listener {
 
         event.setCancelled(true);
         if (event.getWhoClicked() instanceof Player player) {
+            earthOsService.handleMenuClick(player, event.getRawSlot());
             player.updateInventory();
         }
     }
