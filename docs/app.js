@@ -1,5 +1,6 @@
 const canvas = document.querySelector("#world-canvas");
 const ctx = canvas.getContext("2d");
+const viewToggle = document.querySelector(".view-toggle");
 
 let width = 0;
 let height = 0;
@@ -117,6 +118,31 @@ window.addEventListener("pointermove", (event) => {
   pointerX = event.clientX;
   pointerY = event.clientY;
 });
+
+if (viewToggle) {
+  const viewToggleLabel = viewToggle.querySelector(".view-toggle-label");
+  const desktopPreviewQuery = window.matchMedia("(min-width: 681px)");
+  const setMobilePreview = (enabled, persist = true) => {
+    document.body.classList.toggle("mobile-preview", enabled);
+    viewToggle.setAttribute("aria-pressed", String(enabled));
+    if (viewToggleLabel) {
+      viewToggleLabel.textContent = enabled ? "Desktop" : "Mobil";
+    }
+    if (persist) {
+      window.localStorage.setItem("earthliving-view-mode", enabled ? "mobile" : "desktop");
+    }
+  };
+  const syncResponsiveMode = () => {
+    const savedMode = window.localStorage.getItem("earthliving-view-mode");
+    setMobilePreview(desktopPreviewQuery.matches && savedMode === "mobile", false);
+  };
+
+  syncResponsiveMode();
+  viewToggle.addEventListener("click", () => {
+    setMobilePreview(!document.body.classList.contains("mobile-preview"));
+  });
+  desktopPreviewQuery.addEventListener("change", syncResponsiveMode);
+}
 
 resize();
 pointerX = window.innerWidth * 0.5;

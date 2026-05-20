@@ -10,7 +10,10 @@
     />
     <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
     <link rel="preload" as="image" href="./assets/earthliving-logo.png" />
-    <link rel="stylesheet" href="./styles.css?v=20260520-6" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20260520-8" />
   </head>
   <body>
     <canvas id="world-canvas" aria-hidden="true"></canvas>
@@ -26,6 +29,10 @@
         <a href="#roadmap">Roadmap</a>
         <a href="#community">Community</a>
       </nav>
+      <button class="view-toggle" type="button" aria-pressed="false">
+        <span class="view-toggle-icon" aria-hidden="true"></span>
+        <span class="view-toggle-label">Mobil</span>
+      </button>
     </header>
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
@@ -153,6 +160,6 @@
       </section>
     </main>
     <footer class="site-footer"><span>EarthLiving</span><span>Living Earth-map Minecraft civilization sandbox, in development.</span></footer>
-    <script src="./app.js"></script>
+    <script src="./app.js?v=20260520-8"></script>
   </body>
 </html>
