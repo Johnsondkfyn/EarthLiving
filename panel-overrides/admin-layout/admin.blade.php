@@ -102,8 +102,13 @@
                                 <i class="fa fa-puzzle-piece"></i> <span>Plugin Library</span>
                             </a>
                         </li>
-                        <li class="{{ ! starts_with(Request::path(), 'admin/extensions/earthlivingcore') ?: 'active' }}">
-                            <a href="{{ url('/admin/extensions/earthlivingcore') }}">
+                        <li class="{{ !(starts_with(Request::path(), 'admin/extensions/earthlivingcore') && Request::query('view') === 'reports') ?: 'active' }}">
+                            <a href="{{ url('/admin/extensions/earthlivingcore?view=reports') }}">
+                                <i class="fa fa-flag"></i> <span>Report Center</span>
+                            </a>
+                        </li>
+                        <li class="{{ !(starts_with(Request::path(), 'admin/extensions/earthlivingcore') && Request::query('view', 'marketplace') !== 'reports') ?: 'active' }}">
+                            <a href="{{ url('/admin/extensions/earthlivingcore?view=marketplace') }}">
                                 <i class="fa fa-cubes"></i> <span>Marketplace</span>
                             </a>
                         </li>

@@ -101,23 +101,34 @@
     if (is_string($reportGeneratedAt) && strlen($reportGeneratedAt) > 19) {
         $reportGeneratedAt = str_replace('T', ' ', substr($reportGeneratedAt, 0, 19));
     }
+
+    $earthLivingView = request()->query('view', 'marketplace');
+    $showReports = $earthLivingView === 'reports';
+    $showMarketplace = ! $showReports;
 @endphp
 
 <div class="earthliving-extension-page earthliving-marketplace-page">
     <section class="earthliving-extension-hero earthliving-marketplace-hero">
         <div>
             <span class="earthliving-kicker">Owner toolkit</span>
-            <h2>Panel Marketplace</h2>
+            <h2>{{ $showReports ? 'Report Center' : 'Panel Marketplace' }}</h2>
             <p>
-                Curated Pterodactyl themes, plugin installers, player managers, admin tools and network utilities for Earth Living.
+                @if ($showReports)
+                    Minecraft reports from EarthLivingCore, shown as a read-only operations queue for staff review.
+                @else
+                    Curated Pterodactyl themes, plugin installers, player managers, admin tools and network utilities for Earth Living.
+                @endif
             </p>
         </div>
         <div class="earthliving-extension-actions">
-            <a class="btn btn-success" href="#earthliving-report-center">
+            <a class="btn btn-success" href="{{ url('/admin/extensions/earthlivingcore?view=reports') }}">
                 <i class="fa fa-flag"></i> Report Center
             </a>
             <a class="btn btn-primary" href="{{ route('admin.plugins') }}">
                 <i class="fa fa-puzzle-piece"></i> Plugin Library
+            </a>
+            <a class="btn btn-default" href="{{ url('/admin/extensions/earthlivingcore?view=marketplace') }}">
+                <i class="fa fa-cubes"></i> Marketplace
             </a>
             <a class="btn btn-default" href="{{ route('admin.servers') }}">
                 <i class="fa fa-server"></i> Servers
@@ -140,10 +151,11 @@
         </div>
     </div>
 
+    @if ($showReports)
     <section id="earthliving-report-center" class="earthliving-report-center">
         <header>
             <div>
-                <span class="earthliving-kicker">Read-only alpha</span>
+                <span class="earthliving-kicker">Operations queue</span>
                 <h3>Report Center</h3>
                 <p>Minecraft reports exported by EarthLivingCore. Panel actions come later after the read-only flow is stable.</p>
             </div>
@@ -193,7 +205,9 @@
             </div>
         @endif
     </section>
+    @endif
 
+    @if ($showMarketplace)
     <div class="row earthliving-market-grid">
         @foreach ($marketplaceSections as $section)
             <div class="col-md-6">
@@ -225,6 +239,7 @@
             </div>
         @endforeach
     </div>
+    @endif
 
     <div class="row">
         <div class="col-md-4">
