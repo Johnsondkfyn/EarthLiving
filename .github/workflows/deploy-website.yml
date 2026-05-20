@@ -1,0 +1,44 @@
+name: Deploy website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/**"
+      - ".github/workflows/deploy-website.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Prepare website package
+        run: tar -C docs -czf earthliving-site.tar.gz .
+
+      - name: Upload website package
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EARTHLIVING_SSH_HOST }}
+          username: ${{ secrets.EARTHLIVING_SSH_USER }}
+          key: ${{ secrets.EARTHLIVING_SSH_KEY }}
+          source: "earthliving-site.tar.gz"
+          target: "/tmp"
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EARTHLIVING_SSH_HOST }}
+          username: ${{ secrets.EARTHLIVING_SSH_USER }}
+          key: ${{ secrets.EARTHLIVING_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            sudo rm -rf /var/www/earthliving-site.new
+            sudo mkdir -p /var/www/earthliving-site.new
+            sudo tar -xzf /tmp/earthliving-site.tar.gz -C /var/www/earthliving-site.new
+            sudo chown -R www-data:www-data /var/www/earthliving-site.new
+            sudo rsync -a --delete /var/www/earthliving-site.new/ /var/www/earthliving-site/
+            sudo nginx -t

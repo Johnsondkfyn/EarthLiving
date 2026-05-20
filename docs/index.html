@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260520-10" />
+    <link rel="stylesheet" href="./styles.css?v=20260520-11" />
   </head>
   <body>
     <canvas id="world-canvas" aria-hidden="true"></canvas>
@@ -58,7 +58,7 @@
             <a class="button secondary" href="#roadmap" data-i18n="hero.secondary">View Roadmap</a>
           </div>
           <dl class="hero-stats" aria-label="Project status">
-            <div><dt data-i18n="stats.progress">Progress</dt><dd>8%</dd></div>
+            <div><dt data-i18n="stats.progress">Progress</dt><dd data-roadmap-value="progressPercent">23%</dd></div>
             <div><dt data-i18n="stats.core">Core</dt><dd>v0.6.0</dd></div>
             <div><dt data-i18n="stats.server">Server</dt><dd data-i18n="stats.private">Private test</dd></div>
           </dl>
@@ -147,13 +147,13 @@
         </div>
         <div class="roadmap-layout">
           <div class="roadmap-meter" aria-label="Roadmap completion">
-            <strong>8%</strong>
+            <strong data-roadmap-value="progressPercent">23%</strong>
             <span data-i18n="roadmap.progress">overall progress</span>
           </div>
           <div class="status-list">
-            <article class="status-item done"><span data-i18n="roadmap.completed">Completed</span><strong>3</strong></article>
-            <article class="status-item active"><span data-i18n="roadmap.inProgress">In Progress</span><strong>4</strong></article>
-            <article class="status-item waiting"><span data-i18n="roadmap.planned">Planned</span><strong>40+</strong></article>
+            <article class="status-item done"><span data-i18n="roadmap.completed">Completed</span><strong data-roadmap-value="completed">22</strong></article>
+            <article class="status-item active"><span data-i18n="roadmap.inProgress">In Progress</span><strong data-roadmap-value="inProgress">7</strong></article>
+            <article class="status-item waiting"><span data-i18n="roadmap.planned">Planned</span><strong data-roadmap-value="planned">67</strong></article>
           </div>
         </div>
         <p class="roadmap-note" data-i18n="roadmap.note">Current phase: foundation, website, EarthOS concept, report flow, branding and core planning. Progress is an early estimate and will change as systems move from planning into development.</p>
@@ -164,6 +164,6 @@
       </section>
     </main>
     <footer class="site-footer"><span>EarthLiving</span><span data-i18n="footer.tagline">Living Earth-map Minecraft civilization sandbox, in development.</span></footer>
-    <script src="./app.js?v=20260520-10"></script>
+    <script src="./app.js?v=20260520-11"></script>
   </body>
 </html>

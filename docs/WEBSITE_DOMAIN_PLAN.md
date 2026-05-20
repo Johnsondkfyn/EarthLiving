@@ -20,6 +20,7 @@ Implemented:
 - HTTPS is enabled with Let's Encrypt.
 - The website is deployed under `/var/www/earthliving-site` on the server.
 - The live site includes EarthLiving branding, animated hero title, fixed centered logo background, desktop/mobile preview toggle, automatic mobile layout, and English/Danish language toggle.
+- The roadmap numbers are stored in `docs/data/roadmap-status.json`.
 
 ## Purpose
 The website should become the public information and marketing hub for EarthLiving. It should explain the project, show progress, help attract future players and testers, and make the server look serious before public launch.
@@ -66,6 +67,26 @@ Current Nginx site config:
 ```text
 /etc/nginx/sites-available/earthliving-site.conf
 ```
+
+## Automatic deployment
+
+GitHub Actions workflow:
+
+```text
+.github/workflows/deploy-website.yml
+```
+
+When repository secrets are configured, pushes to `main` that change `docs/**` will automatically deploy the website to the server.
+
+Required GitHub repository secrets:
+
+```text
+EARTHLIVING_SSH_HOST
+EARTHLIVING_SSH_USER
+EARTHLIVING_SSH_KEY
+```
+
+Do not commit the real SSH key or secret values to the repository.
 
 Future option: GitHub Pages can still be used later if we want static hosting outside the server, but the current production website is server-hosted.
 

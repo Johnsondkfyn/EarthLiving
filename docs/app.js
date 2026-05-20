@@ -3,6 +3,26 @@ const ctx = canvas.getContext("2d");
 const viewToggle = document.querySelector(".view-toggle");
 const languageToggle = document.querySelector(".language-toggle");
 
+function applyRoadmapStatus(status) {
+  if (!status) {
+    return;
+  }
+
+  const values = {
+    progressPercent: `${status.progressPercent}%`,
+    completed: String(status.completed),
+    inProgress: String(status.inProgress),
+    planned: String(status.planned),
+  };
+
+  document.querySelectorAll("[data-roadmap-value]").forEach((element) => {
+    const key = element.dataset.roadmapValue;
+    if (values[key]) {
+      element.textContent = values[key];
+    }
+  });
+}
+
 const translations = {
   en: {
     "nav.overview": "Overview",
@@ -354,6 +374,16 @@ if (languageToggle) {
     setLanguage(document.documentElement.lang === "da" ? "en" : "da");
   });
 }
+
+fetch("./data/roadmap-status.json", { cache: "no-store" })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Roadmap status not available");
+    }
+    return response.json();
+  })
+  .then(applyRoadmapStatus)
+  .catch(() => {});
 
 resize();
 pointerX = window.innerWidth * 0.5;

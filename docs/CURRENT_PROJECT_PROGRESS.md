@@ -2,7 +2,7 @@
 
 ## Overall progress
 
-Estimated overall progress: **8%**.
+Estimated overall progress: **23%**.
 
 This is an early project estimate, not a mathematically exact completion percentage. EarthLiving is a large long-term project with many planned systems, so the percentage should be updated as features move from planning into development and testing.
 
@@ -10,9 +10,9 @@ This is an early project estimate, not a mathematically exact completion percent
 
 | Status | Count | Meaning |
 |---|---:|---|
-| Completed | 3 | Repository, live website/domain foundation, and core planning documents |
-| In Progress | 4 | EarthLivingCore, EarthOS concept, report flow, and website content/branding |
-| Planned | 40+ | Major gameplay, simulation, economy, transport, mining, AI and world systems |
+| Completed | 22 | Notion roadmap items marked `Færdig` |
+| In Progress | 7 | Notion roadmap items marked `I gang` |
+| Planned | 67 | Notion roadmap items marked `Ikke startet` |
 
 ## Current phase
 
@@ -74,17 +74,17 @@ Updated 2026-05-20:
 The public website should display:
 
 ```text
-Overall Progress: 8%
-Completed: 3
-In Progress: 4
-Planned: 40+
+Overall Progress: 23%
+Completed: 22
+In Progress: 7
+Planned: 67
 ```
 
 Recommended note:
 
 ```text
-Current phase: foundation, website, EarthOS concept, report flow, branding and core planning.
-Progress is an early estimate and will change as systems move from planning into development.
+Current phase: foundation, live website, EarthOS concept, report flow, branding and core planning.
+Progress follows the current Notion roadmap counts and should be refreshed when Notion statuses change.
 ```
 
 ## Update rule
@@ -97,3 +97,13 @@ Update this document when:
 - EarthOS gains working apps
 - public testing begins
 - GitHub issues or milestones become the main progress tracker
+
+## Website data source
+
+The website reads current roadmap numbers from:
+
+```text
+docs/data/roadmap-status.json
+```
+
+Update this JSON when Notion roadmap counts change. The static website will display those values automatically after deployment.

@@ -39,6 +39,8 @@ Opdatering 2026-05-20: Main-spillertest er gennemført med `TheKing189`. Minecra
 
 Opdatering 2026-05-20: Domænet `earthliving.earth` er købt, DNS er sat op, HTTPS er aktiveret, og den offentlige hjemmeside er live via Nginx på EarthLiving-serveren. Hjemmesiden har nu EarthLiving-logo, animeret grøn/cyan hero-title, fast centreret logo-baggrund, automatisk mobil-layout, desktop mobil-preview-knap og engelsk/dansk sprogskift. Website-opgaven er derfor flyttet fra `Ikke startet` til `I gang`, men er ikke færdig før indholdssider, screenshots, Discord CTA, map/status-links og devlog/news er på plads.
 
+Opdatering 2026-05-20: Notion-roadmapet blev ryddet op efter gennemgang af faktisk status. `Teknisk version rettet til Paper 26 og Java 25` og `Landgrænser research` er flyttet til `Færdig`, fordi serveren kører Paper 26.1.2/Java 25 og landgrænsefundamentet er genereret/dokumenteret. Aktuel status er derfor **22 Færdig**, **7 I gang** og **67 Ikke startet**. Hjemmesidens roadmap-tal læses fra `docs/data/roadmap-status.json`, så status kan opdateres ét sted i repoet.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -151,10 +153,7 @@ Opdatering 2026-05-20: Domænet `earthliving.earth` er købt, DNS er sat op, HTT
 
 | Projekt | Prioritet | Notion |
 | --- | --- | --- |
-| Teknisk version rettet til Paper 26 og Java 25 | Høj | https://www.notion.so/3619c23d643a81da90c0ecfd2ee6d5a5 |
 | Roadmap/status i Notion | Ikke angivet | https://www.notion.so/3619c23d643a80098efacacb46b4bc28 |
-| BlueMap world render | Ikke angivet | https://www.notion.so/3619c23d643a8023aa0af1357584e8ec |
-| Landgrænser research | Ikke angivet | https://www.notion.so/3619c23d643a803fae9ce333ca1fe317 |
 | Ekstra I gang-række | Ikke angivet | Vises i Notion, men blev ikke returneret med navn af connector-søgningen. |
 | Velocity proxy med servervalg | Høj | https://www.notion.so/3639c23d643a8152a370dc0aa3c373df |
 
@@ -197,11 +196,13 @@ Formaalet er at bruge **Velocity** som faelles indgang til Earth Living-netvaerk
 | Remote server installeret på Netcup | https://www.notion.so/3619c23d643a80c79542d73732646d09 |
 | Paper 26.1.2 kører | https://www.notion.so/3619c23d643a806d9beecdd829910a6c |
 | Java 25 installeret | https://www.notion.so/3619c23d643a809e8752f42854b05446 |
+| Teknisk version rettet til Paper 26 og Java 25 | https://www.notion.so/3619c23d643a81da90c0ecfd2ee6d5a5 |
 | Earth map importeret | https://www.notion.so/3619c23d643a80e2804fc26b8c4f09b3 |
 | BlueMap installeret | https://www.notion.so/3619c23d643a80998678d7a4f7344e65 |
 | BlueMap world render gennemført | https://www.notion.so/3619c23d643a8023aa0af1357584e8ec |
 | WorldEdit og WorldGuard fundament | https://www.notion.so/3619c23d643a800b97d6f061e2e98ae3 |
 | Landgrænse-system med polygoner | https://www.notion.so/3619c23d643a808c9a26ceae643ca197 |
+| Landgrænser research | https://www.notion.so/3619c23d643a803fae9ce333ca1fe317 |
 | Pterodactyl panel customisering og Marketplace | https://www.notion.so/3649c23d643a81308047c91c35ad1168 |
 | PassportBorders fundet og forberedt til test | https://www.notion.so/3649c23d643a815e8f4cc21a90834ca8 |
 | Security hardening: whitelist, query, RCON og Anti-Xray | https://www.notion.so/3649c23d643a81a28e47c4fadc3160a4 |

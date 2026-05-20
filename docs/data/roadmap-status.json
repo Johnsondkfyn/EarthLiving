@@ -1,0 +1,12 @@
+{
+  "updatedAt": "2026-05-20",
+  "source": "Notion Earth Living Roadmap",
+  "completed": 22,
+  "inProgress": 7,
+  "planned": 67,
+  "progressPercent": 23,
+  "phase": {
+    "en": "Foundation, live website, EarthOS concept, report flow, branding and core planning.",
+    "da": "Foundation, live hjemmeside, EarthOS-koncept, report flow, branding og core planning."
+  }
+}
