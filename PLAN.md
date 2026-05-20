@@ -35,6 +35,8 @@ Opdatering 2026-05-19 aften: DiscordSRV `1.30.5` er installeret og forbundet på
 
 Opdatering 2026-05-19 aften: DiscordSRV og EarthLivingCore `0.6.0` er flyttet fra test til **Earth Living Main**. Main booter rent på `25565`, DiscordSRV logger ind på Discord, player count presence/status er aktiv, og BlueMap kører fortsat bag nginx på `bluemap.159.195.149.253.nip.io`. Testserverens DiscordSRV-jar og config er fjernet, så botten kun forbindes fra main.
 
+Opdatering 2026-05-20: Main-spillertest er gennemført med `TheKing189`. Minecraft-to-Discord chat virker i `minecraft-chat`, danske tegn (`æøå`) kommer korrekt igennem, join/leave-beskeder vises i `server-status`, og EarthLivingCore report flow oprettede `Report #1` på main. `rate-limit` på main blev sat til `0`, fordi den tidligere værdi `15` kickede klienten ved login.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -105,7 +107,9 @@ Opdatering 2026-05-19 aften: DiscordSRV og EarthLivingCore `0.6.0` er flyttet fr
 - EarthLivingCore `0.6.0` kører på Main med DiscordSRV bridge, random event announcements og restart countdown-beskeder.
 - `server-status` modtager server start/status og restart countdowns.
 - `server-events` modtager `/earthliving event <message>` announcements.
-- `minecraft-chat` er mappet til Minecraft-to-Discord player chat. Discord-to-Minecraft er fortsat slået fra.
+- `minecraft-chat` er mappet til Minecraft-to-Discord player chat og testet med en rigtig spillerbesked på main.
+- Danske tegn i Minecraft-to-Discord chat er testet med `æøå`.
+- Discord-to-Minecraft er fortsat slået fra.
 - Discord console forwarding er fortsat slået fra.
 - Real bot-token ligger kun i main-serverens private DiscordSRV config. Token må aldrig lægges i GitHub, Notion eller chat.
 
@@ -126,6 +130,7 @@ Opdatering 2026-05-19 aften: DiscordSRV og EarthLivingCore `0.6.0` er flyttet fr
 - EarthOS-device gives på join via hotbar slot `8`.
 - EarthOS-device bruger `COMPASS` med custom model data `260519`, så resource packen senere kan koble hotbar-ikonet på.
 - EarthOS placeholder-menu har knapper til World Map, Server Events, Passport, Wallet, Reports, Server Status og Settings.
+- Main-spillertest 2026-05-20 bekræftede EarthOS/kommando-flow og oprettede `Report #1`.
 
 ## Sikkerhedsfokus 2026-05-18
 
