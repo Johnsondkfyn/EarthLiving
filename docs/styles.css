@@ -106,10 +106,7 @@ a {
 .hero {
   position: relative;
   min-height: calc(100vh - 73px);
-  display: grid;
-  grid-template-columns: minmax(520px, 0.95fr) minmax(360px, 0.72fr);
-  align-items: center;
-  gap: clamp(36px, 6vw, 100px);
+  display: block;
   overflow: hidden;
   padding: clamp(70px, 9vw, 112px) clamp(20px, 4vw, 60px) clamp(44px, 6vw, 72px);
 }
@@ -145,7 +142,9 @@ a {
 }
 
 .hero-content {
-  max-width: 820px;
+  max-width: 920px;
+  margin-inline: auto;
+  text-align: center;
 }
 
 .hero-mark {
@@ -178,7 +177,7 @@ p {
 
 h1 {
   margin: 0;
-  max-width: 12ch;
+  max-width: none;
   color: var(--green);
   background:
     linear-gradient(90deg, #d9f7a7, #8fd66f, #55c7d8, #f1d38b, #d9f7a7);
@@ -186,7 +185,7 @@ h1 {
   background-clip: text;
   -webkit-background-clip: text;
   font-size: 6.9rem;
-  line-height: 0.94;
+  line-height: 1.08;
   letter-spacing: 0;
   text-shadow: 0 0 34px rgba(167, 206, 114, 0.18);
   -webkit-text-fill-color: transparent;
@@ -210,8 +209,9 @@ h1 {
 }
 
 .hero-lede {
-  max-width: 720px;
+  max-width: 820px;
   margin: 26px 0 0;
+  margin-inline: auto;
   color: var(--muted);
   font-size: clamp(1.15rem, 1.65vw, 1.55rem);
 }
@@ -222,6 +222,10 @@ h1 {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 32px;
+}
+
+.hero-actions {
+  justify-content: center;
 }
 
 .button {
@@ -262,6 +266,7 @@ h1 {
   gap: 10px;
   max-width: 720px;
   margin: 34px 0 0;
+  margin-inline: auto;
 }
 
 .hero-stats div {
@@ -299,9 +304,10 @@ h1 {
   position: relative;
   overflow: hidden;
   align-self: end;
-  max-width: 430px;
-  margin-left: auto;
+  max-width: 640px;
+  margin: clamp(34px, 5vw, 54px) auto 0;
   padding: 28px;
+  text-align: left;
 }
 
 .launch-panel::before {
@@ -584,14 +590,9 @@ h1 {
 }
 
 @media (max-width: 1050px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-
   .launch-panel {
     align-self: auto;
     max-width: 640px;
-    margin-left: 0;
   }
 
   .priority-list {
@@ -616,7 +617,6 @@ h1 {
   .launch-panel {
     align-self: auto;
     max-width: none;
-    margin-left: 0;
   }
 
   .feature-grid,
@@ -648,8 +648,7 @@ h1 {
   }
 
   h1 {
-    font-size: 4.25rem;
-    max-width: 7ch;
+    font-size: 4rem;
   }
 
   .hero-stats,
