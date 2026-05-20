@@ -474,61 +474,30 @@ h1 {
 .launch-panel {
   position: relative;
   overflow: hidden;
-  padding: 24px;
+  padding: 18px 20px;
   text-align: left;
 }
 
 .hero-side-panel {
   position: absolute;
-  top: clamp(170px, 26vh, 245px);
+  top: clamp(190px, 30vh, 260px);
   left: clamp(20px, 4vw, 60px);
-  width: clamp(245px, 16vw, 285px);
+  width: clamp(220px, 14vw, 255px);
 }
 
 .launch-panel {
   position: absolute;
   right: clamp(20px, 4vw, 60px);
-  bottom: clamp(64px, 9vh, 110px);
-  width: clamp(350px, 22vw, 400px);
-}
-
-.hero-side-panel::after {
-  content: "";
-  position: absolute;
-  inset: 14px;
-  border: 1px solid rgba(73, 183, 217, 0.16);
-  pointer-events: none;
-}
-
-.launch-panel::before {
-  content: "";
-  position: absolute;
-  right: -64px;
-  bottom: -76px;
-  width: 260px;
-  aspect-ratio: 1;
-  background: url("./assets/earthliving-logo.png") center / contain no-repeat;
-  opacity: 0.09;
-  pointer-events: none;
-}
-
-.status-pill {
-  display: inline-flex;
-  margin-bottom: 22px;
-  border: 1px solid rgba(241, 182, 91, 0.54);
-  border-radius: 999px;
-  padding: 5px 10px;
-  color: #ffd28b;
-  font-size: 0.76rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  top: clamp(250px, 36vh, 325px);
+  bottom: auto;
+  width: clamp(250px, 16vw, 295px);
 }
 
 .panel-kicker {
   display: block;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   color: var(--cyan);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -547,7 +516,7 @@ h1 {
 .launch-panel h2,
 .hero-side-panel h2,
 .launch-panel p,
-.status-pill,
+.panel-kicker,
 .hero-side-panel dl,
 .hero-work-list {
   position: relative;
@@ -555,19 +524,19 @@ h1 {
 
 .launch-panel h2,
 .hero-side-panel h2 {
-  font-size: 1.42rem;
+  font-size: 1.16rem;
   line-height: 1.08;
 }
 
 .hero-side-panel dl {
   display: grid;
-  gap: 14px;
-  margin: 20px 0 0;
+  gap: 9px;
+  margin: 14px 0 0;
 }
 
 .hero-side-panel div {
   border-top: 1px solid var(--line);
-  padding-top: 12px;
+  padding-top: 9px;
 }
 
 .hero-side-panel dt {
@@ -580,13 +549,14 @@ h1 {
 .hero-side-panel dd {
   margin: 4px 0 0;
   color: var(--ink);
+  font-size: 0.92rem;
   font-weight: 800;
 }
 
 .hero-work-list {
   display: grid;
-  gap: 10px;
-  margin: 20px 0 0;
+  gap: 8px;
+  margin: 14px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -596,6 +566,7 @@ h1 {
   align-items: flex-start;
   gap: 10px;
   color: var(--ink);
+  font-size: 0.92rem;
   font-weight: 800;
   line-height: 1.35;
 }
