@@ -37,6 +37,8 @@ Opdatering 2026-05-19 aften: DiscordSRV og EarthLivingCore `0.6.0` er flyttet fr
 
 Opdatering 2026-05-20: Main-spillertest er gennemført med `TheKing189`. Minecraft-to-Discord chat virker i `minecraft-chat`, danske tegn (`æøå`) kommer korrekt igennem, join/leave-beskeder vises i `server-status`, og EarthLivingCore report flow oprettede `Report #1` på main. `rate-limit` på main blev sat til `0`, fordi den tidligere værdi `15` kickede klienten ved login.
 
+Opdatering 2026-05-20: Domænet `earthliving.earth` er købt, DNS er sat op, HTTPS er aktiveret, og den offentlige hjemmeside er live via Nginx på EarthLiving-serveren. Hjemmesiden har nu EarthLiving-logo, animeret grøn/cyan hero-title, fast centreret logo-baggrund, automatisk mobil-layout, desktop mobil-preview-knap og engelsk/dansk sprogskift. Website-opgaven er derfor flyttet fra `Ikke startet` til `I gang`, men er ikke færdig før indholdssider, screenshots, Discord CTA, map/status-links og devlog/news er på plads.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift

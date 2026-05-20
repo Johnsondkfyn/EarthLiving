@@ -9,6 +9,18 @@ High priority.
 
 This is the recommended public domain for EarthLiving because it matches the server name, the Earth-map concept, and the long-term world-simulation vision.
 
+## Current status
+
+Status as of 2026-05-20: `earthliving.earth` has been purchased, DNS is configured, HTTPS is active, and the public website is live from the EarthLiving server through Nginx.
+
+Implemented:
+
+- `earthliving.earth` points to `159.195.149.253`.
+- `www.earthliving.earth` points to `earthliving.earth`.
+- HTTPS is enabled with Let's Encrypt.
+- The website is deployed under `/var/www/earthliving-site` on the server.
+- The live site includes EarthLiving branding, animated hero title, fixed centered logo background, desktop/mobile preview toggle, automatic mobile layout, and English/Danish language toggle.
+
 ## Purpose
 The website should become the public information and marketing hub for EarthLiving. It should explain the project, show progress, help attract future players and testers, and make the server look serious before public launch.
 
@@ -39,23 +51,23 @@ The website should become the public information and marketing hub for EarthLivi
 
 ## Hosting direction
 
-Use GitHub Pages for the current website and connect the custom domain after the domain is purchased.
+Current hosting uses Nginx on the EarthLiving server. GitHub remains the source of truth for website files under `docs/`, and the live Nginx site is deployed from those files.
 
-## GitHub Pages notes
+## Deployment notes
 
-After buying the domain, configure GitHub Pages with the custom domain and add a CNAME file in the Pages source folder containing:
-
-```text
-earthliving.earth
-```
-
-For the `www` subdomain, point CNAME to:
+Current live deployment path:
 
 ```text
-johnsondkfyn.github.io
+/var/www/earthliving-site
 ```
 
-For the root domain, configure the normal GitHub Pages root-domain DNS records at the domain provider.
+Current Nginx site config:
+
+```text
+/etc/nginx/sites-available/earthliving-site.conf
+```
+
+Future option: GitHub Pages can still be used later if we want static hosting outside the server, but the current production website is server-hosted.
 
 ## Future improvements
 
@@ -64,7 +76,7 @@ For the root domain, configure the normal GitHub Pages root-domain DNS records a
 - Add feature pages for EarthOS, transport, mining and nightlife
 - Add development blog/news posts
 - Add Discord call-to-action
-- Add multilingual website content later
+- Expand multilingual website content beyond the current English/Danish landing page
 
 ## Safety note
 

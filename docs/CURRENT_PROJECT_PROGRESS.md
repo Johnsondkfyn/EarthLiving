@@ -10,8 +10,8 @@ This is an early project estimate, not a mathematically exact completion percent
 
 | Status | Count | Meaning |
 |---|---:|---|
-| Completed | 3 | Repository, GitHub Pages website, and core planning documents |
-| In Progress | 4 | EarthLivingCore, EarthOS concept, report flow, and website/branding |
+| Completed | 3 | Repository, live website/domain foundation, and core planning documents |
+| In Progress | 4 | EarthLivingCore, EarthOS concept, report flow, and website content/branding |
 | Planned | 40+ | Major gameplay, simulation, economy, transport, mining, AI and world systems |
 
 ## Current phase
@@ -25,7 +25,8 @@ Foundation, website, EarthOS concept, report flow, branding and core planning.
 ## Completed
 
 - GitHub repository structure exists.
-- GitHub Pages website exists and has been updated with the EarthLiving overview.
+- Public website is live on `https://earthliving.earth` with HTTPS.
+- Website domain and DNS foundation are configured.
 - Core planning documents exist for future systems and server direction.
 
 ## In progress
@@ -33,7 +34,7 @@ Foundation, website, EarthOS concept, report flow, branding and core planning.
 - EarthLivingCore foundation.
 - EarthOS concept and GUI-first direction.
 - Basic report flow planning/implementation direction.
-- Website, domain, branding and public presentation.
+- Website content, bilingual copy, branding polish and public presentation.
 
 ## Planned systems
 
@@ -56,6 +57,17 @@ Planned systems include, but are not limited to:
 - UpdateManagerModule
 - AI Report Pipeline
 - Pterodactyl Blueprint dashboard integration
+
+## Website status
+
+Updated 2026-05-20:
+
+- Domain `earthliving.earth` is live.
+- HTTPS is enabled.
+- Website is hosted through Nginx on the EarthLiving server.
+- Website source lives under `docs/` in GitHub.
+- Landing page now has EarthLiving logo branding, animated green/cyan title, fixed centered background logo, automatic mobile layout, desktop mobile-preview toggle, and English/Danish language toggle.
+- The website is still considered in progress because content pages, screenshots, Discord CTA, map/status links, and future devlog/news pages are not finished yet.
 
 ## Website progress display
 
