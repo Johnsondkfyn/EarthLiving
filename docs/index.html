@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260520-11" />
+    <link rel="stylesheet" href="./styles.css?v=20260520-12" />
   </head>
   <body>
     <canvas id="world-canvas" aria-hidden="true"></canvas>
@@ -29,14 +29,16 @@
         <a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a>
         <a href="#community" data-i18n="nav.community">Community</a>
       </nav>
-      <button class="language-toggle" type="button" aria-pressed="false" aria-label="Switch language">
-        <span data-lang-option="en">EN</span>
-        <span data-lang-option="da">DA</span>
-      </button>
-      <button class="view-toggle" type="button" aria-pressed="false">
-        <span class="view-toggle-icon" aria-hidden="true"></span>
-        <span class="view-toggle-label" data-i18n="view.mobile">Mobil</span>
-      </button>
+      <div class="header-actions">
+        <button class="language-toggle" type="button" aria-pressed="false" aria-label="Switch language">
+          <span data-lang-option="en">EN</span>
+          <span data-lang-option="da">DA</span>
+        </button>
+        <button class="view-toggle" type="button" aria-pressed="false">
+          <span class="view-toggle-icon" aria-hidden="true"></span>
+          <span class="view-toggle-label" data-i18n="view.mobile">Mobil</span>
+        </button>
+      </div>
     </header>
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
@@ -73,9 +75,9 @@
         </aside>
       </section>
       <section class="signal-strip" aria-label="Current project signals">
-        <span>Paper 26.1.2</span>
-        <span>Java 25</span>
-        <span>Pterodactyl + Blueprint</span>
+        <span data-i18n="signals.map">Earth map foundation</span>
+        <span data-i18n="signals.private">Private foundation phase</span>
+        <span data-i18n="signals.systems">Living-world systems</span>
         <span data-i18n="signals.discord">DiscordSRV live on main</span>
         <span data-i18n="signals.earthos">EarthOS first apps</span>
       </section>
@@ -164,6 +166,6 @@
       </section>
     </main>
     <footer class="site-footer"><span>EarthLiving</span><span data-i18n="footer.tagline">Living Earth-map Minecraft civilization sandbox, in development.</span></footer>
-    <script src="./app.js?v=20260520-11"></script>
+    <script src="./app.js?v=20260520-12"></script>
   </body>
 </html>

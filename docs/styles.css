@@ -74,9 +74,9 @@ a {
   position: sticky;
   top: 0;
   z-index: 20;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: 24px;
   padding: 14px clamp(20px, 4vw, 60px);
   border-bottom: 1px solid var(--line);
@@ -98,6 +98,7 @@ a {
 .mobile-preview .site-header {
   left: 0;
   right: 0;
+  display: flex;
   align-items: flex-start;
   flex-direction: column;
   gap: 16px;
@@ -105,6 +106,7 @@ a {
 
 .mobile-preview .site-nav {
   width: 100%;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 10px 16px;
   overflow: visible;
@@ -130,6 +132,7 @@ a {
 .brand {
   display: inline-flex;
   align-items: center;
+  justify-self: start;
   gap: 12px;
   min-width: 0;
   color: var(--green);
@@ -159,9 +162,17 @@ a {
 .site-nav {
   display: flex;
   align-items: center;
+  justify-self: center;
   gap: clamp(14px, 3vw, 34px);
   color: var(--soft);
   font-size: 0.94rem;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 12px;
 }
 
 .site-nav a,
@@ -787,11 +798,13 @@ h1 {
 @media (max-width: 680px) {
   .site-header {
     align-items: flex-start;
+    display: flex;
     flex-direction: column;
   }
 
   .site-nav {
     width: 100%;
+    justify-content: flex-start;
     flex-wrap: wrap;
     gap: 10px 16px;
     overflow: visible;
@@ -802,7 +815,7 @@ h1 {
     display: none;
   }
 
-  .language-toggle {
+  .header-actions {
     order: 3;
   }
 
