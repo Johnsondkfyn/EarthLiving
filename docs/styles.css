@@ -166,15 +166,59 @@ a {
 
 .site-nav a,
 .text-link {
+  position: relative;
   text-decoration: none;
 }
 
+.site-nav a {
+  background:
+    linear-gradient(90deg, var(--soft), var(--soft)),
+    linear-gradient(90deg, #d9f7a7, #8fd66f, #55c7d8, #f1d38b, #d9f7a7);
+  background-size: 100% 100%, 260% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  transition:
+    color 160ms ease,
+    text-shadow 160ms ease;
+}
+
+.site-nav a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8fd66f, #55c7d8, #f1d38b);
+  opacity: 0;
+  transform: scaleX(0.32);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
 .site-nav a:hover,
+.site-nav a:focus-visible,
 .text-link:hover {
   color: var(--ink);
 }
 
-.view-toggle {
+.site-nav a:hover,
+.site-nav a:focus-visible {
+  text-shadow: 0 0 18px rgba(167, 206, 114, 0.24);
+  -webkit-text-fill-color: transparent;
+  animation: living-title-flow 8s linear infinite;
+}
+
+.site-nav a:hover::after,
+.site-nav a:focus-visible::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.view-toggle,
+.language-toggle {
   display: inline-flex;
   min-height: 38px;
   align-items: center;
@@ -191,9 +235,27 @@ a {
 }
 
 .view-toggle:hover,
-.view-toggle[aria-pressed="true"] {
+.view-toggle[aria-pressed="true"],
+.language-toggle:hover {
   border-color: rgba(167, 206, 114, 0.62);
   background: rgba(167, 206, 114, 0.13);
+}
+
+.language-toggle {
+  gap: 2px;
+  padding: 5px;
+}
+
+.language-toggle span {
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: var(--soft);
+}
+
+.language-toggle[data-language="en"] [data-lang-option="en"],
+.language-toggle[data-language="da"] [data-lang-option="da"] {
+  color: #07100b;
+  background: var(--green);
 }
 
 .view-toggle-icon {
@@ -296,7 +358,9 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   h1,
-  .brand span {
+  .brand span,
+  .site-nav a:hover,
+  .site-nav a:focus-visible {
     animation: none;
   }
 }
@@ -736,6 +800,10 @@ h1 {
 
   .view-toggle {
     display: none;
+  }
+
+  .language-toggle {
+    order: 3;
   }
 
   .hero-mark {
