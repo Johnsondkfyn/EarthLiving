@@ -474,7 +474,7 @@ h1 {
 .launch-panel {
   position: relative;
   overflow: hidden;
-  padding: 28px;
+  padding: 24px;
   text-align: left;
 }
 
@@ -482,15 +482,14 @@ h1 {
   position: absolute;
   top: clamp(170px, 26vh, 245px);
   left: clamp(20px, 4vw, 60px);
-  width: min(260px, 19vw);
+  width: clamp(245px, 16vw, 285px);
 }
 
 .launch-panel {
   position: absolute;
   right: clamp(20px, 4vw, 60px);
   bottom: clamp(64px, 9vh, 110px);
-  width: min(330px, 24vw);
-  padding: 24px;
+  width: clamp(350px, 22vw, 400px);
 }
 
 .hero-side-panel::after {
@@ -556,7 +555,8 @@ h1 {
 
 .launch-panel h2,
 .hero-side-panel h2 {
-  font-size: 1.55rem;
+  font-size: 1.42rem;
+  line-height: 1.08;
 }
 
 .hero-side-panel dl {
@@ -593,15 +593,17 @@ h1 {
 
 .hero-work-list li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   color: var(--ink);
   font-weight: 800;
+  line-height: 1.35;
 }
 
 .hero-work-list li::before {
   content: "";
   flex: 0 0 auto;
+  margin-top: 0.48em;
   width: 7px;
   aspect-ratio: 1;
   border-radius: 50%;
