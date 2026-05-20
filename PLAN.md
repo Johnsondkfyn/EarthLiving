@@ -41,6 +41,8 @@ Opdatering 2026-05-20: Domænet `earthliving.earth` er købt, DNS er sat op, HTT
 
 Opdatering 2026-05-20: Notion-roadmapet blev ryddet op efter gennemgang af faktisk status. `Teknisk version rettet til Paper 26 og Java 25` og `Landgrænser research` er flyttet til `Færdig`, fordi serveren kører Paper 26.1.2/Java 25 og landgrænsefundamentet er genereret/dokumenteret. Aktuel status er derfor **22 Færdig**, **7 I gang** og **67 Ikke startet**. Hjemmesidens roadmap-tal læses fra `docs/data/roadmap-status.json`, så status kan opdateres ét sted i repoet.
 
+Opdatering 2026-05-20 aften: Discord verification og rapportflow er færdiggjort på Earth Living Main. DiscordSRV kræver nu linked Discord-konto for join, vanilla whitelist bypass er slået fra, Discord console forwarding er fortsat slået fra, og EarthLivingCore `0.6.2` importerer `!report` fra `bug-reports` til samme `reports.yml`/`reports-panel.json` som in-game EarthOS reports. Report Center i panelet viser derfor både in-game og Discord-rapporter i samme kø.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -109,12 +111,15 @@ Opdatering 2026-05-20: Notion-roadmapet blev ryddet op efter gennemgang af fakti
 - Real bot-token er oprettet og lagt i testserverens private DiscordSRV config. Token må aldrig lægges i GitHub, Notion eller chat.
 - DiscordSRV `1.30.5` blev testet på Earth Living Test og flyttet til Earth Living Main efter godkendt test.
 - EarthLivingCore `0.6.0` kører på Main med DiscordSRV bridge, random event announcements og restart countdown-beskeder.
+- EarthLivingCore `0.6.2` kører på Main med DiscordSRV bridge, report staff alerts og Discord report import.
 - `server-status` modtager server start/status og restart countdowns.
 - `server-events` modtager `/earthliving event <message>` announcements.
 - `minecraft-chat` er mappet til Minecraft-to-Discord player chat og testet med en rigtig spillerbesked på main.
 - Danske tegn i Minecraft-to-Discord chat er testet med `æøå`.
 - Discord-to-Minecraft er fortsat slået fra.
 - Discord console forwarding er fortsat slået fra.
+- DiscordSRV account linking kræves nu for join på Main, også for whitelisted players.
+- Discord `!report` i `bug-reports` gemmes i samme Report Center-kø som in-game reports.
 - Real bot-token ligger kun i main-serverens private DiscordSRV config. Token må aldrig lægges i GitHub, Notion eller chat.
 
 ## I gang 2026-05-19: EarthOS v1

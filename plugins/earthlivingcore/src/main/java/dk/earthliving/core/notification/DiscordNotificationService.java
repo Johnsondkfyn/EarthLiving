@@ -1,5 +1,6 @@
 package dk.earthliving.core.notification;
 
+import dk.earthliving.core.discord.DiscordBridgeService;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,11 +14,13 @@ import java.time.Duration;
 public final class DiscordNotificationService {
     private final JavaPlugin plugin;
     private final NotificationService notifications;
+    private final DiscordBridgeService discordBridge;
     private final HttpClient httpClient;
 
-    public DiscordNotificationService(JavaPlugin plugin, NotificationService notifications) {
+    public DiscordNotificationService(JavaPlugin plugin, NotificationService notifications, DiscordBridgeService discordBridge) {
         this.plugin = plugin;
         this.notifications = notifications;
+        this.discordBridge = discordBridge;
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
                 .build();
@@ -25,6 +28,7 @@ public final class DiscordNotificationService {
 
     public void reportCreated(int id, String categoryTitle, String playerName, String world, int x, int y, int z, String note) {
         if (!isReportWebhookEnabled()) {
+            sendViaDiscordSrv(id, categoryTitle, playerName, world, x, y, z, note);
             return;
         }
 
@@ -35,6 +39,22 @@ public final class DiscordNotificationService {
 
         String payload = reportPayload(id, categoryTitle, playerName, world, x, y, z, note);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> sendWebhook(webhookUrl, payload, id));
+    }
+
+    private void sendViaDiscordSrv(int id, String categoryTitle, String playerName, String world, int x, int y, int z, String note) {
+        if (!plugin.getConfig().getBoolean("discord.report-notifications.discordsrv.enabled", true)) {
+            return;
+        }
+
+        String channel = plugin.getConfig().getString("discord.report-notifications.discordsrv.channel", "staff").trim();
+        if (channel.isBlank()) {
+            return;
+        }
+
+        boolean sent = discordBridge.send(channel, reportMessage(id, categoryTitle, playerName, world, x, y, z, note));
+        if (!sent) {
+            notifications.console("DiscordSRV report notification for #" + id + " could not be queued.");
+        }
     }
 
     private boolean isReportWebhookEnabled() {
@@ -80,6 +100,15 @@ public final class DiscordNotificationService {
                 + "\"color\":16753920"
                 + "}]"
                 + "}";
+    }
+
+    private String reportMessage(int id, String categoryTitle, String playerName, String world, int x, int y, int z, String note) {
+        String location = world + " " + x + " " + y + " " + z;
+        return "**New EarthLiving report #" + id + "**"
+                + "\n**Category:** " + categoryTitle
+                + "\n**Player:** " + playerName
+                + "\n**Location:** `" + location + "`"
+                + "\n**Note:** " + shorten(note, 900);
     }
 
     private String shorten(String value, int maxLength) {

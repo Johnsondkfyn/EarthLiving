@@ -2,6 +2,7 @@ package dk.earthliving.core;
 
 import dk.earthliving.core.command.EarthLivingCommand;
 import dk.earthliving.core.discord.DiscordBridgeService;
+import dk.earthliving.core.discord.DiscordReportImportService;
 import dk.earthliving.core.command.EarthOsCommand;
 import dk.earthliving.core.earthos.EarthOsListener;
 import dk.earthliving.core.earthos.EarthOsService;
@@ -22,6 +23,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private NotificationService notificationService;
     private DiscordNotificationService discordNotificationService;
     private DiscordBridgeService discordBridgeService;
+    private DiscordReportImportService discordReportImportService;
     private EarthLivingEventService eventService;
     private EarthOsService earthOsService;
     private ReportService reportService;
@@ -31,22 +33,27 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         saveDefaultConfig();
 
         notificationService = new NotificationService(this);
-        discordNotificationService = new DiscordNotificationService(this, notificationService);
         discordBridgeService = new DiscordBridgeService(this, notificationService);
+        discordNotificationService = new DiscordNotificationService(this, notificationService, discordBridgeService);
         eventService = new EarthLivingEventService(this, notificationService, discordBridgeService);
         moduleRegistry = new ModuleRegistry();
         reportService = new ReportService(this, notificationService, discordNotificationService);
+        discordReportImportService = new DiscordReportImportService(this, notificationService, reportService);
         earthOsService = new EarthOsService(this, notificationService, reportService);
 
         registerModules();
         registerCommands();
         getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService), this);
+        discordReportImportService.startLater();
 
         notificationService.console("EarthLivingCore enabled with " + moduleRegistry.enabledModules().size() + " active modules.");
     }
 
     @Override
     public void onDisable() {
+        if (discordReportImportService != null) {
+            discordReportImportService.stop();
+        }
         if (notificationService != null) {
             notificationService.console("EarthLivingCore disabled.");
         }

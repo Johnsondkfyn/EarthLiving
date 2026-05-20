@@ -167,25 +167,52 @@ public final class ReportService {
         notifications.send(player, "&8Your next chat message will not be sent publicly.");
     }
 
-    private void create(Player player, ReportCategory category, String note) {
-        int id = nextId++;
-        reports.set("next-id", nextId);
+    public int createDiscordReport(String discordUser, String discordUserId, String discordChannelId, ReportCategory category, String note) {
+        int id = createStoredReport(
+                "discord",
+                category,
+                discordUser == null || discordUser.isBlank() ? "Discord user" : discordUser,
+                "",
+                "discord",
+                0,
+                0,
+                0,
+                note,
+                discordUser,
+                discordUserId,
+                discordChannelId
+        );
 
+        notifications.console("Report #" + id + " imported from Discord by " + (discordUser == null ? "unknown" : discordUser) + " (" + category.id() + ").");
+        discordNotifications.reportCreated(
+                id,
+                category.title(),
+                discordUser == null || discordUser.isBlank() ? "Discord user" : discordUser,
+                "discord",
+                0,
+                0,
+                0,
+                note == null || note.isBlank() ? "No note provided." : note
+        );
+        return id;
+    }
+
+    private void create(Player player, ReportCategory category, String note) {
         Location location = player.getLocation();
-        String path = "reports." + id;
-        reports.set(path + ".id", id);
-        reports.set(path + ".status", "open");
-        reports.set(path + ".category", category.id());
-        reports.set(path + ".category-title", category.title());
-        reports.set(path + ".player-name", player.getName());
-        reports.set(path + ".player-uuid", player.getUniqueId().toString());
-        reports.set(path + ".world", location.getWorld() == null ? "unknown" : location.getWorld().getName());
-        reports.set(path + ".x", location.getBlockX());
-        reports.set(path + ".y", location.getBlockY());
-        reports.set(path + ".z", location.getBlockZ());
-        reports.set(path + ".created-at", Instant.now().toString());
-        reports.set(path + ".note", note.isBlank() ? "No note provided." : note);
-        save();
+        int id = createStoredReport(
+                "minecraft",
+                category,
+                player.getName(),
+                player.getUniqueId().toString(),
+                location.getWorld() == null ? "unknown" : location.getWorld().getName(),
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ(),
+                note,
+                "",
+                "",
+                ""
+        );
 
         player.closeInventory();
         notifications.send(player, "&aReport #" + id + " created: &f" + category.title());
@@ -201,6 +228,50 @@ public final class ReportService {
                 location.getBlockZ(),
                 note.isBlank() ? "No note provided." : note
         );
+    }
+
+    private int createStoredReport(
+            String source,
+            ReportCategory category,
+            String playerName,
+            String playerUuid,
+            String world,
+            int x,
+            int y,
+            int z,
+            String note,
+            String discordUser,
+            String discordUserId,
+            String discordChannelId
+    ) {
+        int id = nextId++;
+        reports.set("next-id", nextId);
+
+        String path = "reports." + id;
+        reports.set(path + ".id", id);
+        reports.set(path + ".status", "open");
+        reports.set(path + ".source", source);
+        reports.set(path + ".category", category.id());
+        reports.set(path + ".category-title", category.title());
+        reports.set(path + ".player-name", playerName);
+        reports.set(path + ".player-uuid", playerUuid);
+        reports.set(path + ".world", world);
+        reports.set(path + ".x", x);
+        reports.set(path + ".y", y);
+        reports.set(path + ".z", z);
+        reports.set(path + ".created-at", Instant.now().toString());
+        reports.set(path + ".note", note == null || note.isBlank() ? "No note provided." : note);
+        if (discordUser != null && !discordUser.isBlank()) {
+            reports.set(path + ".discord-user", discordUser);
+        }
+        if (discordUserId != null && !discordUserId.isBlank()) {
+            reports.set(path + ".discord-user-id", discordUserId);
+        }
+        if (discordChannelId != null && !discordChannelId.isBlank()) {
+            reports.set(path + ".discord-channel-id", discordChannelId);
+        }
+        save();
+        return id;
     }
 
     public int openReportCount() {
@@ -257,10 +328,14 @@ public final class ReportService {
             json.append("    {\n");
             json.append("      \"id\": ").append(id).append(",\n");
             json.append("      \"status\": \"").append(jsonEscape(reports.getString(path + ".status", "unknown"))).append("\",\n");
+            json.append("      \"source\": \"").append(jsonEscape(reports.getString(path + ".source", "minecraft"))).append("\",\n");
             json.append("      \"category\": \"").append(jsonEscape(reports.getString(path + ".category", "unknown"))).append("\",\n");
             json.append("      \"categoryTitle\": \"").append(jsonEscape(reports.getString(path + ".category-title", "Unknown"))).append("\",\n");
             json.append("      \"playerName\": \"").append(jsonEscape(reports.getString(path + ".player-name", "Unknown"))).append("\",\n");
             json.append("      \"playerUuid\": \"").append(jsonEscape(reports.getString(path + ".player-uuid", ""))).append("\",\n");
+            json.append("      \"discordUser\": \"").append(jsonEscape(reports.getString(path + ".discord-user", ""))).append("\",\n");
+            json.append("      \"discordUserId\": \"").append(jsonEscape(reports.getString(path + ".discord-user-id", ""))).append("\",\n");
+            json.append("      \"discordChannelId\": \"").append(jsonEscape(reports.getString(path + ".discord-channel-id", ""))).append("\",\n");
             json.append("      \"world\": \"").append(jsonEscape(reports.getString(path + ".world", "unknown"))).append("\",\n");
             json.append("      \"x\": ").append(reports.getInt(path + ".x")).append(",\n");
             json.append("      \"y\": ").append(reports.getInt(path + ".y")).append(",\n");
@@ -312,6 +387,7 @@ public final class ReportService {
     private ItemStack reportItem(String id) {
         String path = "reports." + id;
         String status = reports.getString(path + ".status", "unknown");
+        String source = reports.getString(path + ".source", "minecraft");
         String category = reports.getString(path + ".category-title", "Unknown");
         String player = reports.getString(path + ".player-name", "Unknown");
         String world = reports.getString(path + ".world", "unknown");
@@ -322,8 +398,11 @@ public final class ReportService {
 
         return menuItem(Material.PAPER, "&dReport #" + id + " &8(" + status + ")", List.of(
                 "&7Category: &f" + category,
+                "&7Source: &f" + source,
                 "&7Player: &f" + player,
-                "&7Location: &f" + world + " " + x + " " + y + " " + z,
+                "discord".equalsIgnoreCase(source)
+                        ? "&7Discord: &f" + reports.getString(path + ".discord-user", player)
+                        : "&7Location: &f" + world + " " + x + " " + y + " " + z,
                 "&7Note: &f" + shorten(note, 38),
                 "&8Click for details"
         ));
@@ -338,11 +417,16 @@ public final class ReportService {
 
         notifications.send(player, "&dReport #" + id + " &8- &f" + reports.getString(path + ".category-title", "Unknown"));
         notifications.send(player, "&7Status: &f" + reports.getString(path + ".status", "unknown"));
+        notifications.send(player, "&7Source: &f" + reports.getString(path + ".source", "minecraft"));
         notifications.send(player, "&7Player: &f" + reports.getString(path + ".player-name", "Unknown"));
-        notifications.send(player, "&7Location: &f" + reports.getString(path + ".world", "unknown")
-                + " " + reports.getInt(path + ".x")
-                + " " + reports.getInt(path + ".y")
-                + " " + reports.getInt(path + ".z"));
+        if ("discord".equalsIgnoreCase(reports.getString(path + ".source", "minecraft"))) {
+            notifications.send(player, "&7Discord: &f" + reports.getString(path + ".discord-user", "Unknown"));
+        } else {
+            notifications.send(player, "&7Location: &f" + reports.getString(path + ".world", "unknown")
+                    + " " + reports.getInt(path + ".x")
+                    + " " + reports.getInt(path + ".y")
+                    + " " + reports.getInt(path + ".z"));
+        }
         notifications.send(player, "&7Note: &f" + reports.getString(path + ".note", ""));
         notifications.send(player, "&7Created: &f" + reports.getString(path + ".created-at", "unknown"));
     }

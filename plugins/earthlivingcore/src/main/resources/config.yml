@@ -65,6 +65,15 @@ discord:
   report-notifications:
     enabled: false
     webhook-url: ""
+    discordsrv:
+      enabled: true
+      channel: "staff"
+  report-import:
+    enabled: true
+    channel-id: "1505977375907643502"
+    required-prefix: "!report"
+    default-category: "bug"
+    acknowledgement: "Report #{id} is now in the Earth Living Report Center."
 
 messages:
   prefix: "&8[&6Earth Living&8] &r"

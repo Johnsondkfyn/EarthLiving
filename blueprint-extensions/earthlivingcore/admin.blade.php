@@ -114,7 +114,7 @@
             <h2>{{ $showReports ? 'Report Center' : 'Panel Marketplace' }}</h2>
             <p>
                 @if ($showReports)
-                    Minecraft reports from EarthLivingCore, shown as a read-only operations queue for staff review.
+                    In-game and Discord reports from EarthLivingCore, shown as a read-only operations queue for staff review.
                 @else
                     Curated Pterodactyl themes, plugin installers, player managers, admin tools and network utilities for Earth Living.
                 @endif
@@ -157,7 +157,7 @@
             <div>
                 <span class="earthliving-kicker">Operations queue</span>
                 <h3>Report Center</h3>
-                <p>Minecraft reports exported by EarthLivingCore. Panel actions come later after the read-only flow is stable.</p>
+                <p>Reports exported by EarthLivingCore from both the in-game EarthOS flow and the Discord bug-reports channel.</p>
             </div>
             <div class="earthliving-report-stats">
                 <div>
@@ -180,7 +180,7 @@
                 <i class="fa fa-inbox"></i>
                 <div>
                     <h4>No reports exported yet</h4>
-                    <p>Create a report in EarthOS on the main server, then refresh this panel page.</p>
+                    <p>Create a report in EarthOS or write a Discord report, then refresh this panel page.</p>
                     @if ($reportSourcePath)
                         <small>{{ $reportSourcePath }}</small>
                     @endif
@@ -190,14 +190,23 @@
             <div class="earthliving-report-list">
                 @foreach ($panelReports as $report)
                     <article class="earthliving-report-card">
+                        @php
+                            $source = strtolower($report['source'] ?? 'minecraft');
+                            $isDiscordReport = $source === 'discord';
+                            $sourceLabel = $isDiscordReport ? 'Discord' : 'In-game';
+                        @endphp
                         <div class="earthliving-report-card-head">
                             <strong>#{{ $report['id'] ?? '?' }} {{ $report['categoryTitle'] ?? 'Report' }}</strong>
-                            <span>{{ $report['status'] ?? 'unknown' }}</span>
+                            <span>{{ $sourceLabel }} · {{ $report['status'] ?? 'unknown' }}</span>
                         </div>
                         <p>{{ $report['note'] ?? '' }}</p>
                         <div class="earthliving-report-meta">
-                            <span><i class="fa fa-user"></i> {{ $report['playerName'] ?? 'Unknown' }}</span>
-                            <span><i class="fa fa-map-marker"></i> {{ $report['world'] ?? 'world' }} {{ $report['x'] ?? 0 }} {{ $report['y'] ?? 0 }} {{ $report['z'] ?? 0 }}</span>
+                            <span><i class="fa {{ $isDiscordReport ? 'fa-comments' : 'fa-user' }}"></i> {{ $isDiscordReport ? ($report['discordUser'] ?? $report['playerName'] ?? 'Unknown') : ($report['playerName'] ?? 'Unknown') }}</span>
+                            @if ($isDiscordReport)
+                                <span><i class="fa fa-comments"></i> Discord report</span>
+                            @else
+                                <span><i class="fa fa-map-marker"></i> {{ $report['world'] ?? 'world' }} {{ $report['x'] ?? 0 }} {{ $report['y'] ?? 0 }} {{ $report['z'] ?? 0 }}</span>
+                            @endif
                             <span><i class="fa fa-clock-o"></i> {{ $report['createdAt'] ?? 'unknown' }}</span>
                         </div>
                     </article>

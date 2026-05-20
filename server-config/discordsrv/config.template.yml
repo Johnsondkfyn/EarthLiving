@@ -8,7 +8,7 @@ BotToken: "PUT_REAL_BOT_TOKEN_ON_SERVER_ONLY"
 # `global` is the main Minecraft chat bridge.
 # Status/join/leave/death/awards are separated so the public chat channel stays clean.
 # `events` is reserved for future random server events and may require a custom plugin or DiscordSRV alert hook.
-Channels: {"global": "1506268822813016134", "status": "1506268769314541639", "join": "1506268769314541639", "leave": "1506268769314541639", "deaths": "1506268769314541639", "awards": "1506268769314541639", "events": "1506271254661959761"}
+Channels: {"global": "1506268822813016134", "status": "1506268769314541639", "join": "1506268769314541639", "leave": "1506268769314541639", "deaths": "1506268769314541639", "awards": "1506268769314541639", "events": "1506271254661959761", "staff": "1506268923895484477"}
 
 # Keep console disabled during phase 2.
 # Remote console can execute commands from Discord, so do not enable it until staff permissions are reviewed.

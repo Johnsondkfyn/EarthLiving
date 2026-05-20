@@ -1,6 +1,6 @@
 # Report Panel Integration Plan
 
-EarthOS reports should also appear in the Pterodactyl panel.
+EarthOS and Discord reports should appear in the Pterodactyl panel.
 
 ## Current state
 
@@ -20,9 +20,11 @@ Each report includes:
 
 - id
 - status
+- source (`minecraft` or `discord`)
 - category
 - player name
 - player UUID
+- Discord user fields when created from Discord
 - world
 - coordinates
 - created timestamp
@@ -36,6 +38,7 @@ The panel should read a safe exported report file from the server volume, then s
 
 - Open report count
 - Latest reports
+- Source: in-game or Discord
 - Category
 - Player
 - Location
@@ -46,10 +49,19 @@ The panel should read a safe exported report file from the server volume, then s
 ## Safe implementation path
 
 1. Keep Minecraft as the source of truth.
-2. Let EarthLivingCore export `reports-panel.json`.
-3. Let the Blueprint extension read only that exported file.
-4. Do not expose secrets, server credentials, private logs, or API tokens to the panel page.
-5. Add write actions later through a controlled command/API instead of letting the panel edit raw plugin files directly.
+2. Let Discord reports enter through EarthLivingCore, not by editing panel files.
+3. Let EarthLivingCore export `reports-panel.json`.
+4. Let the Blueprint extension read only that exported file.
+5. Do not expose secrets, server credentials, private logs, or API tokens to the panel page.
+6. Add write actions later through a controlled command/API instead of letting the panel edit raw plugin files directly.
+
+## Current implementation
+
+- In-game reports are created from EarthOS and stored as `source: minecraft`.
+- Discord reports are imported from the `bug-reports` Discord channel with `!report`.
+- Both flows write to the same `reports.yml` file.
+- Both flows are exported to the same `reports-panel.json` file.
+- The Blueprint Report Center reads the export and labels each card as `In-game` or `Discord`.
 
 ## Why not edit `reports.yml` directly from the panel?
 

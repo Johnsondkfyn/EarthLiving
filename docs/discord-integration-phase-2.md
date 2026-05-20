@@ -1,6 +1,6 @@
 # Discord Integration Phase 2
 
-Updated: 2026-05-19
+Updated: 2026-05-20
 
 ## Goal
 
@@ -24,6 +24,10 @@ Connect Earth Living's Minecraft server and Discord in a controlled way without 
 - Deployed DiscordSRV `1.30.5` and EarthLivingCore `0.6.0` to Earth Living Main after testing.
 - Removed the DiscordSRV jar and config from Earth Living Test after production deployment to avoid duplicate bot sessions.
 - Fixed the Earth Living Main Pterodactyl allocation issue: port `8100` is handled by nginx/BlueMap proxy, not by a Pterodactyl server allocation.
+- Enabled DiscordSRV account-link verification on Earth Living Main.
+- Upgraded EarthLivingCore to `0.6.2` on Main.
+- Added staff report alerts to the private `staff-alerts` channel through DiscordSRV.
+- Added Discord report import from `bug-reports` into the same Report Center queue as in-game reports.
 
 ## Discord Channel IDs
 
@@ -73,21 +77,21 @@ Sources checked:
 ### Step 3: Connect production
 
 - Completed: copied the cleaned DiscordSRV config and jar to Earth Living Main.
-- Completed: copied EarthLivingCore `0.6.0` to Earth Living Main.
+- Completed: copied EarthLivingCore `0.6.2` to Earth Living Main.
 - Completed: confirmed Earth Living Main starts on `25565`.
 - Completed: confirmed DiscordSRV logs in and connects to Discord WebSocket on Earth Living Main.
 - Completed: confirmed BlueMap still serves through nginx after removing the incorrect `8100` Pterodactyl allocation from Main.
 - Turn on two-way chat only after staff confirms message formatting and moderation flow.
 - Status messages are mapped to `server-status`.
 - Random events are mapped to `server-events`.
-- Add staff alerts to `staff-alerts` in a later pass.
+- Completed: staff report alerts are mapped to `staff-alerts`.
 
 ### Step 4: Later features
 
-- Whitelist/verification via linked Discord accounts.
+- Completed: whitelist/verification via linked Discord accounts is enabled on Main.
 - Role sync between LuckPerms and Discord roles.
 - Player count bot presence.
-- Report and staff alert automation.
+- Completed: in-game reports and Discord `!report` messages create staff alerts and share the same panel queue.
 - Automatic random event announcements to `server-events`.
 
 ## Production Result - 2026-05-19
@@ -99,6 +103,29 @@ Sources checked:
 - BlueMap is served by nginx at `http://bluemap.159.195.149.253.nip.io/`; ordinary GET requests return `200`.
 - Discord-to-Minecraft remains disabled for safety.
 - Discord console forwarding remains disabled.
+
+## Production Update - 2026-05-20
+
+- Earth Living Main now runs EarthLivingCore `0.6.2`.
+- DiscordSRV account linking is required before players can join Main.
+- Vanilla whitelist bypass is disabled, so even whitelisted players must link Discord.
+- Discord remote console remains disabled.
+- `staff-alerts` receives report notifications from EarthLivingCore through DiscordSRV.
+- `bug-reports` accepts Discord-origin reports with:
+
+```text
+!report <category> <message>
+```
+
+Example:
+
+```text
+!report bug Train station sign is missing near spawn
+```
+
+- Supported categories: `bug`, `player`, `region`, `transport`, `build`, `suggestion`.
+- Discord reports are saved into `plugins/EarthLivingCore/reports.yml` and exported to `reports-panel.json` together with in-game reports.
+- Server log confirmed after restart: DiscordSRV connected and EarthLivingCore enabled Discord report import for channel `1505977375907643502`.
 
 ## Security Rules
 

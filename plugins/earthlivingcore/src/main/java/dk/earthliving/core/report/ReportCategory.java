@@ -31,4 +31,17 @@ public enum ReportCategory {
     public Material icon() {
         return icon;
     }
+
+    public static ReportCategory fromId(String value, ReportCategory fallback) {
+        if (value == null || value.isBlank()) {
+            return fallback;
+        }
+
+        for (ReportCategory category : values()) {
+            if (category.id.equalsIgnoreCase(value.trim())) {
+                return category;
+            }
+        }
+        return fallback;
+    }
 }
