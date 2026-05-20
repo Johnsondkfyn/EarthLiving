@@ -177,17 +177,36 @@ p {
 }
 
 h1 {
-  display: grid;
   margin: 0;
-  max-width: 8ch;
-  font-size: clamp(4.6rem, 9vw, 10.2rem);
-  line-height: 0.86;
+  max-width: 12ch;
+  color: var(--green);
+  background:
+    linear-gradient(90deg, #d9f7a7, #8fd66f, #55c7d8, #f1d38b, #d9f7a7);
+  background-size: 260% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  font-size: 6.9rem;
+  line-height: 0.94;
   letter-spacing: 0;
+  text-shadow: 0 0 34px rgba(167, 206, 114, 0.18);
+  -webkit-text-fill-color: transparent;
+  animation: living-title-flow 10s linear infinite;
 }
 
-h1 span {
-  display: block;
-  white-space: nowrap;
+@keyframes living-title-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 260% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  h1 {
+    animation: none;
+  }
 }
 
 .hero-lede {
@@ -629,7 +648,8 @@ h1 span {
   }
 
   h1 {
-    font-size: clamp(4rem, 24vw, 6.8rem);
+    font-size: 4.25rem;
+    max-width: 7ch;
   }
 
   .hero-stats,
