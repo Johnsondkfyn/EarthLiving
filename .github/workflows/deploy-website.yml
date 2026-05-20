@@ -19,7 +19,22 @@ jobs:
       - name: Prepare website package
         run: tar -C docs -czf earthliving-site.tar.gz .
 
+      - name: Check deploy secrets
+        id: deploy_secrets
+        env:
+          EARTHLIVING_SSH_HOST: ${{ secrets.EARTHLIVING_SSH_HOST }}
+          EARTHLIVING_SSH_USER: ${{ secrets.EARTHLIVING_SSH_USER }}
+          EARTHLIVING_SSH_KEY: ${{ secrets.EARTHLIVING_SSH_KEY }}
+        run: |
+          if [ -z "$EARTHLIVING_SSH_HOST" ] || [ -z "$EARTHLIVING_SSH_USER" ] || [ -z "$EARTHLIVING_SSH_KEY" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Website deploy skipped because one or more SSH secrets are missing."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Upload website package
+        if: steps.deploy_secrets.outputs.configured == 'true'
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EARTHLIVING_SSH_HOST }}
@@ -29,6 +44,7 @@ jobs:
           target: "/tmp"
 
       - name: Deploy on server
+        if: steps.deploy_secrets.outputs.configured == 'true'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EARTHLIVING_SSH_HOST }}
