@@ -51,6 +51,21 @@ body::before {
   pointer-events: none;
 }
 
+body::after {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: min(68vw, 820px);
+  aspect-ratio: 1;
+  background: url("./assets/earthliving-logo.png") center / contain no-repeat;
+  opacity: 0.085;
+  filter: saturate(1.08) contrast(1.05);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 a {
   color: inherit;
 }
@@ -109,20 +124,6 @@ a {
   display: block;
   overflow: hidden;
   padding: clamp(70px, 9vw, 112px) clamp(20px, 4vw, 60px) clamp(44px, 6vw, 72px);
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  top: 10%;
-  right: clamp(-150px, -4vw, -36px);
-  width: min(50vw, 760px);
-  aspect-ratio: 1;
-  background: url("./assets/earthliving-logo.png") center / contain no-repeat;
-  opacity: 0.12;
-  filter: saturate(1.05) contrast(1.06);
-  transform: rotate(-4deg);
-  pointer-events: none;
 }
 
 .hero::after {
@@ -608,10 +609,7 @@ h1 {
   }
 
   .hero::before {
-    top: 8%;
-    right: -32%;
-    width: min(118vw, 680px);
-    opacity: 0.09;
+    content: none;
   }
 
   .launch-panel {
