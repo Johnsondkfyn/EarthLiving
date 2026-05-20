@@ -488,9 +488,10 @@ h1 {
 .launch-panel {
   position: absolute;
   right: clamp(20px, 4vw, 60px);
-  top: clamp(250px, 36vh, 325px);
+  top: clamp(190px, 30vh, 260px);
   bottom: auto;
-  width: clamp(250px, 16vw, 295px);
+  width: clamp(220px, 14vw, 255px);
+  min-height: 276px;
 }
 
 .panel-kicker {
@@ -829,8 +830,9 @@ h1 {
   .launch-panel {
     position: relative;
     inset: auto;
-    width: auto;
-    max-width: 640px;
+    width: min(100%, 255px);
+    min-height: 276px;
+    max-width: 255px;
     margin-inline: auto;
   }
 
