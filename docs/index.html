@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260520-12" />
+    <link rel="stylesheet" href="./styles.css?v=20260520-13" />
   </head>
   <body>
     <canvas id="world-canvas" aria-hidden="true"></canvas>
@@ -42,6 +42,15 @@
     </header>
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
+        <aside class="hero-side-panel server-panel" aria-label="Server snapshot">
+          <span class="panel-kicker" data-i18n="hero.server.kicker">Server snapshot</span>
+          <h2 data-i18n="hero.server.title">Private test world</h2>
+          <dl>
+            <div><dt data-i18n="hero.server.access">Access</dt><dd data-i18n="hero.server.accessValue">Invite-only foundation</dd></div>
+            <div><dt data-i18n="hero.server.map">Map</dt><dd data-i18n="hero.server.mapValue">Earth map + BlueMap</dd></div>
+            <div><dt data-i18n="hero.server.focus">Focus</dt><dd data-i18n="hero.server.focusValue">Stability before launch</dd></div>
+          </dl>
+        </aside>
         <div class="hero-content">
           <div class="hero-mark">
             <div>
@@ -69,9 +78,14 @@
           <span class="status-pill" data-i18n="launch.pill">In development</span>
           <h2 data-i18n="launch.title">Private foundation phase</h2>
           <p data-i18n="launch.body">
-            Main server, Discord bridge, report center, BlueMap foundation and
+            Main server, Discord connection, player reports, live map foundation and
             EarthOS basics are being shaped before public access opens.
           </p>
+          <ul class="hero-work-list" aria-label="Current work">
+            <li data-i18n="hero.work.item1">EarthOS player menu</li>
+            <li data-i18n="hero.work.item2">Report flow and staff tools</li>
+            <li data-i18n="hero.work.item3">Public website and roadmap</li>
+          </ul>
         </aside>
       </section>
       <section class="signal-strip" aria-label="Current project signals">
@@ -166,6 +180,6 @@
       </section>
     </main>
     <footer class="site-footer"><span>EarthLiving</span><span data-i18n="footer.tagline">Living Earth-map Minecraft civilization sandbox, in development.</span></footer>
-    <script src="./app.js?v=20260520-12"></script>
+    <script src="./app.js?v=20260520-15"></script>
   </body>
 </html>
