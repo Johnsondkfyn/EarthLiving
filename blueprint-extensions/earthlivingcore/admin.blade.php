@@ -76,8 +76,8 @@
     ];
 
     $reportSources = [
-        'Test Server' => '/var/lib/pterodactyl/volumes/d554d2b4-ac4b-4b48-b004-35f1b73feadc/plugins/EarthLivingCore/reports-panel.json',
         'Main Server' => '/var/lib/pterodactyl/volumes/0157164c-e4e1-4979-935c-d703ddd6706e/plugins/EarthLivingCore/reports-panel.json',
+        'Test Server' => '/var/lib/pterodactyl/volumes/d554d2b4-ac4b-4b48-b004-35f1b73feadc/plugins/EarthLivingCore/reports-panel.json',
     ];
 
     $reportSourceName = 'Not connected';
@@ -168,7 +168,7 @@
                 <i class="fa fa-inbox"></i>
                 <div>
                     <h4>No reports exported yet</h4>
-                    <p>Create a report in EarthOS on the test server, then refresh this panel page.</p>
+                    <p>Create a report in EarthOS on the main server, then refresh this panel page.</p>
                     @if ($reportSourcePath)
                         <small>{{ $reportSourcePath }}</small>
                     @endif
