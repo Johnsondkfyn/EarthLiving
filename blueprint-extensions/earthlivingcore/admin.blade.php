@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/assets/extensions/earthlivingcore/admin.style.css?v=20260522-ai-actions">
+<link rel="stylesheet" href="/assets/extensions/earthlivingcore/admin.style.css?v=20260522-report-workflow">
 <style>
     .earthliving-extension-page {
         color: #edf3ec;
@@ -189,15 +189,16 @@
         @else
             <div class="earthliving-report-list">
                 @foreach ($panelReports as $report)
-                    <article class="earthliving-report-card">
+                    <article class="earthliving-report-card" data-report-id="{{ $report['id'] ?? '?' }}">
                         @php
                             $source = strtolower($report['source'] ?? 'minecraft');
                             $isDiscordReport = $source === 'discord';
                             $sourceLabel = $isDiscordReport ? 'Discord' : 'In-game';
                             $reportIdentity = $isDiscordReport ? ($report['discordUser'] ?? $report['playerName'] ?? 'Unknown') : ($report['playerName'] ?? 'Unknown');
                             $reportLocation = $isDiscordReport ? 'Discord bug-reports channel' : (($report['world'] ?? 'world') . ' ' . ($report['x'] ?? 0) . ' ' . ($report['y'] ?? 0) . ' ' . ($report['z'] ?? 0));
+                            $reportId = $report['id'] ?? '?';
                             $chatGptPrompt = "Analyze this EarthLiving report and suggest likely cause, severity, next checks, and a safe fix plan. Do not ask for secrets.\n\n"
-                                . "Report ID: #" . ($report['id'] ?? '?') . "\n"
+                                . "Report ID: #" . $reportId . "\n"
                                 . "Source: " . $sourceLabel . "\n"
                                 . "Status: " . ($report['status'] ?? 'unknown') . "\n"
                                 . "Category: " . ($report['categoryTitle'] ?? 'Report') . "\n"
@@ -211,7 +212,7 @@
                                 . "3. What logs/config/code to inspect\n"
                                 . "4. Recommended Codex handoff\n"
                                 . "5. Player/staff reply draft";
-                            $codexPrompt = "## Goal\nInvestigate and propose a safe fix for EarthLiving report #" . ($report['id'] ?? '?') . ".\n\n"
+                            $codexPrompt = "## Goal\nInvestigate and propose a safe fix for EarthLiving report #" . $reportId . ".\n\n"
                                 . "## Report\n"
                                 . "- Source: " . $sourceLabel . "\n"
                                 . "- Status: " . ($report['status'] ?? 'unknown') . "\n"
@@ -225,6 +226,27 @@
                                 . "- Do not expose secrets or tokens.\n"
                                 . "- If a code/config fix is needed, implement it, test it, and update docs/status.\n"
                                 . "- Report back with changed files, verification, and any remaining risk.";
+                            $repairPrompt = "EarthLiving staff repair approval\n\n"
+                                . "Report: #" . $reportId . "\n"
+                                . "Reporter: " . $reportIdentity . "\n"
+                                . "Issue: " . ($report['note'] ?? '') . "\n\n"
+                                . "Repair approval checklist:\n"
+                                . "- Root cause identified\n"
+                                . "- Fix tested on test server or low-risk config reviewed\n"
+                                . "- No secrets exposed\n"
+                                . "- Main server deploy/restart risk understood\n"
+                                . "- Player/staff reply prepared";
+                            $playerReply = "Tak for din report #" . $reportId . ". Vi har kigget på den og følger op i staff-flowet. "
+                                . "Hvis problemet sker igen, må du meget gerne sende en ny besked med tidspunkt og hvad du gjorde lige før fejlen.";
+                            $closePrompt = "Close EarthLiving report #" . $reportId . "\n\n"
+                                . "Reporter: " . $reportIdentity . "\n"
+                                . "Source: " . $sourceLabel . "\n"
+                                . "Original report: " . ($report['note'] ?? '') . "\n\n"
+                                . "Close checklist:\n"
+                                . "- Fix/decision approved by staff\n"
+                                . "- Player reply sent or not needed\n"
+                                . "- Any code/config change documented\n"
+                                . "- Report can be marked completed in EarthLivingCore";
                         @endphp
                         <div class="earthliving-report-card-head">
                             <strong>#{{ $report['id'] ?? '?' }} {{ $report['categoryTitle'] ?? 'Report' }}</strong>
@@ -263,6 +285,50 @@
                                 aria-expanded="false"
                             >
                                 <i class="fa fa-file-text-o"></i> View package
+                            </button>
+                        </div>
+                        <div class="earthliving-report-workflow" data-workflow-state="open">
+                            <span class="earthliving-workflow-status">
+                                <i class="fa fa-circle-o"></i> Workflow: Open
+                            </span>
+                            <button
+                                type="button"
+                                class="btn btn-warning btn-xs earthliving-workflow-action earthliving-copy-report"
+                                data-workflow-state="repair-approved"
+                                data-copy-label="Repair approval copied"
+                                data-report-prompt="{{ e($repairPrompt) }}"
+                            >
+                                <i class="fa fa-check-square-o"></i> Godkend fix
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-info btn-xs earthliving-copy-report"
+                                data-copy-label="Player reply copied"
+                                data-report-prompt="{{ e($playerReply) }}"
+                            >
+                                <i class="fa fa-reply"></i> Svar til spiller
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-default btn-xs earthliving-copy-report"
+                                data-copy-label="Close package copied"
+                                data-report-prompt="{{ e($closePrompt) }}"
+                            >
+                                <i class="fa fa-archive"></i> Afslutningspakke
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-danger btn-xs earthliving-workflow-action"
+                                data-workflow-state="completed"
+                            >
+                                <i class="fa fa-flag-checkered"></i> Afsluttet
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-default btn-xs earthliving-workflow-action"
+                                data-workflow-state="open"
+                            >
+                                <i class="fa fa-undo"></i> Genåbn
                             </button>
                         </div>
                         <textarea class="earthliving-report-package" readonly>{{ $chatGptPrompt }}</textarea>
@@ -334,6 +400,15 @@
 
 <script>
 document.addEventListener('click', function (event) {
+    var workflowButton = event.target.closest('.earthliving-workflow-action');
+    if (workflowButton) {
+        var workflowCard = workflowButton.closest('.earthliving-report-card');
+        var nextState = workflowButton.getAttribute('data-workflow-state') || 'open';
+        if (workflowCard) {
+            setWorkflowState(workflowCard, nextState, true);
+        }
+    }
+
     var copyButton = event.target.closest('.earthliving-copy-report');
     if (copyButton) {
         var text = copyButton.getAttribute('data-report-prompt') || '';
@@ -384,4 +459,39 @@ function fallbackCopy(text, callback) {
     document.body.removeChild(area);
     callback();
 }
+
+function setWorkflowState(card, state, persist) {
+    var reportId = card.getAttribute('data-report-id') || '';
+    var workflow = card.querySelector('.earthliving-report-workflow');
+    var status = card.querySelector('.earthliving-workflow-status');
+    if (!workflow || !status) {
+        return;
+    }
+
+    var labels = {
+        open: '<i class="fa fa-circle-o"></i> Workflow: Open',
+        'repair-approved': '<i class="fa fa-check-square-o"></i> Workflow: Fix godkendt',
+        completed: '<i class="fa fa-flag-checkered"></i> Workflow: Afsluttet lokalt'
+    };
+
+    workflow.setAttribute('data-workflow-state', state);
+    status.innerHTML = labels[state] || labels.open;
+    card.classList.toggle('is-workflow-completed', state === 'completed');
+
+    if (persist && reportId && window.localStorage) {
+        window.localStorage.setItem('earthliving-report-workflow-' + reportId, state);
+    }
+}
+
+document.querySelectorAll('.earthliving-report-card[data-report-id]').forEach(function (card) {
+    var reportId = card.getAttribute('data-report-id');
+    if (!reportId || !window.localStorage) {
+        return;
+    }
+
+    var savedState = window.localStorage.getItem('earthliving-report-workflow-' + reportId);
+    if (savedState) {
+        setWorkflowState(card, savedState, false);
+    }
+});
 </script>

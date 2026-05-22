@@ -623,6 +623,50 @@ body.skin-blue .wrapper {
   white-space: normal;
 }
 
+.earthliving-report-workflow {
+  display: grid;
+  grid-template-columns: 1fr repeat(5, auto);
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(214, 194, 143, 0.14);
+}
+
+.earthliving-workflow-status {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #dfe8df;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.earthliving-report-workflow[data-workflow-state="repair-approved"] .earthliving-workflow-status {
+  color: #f7d17a;
+}
+
+.earthliving-report-workflow[data-workflow-state="completed"] .earthliving-workflow-status {
+  color: #9fdd73;
+}
+
+.earthliving-report-workflow .btn {
+  min-width: 112px;
+  white-space: normal;
+}
+
+.earthliving-report-card.is-workflow-completed {
+  border-color: rgba(159, 221, 115, 0.38);
+}
+
+.earthliving-report-card.is-workflow-completed .earthliving-report-card-head span {
+  color: #eaffdf;
+  background: rgba(159, 221, 115, 0.16);
+  border-color: rgba(159, 221, 115, 0.32);
+}
+
 .earthliving-report-package {
   display: none;
   width: 100%;
@@ -701,5 +745,9 @@ body.skin-blue .wrapper {
     align-items: center;
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  .earthliving-report-workflow {
+    grid-template-columns: 1fr;
   }
 }

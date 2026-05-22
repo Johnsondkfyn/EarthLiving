@@ -44,7 +44,7 @@ The panel should read a safe exported report file from the server volume, then s
 - Location
 - Note
 - Status
-- Quick actions later: set status, assign, archive, send to Codex
+- Quick actions: AI analysis package, Codex handoff, approve repair, copy player reply, and local completion marker
 
 ## Safe implementation path
 
@@ -62,7 +62,16 @@ The panel should read a safe exported report file from the server volume, then s
 - Both flows write to the same `reports.yml` file.
 - Both flows are exported to the same `reports-panel.json` file.
 - The Blueprint Report Center reads the export and labels each card as `In-game` or `Discord`.
+- Staff workflow buttons now help triage each report:
+  - `Analyze with ChatGPT` copies a clean analysis prompt.
+  - `Send to Codex` copies a scoped implementation handoff.
+  - `Godkend fix` copies a repair approval checklist and marks the card locally.
+  - `Svar til spiller` copies a short player reply draft.
+  - `Afsluttet` marks the card completed locally in the browser.
+  - `Genåbn` resets the local workflow marker.
 
 ## Why not edit `reports.yml` directly from the panel?
 
 Direct editing can corrupt the file while the server is running. A read-only export is safer first. Later, panel actions should call a controlled endpoint or command queue that EarthLivingCore processes.
+
+The current completion marker is intentionally local-only. The permanent version should be implemented through EarthLivingCore so the Minecraft server remains the source of truth for report status.
