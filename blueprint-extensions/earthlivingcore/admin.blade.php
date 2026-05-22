@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/assets/extensions/earthlivingcore/admin.style.css?v=20260519-reports-fix">
+<link rel="stylesheet" href="/assets/extensions/earthlivingcore/admin.style.css?v=20260522-ai-actions">
 <style>
     .earthliving-extension-page {
         color: #edf3ec;
@@ -194,6 +194,37 @@
                             $source = strtolower($report['source'] ?? 'minecraft');
                             $isDiscordReport = $source === 'discord';
                             $sourceLabel = $isDiscordReport ? 'Discord' : 'In-game';
+                            $reportIdentity = $isDiscordReport ? ($report['discordUser'] ?? $report['playerName'] ?? 'Unknown') : ($report['playerName'] ?? 'Unknown');
+                            $reportLocation = $isDiscordReport ? 'Discord bug-reports channel' : (($report['world'] ?? 'world') . ' ' . ($report['x'] ?? 0) . ' ' . ($report['y'] ?? 0) . ' ' . ($report['z'] ?? 0));
+                            $chatGptPrompt = "Analyze this EarthLiving report and suggest likely cause, severity, next checks, and a safe fix plan. Do not ask for secrets.\n\n"
+                                . "Report ID: #" . ($report['id'] ?? '?') . "\n"
+                                . "Source: " . $sourceLabel . "\n"
+                                . "Status: " . ($report['status'] ?? 'unknown') . "\n"
+                                . "Category: " . ($report['categoryTitle'] ?? 'Report') . "\n"
+                                . "Reporter: " . $reportIdentity . "\n"
+                                . "Location/Channel: " . $reportLocation . "\n"
+                                . "Created: " . ($report['createdAt'] ?? 'unknown') . "\n"
+                                . "Note: " . ($report['note'] ?? '') . "\n\n"
+                                . "Expected output:\n"
+                                . "1. Short diagnosis\n"
+                                . "2. Risk/severity\n"
+                                . "3. What logs/config/code to inspect\n"
+                                . "4. Recommended Codex handoff\n"
+                                . "5. Player/staff reply draft";
+                            $codexPrompt = "## Goal\nInvestigate and propose a safe fix for EarthLiving report #" . ($report['id'] ?? '?') . ".\n\n"
+                                . "## Report\n"
+                                . "- Source: " . $sourceLabel . "\n"
+                                . "- Status: " . ($report['status'] ?? 'unknown') . "\n"
+                                . "- Category: " . ($report['categoryTitle'] ?? 'Report') . "\n"
+                                . "- Reporter: " . $reportIdentity . "\n"
+                                . "- Location/Channel: " . $reportLocation . "\n"
+                                . "- Created: " . ($report['createdAt'] ?? 'unknown') . "\n"
+                                . "- Note: " . ($report['note'] ?? '') . "\n\n"
+                                . "## Instructions\n"
+                                . "- Check relevant config, plugin code, panel/report export, and recent logs.\n"
+                                . "- Do not expose secrets or tokens.\n"
+                                . "- If a code/config fix is needed, implement it, test it, and update docs/status.\n"
+                                . "- Report back with changed files, verification, and any remaining risk.";
                         @endphp
                         <div class="earthliving-report-card-head">
                             <strong>#{{ $report['id'] ?? '?' }} {{ $report['categoryTitle'] ?? 'Report' }}</strong>
@@ -209,6 +240,32 @@
                             @endif
                             <span><i class="fa fa-clock-o"></i> {{ $report['createdAt'] ?? 'unknown' }}</span>
                         </div>
+                        <div class="earthliving-report-actions">
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-xs earthliving-copy-report"
+                                data-copy-label="ChatGPT package copied"
+                                data-report-prompt="{{ e($chatGptPrompt) }}"
+                            >
+                                <i class="fa fa-magic"></i> Analyze with ChatGPT
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-success btn-xs earthliving-copy-report"
+                                data-copy-label="Codex handoff copied"
+                                data-report-prompt="{{ e($codexPrompt) }}"
+                            >
+                                <i class="fa fa-code"></i> Send to Codex
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-default btn-xs earthliving-toggle-report"
+                                aria-expanded="false"
+                            >
+                                <i class="fa fa-file-text-o"></i> View package
+                            </button>
+                        </div>
+                        <textarea class="earthliving-report-package" readonly>{{ $chatGptPrompt }}</textarea>
                     </article>
                 @endforeach
             </div>
@@ -274,3 +331,57 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('click', function (event) {
+    var copyButton = event.target.closest('.earthliving-copy-report');
+    if (copyButton) {
+        var text = copyButton.getAttribute('data-report-prompt') || '';
+        var original = copyButton.innerHTML;
+        var label = copyButton.getAttribute('data-copy-label') || 'Copied';
+        var markCopied = function () {
+            copyButton.innerHTML = '<i class="fa fa-check"></i> ' + label;
+            window.setTimeout(function () {
+                copyButton.innerHTML = original;
+            }, 1800);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(markCopied).catch(function () {
+                fallbackCopy(text, markCopied);
+            });
+        } else {
+            fallbackCopy(text, markCopied);
+        }
+        return;
+    }
+
+    var toggleButton = event.target.closest('.earthliving-toggle-report');
+    if (toggleButton) {
+        var card = toggleButton.closest('.earthliving-report-card');
+        var packageBox = card ? card.querySelector('.earthliving-report-package') : null;
+        if (!packageBox) {
+            return;
+        }
+
+        var expanded = packageBox.classList.toggle('is-visible');
+        toggleButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        toggleButton.innerHTML = expanded
+            ? '<i class="fa fa-eye-slash"></i> Hide package'
+            : '<i class="fa fa-file-text-o"></i> View package';
+    }
+});
+
+function fallbackCopy(text, callback) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', 'readonly');
+    area.style.position = 'fixed';
+    area.style.left = '-9999px';
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    document.body.removeChild(area);
+    callback();
+}
+</script>
