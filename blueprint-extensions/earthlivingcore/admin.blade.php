@@ -175,6 +175,17 @@
             </div>
         </header>
 
+        @if (session('earthlivingReportAction'))
+            <div class="earthliving-report-notice earthliving-report-notice-success">
+                <i class="fa fa-check-circle"></i> {{ session('earthlivingReportAction') }}
+            </div>
+        @endif
+        @if (session('earthlivingReportActionError'))
+            <div class="earthliving-report-notice earthliving-report-notice-error">
+                <i class="fa fa-warning"></i> {{ session('earthlivingReportActionError') }}
+            </div>
+        @endif
+
         @if (count($panelReports) === 0)
             <article class="earthliving-report-empty">
                 <i class="fa fa-inbox"></i>
@@ -194,6 +205,17 @@
                             $source = strtolower($report['source'] ?? 'minecraft');
                             $isDiscordReport = $source === 'discord';
                             $sourceLabel = $isDiscordReport ? 'Discord' : 'In-game';
+                            $reportStatus = strtolower($report['status'] ?? 'open');
+                            $workflowStatusLabel = match ($reportStatus) {
+                                'repair-approved' => 'Workflow: Fix godkendt',
+                                'completed' => 'Workflow: Afsluttet',
+                                default => 'Workflow: Åben',
+                            };
+                            $workflowStatusIcon = match ($reportStatus) {
+                                'repair-approved' => 'fa-check-square-o',
+                                'completed' => 'fa-flag-checkered',
+                                default => 'fa-circle-o',
+                            };
                             $reportIdentity = $isDiscordReport ? ($report['discordUser'] ?? $report['playerName'] ?? 'Unknown') : ($report['playerName'] ?? 'Unknown');
                             $reportLocation = $isDiscordReport ? 'Discord bug-reports channel' : (($report['world'] ?? 'world') . ' ' . ($report['x'] ?? 0) . ' ' . ($report['y'] ?? 0) . ' ' . ($report['z'] ?? 0));
                             $reportId = $report['id'] ?? '?';
@@ -287,19 +309,19 @@
                                 <i class="fa fa-file-text-o"></i> Vis pakke
                             </button>
                         </div>
-                        <div class="earthliving-report-workflow" data-workflow-state="open">
+                        <div class="earthliving-report-workflow" data-workflow-state="{{ e($reportStatus) }}">
                             <span class="earthliving-workflow-status">
-                                <i class="fa fa-circle-o"></i> Workflow: Åben
+                                <i class="fa {{ $workflowStatusIcon }}"></i> {{ $workflowStatusLabel }}
                             </span>
-                            <button
-                                type="button"
-                                class="btn btn-warning btn-xs earthliving-workflow-action earthliving-copy-report earthliving-action-approve"
-                                data-workflow-state="repair-approved"
-                                data-copy-label="Repair approval copied"
-                                data-report-prompt="{{ e($repairPrompt) }}"
-                            >
-                                <i class="fa fa-check-square-o"></i> Godkend fix
-                            </button>
+                            <form class="earthliving-report-action-form" method="POST" action="{{ url('/admin/extensions/earthlivingcore?view=reports') }}">
+                                @csrf
+                                <input type="hidden" name="earthliving_report_id" value="{{ $reportId }}">
+                                <input type="hidden" name="earthliving_report_action" value="repair-approved">
+                                <input type="hidden" name="earthliving_report_note" value="{{ e($repairPrompt) }}">
+                                <button type="submit" class="btn btn-warning btn-xs earthliving-action-approve">
+                                    <i class="fa fa-check-square-o"></i> Godkend fix
+                                </button>
+                            </form>
                             <button
                                 type="button"
                                 class="btn btn-info btn-xs earthliving-copy-report earthliving-action-reply"
@@ -316,20 +338,24 @@
                             >
                                 <i class="fa fa-archive"></i> Luk-pakke
                             </button>
-                            <button
-                                type="button"
-                                class="btn btn-danger btn-xs earthliving-workflow-action earthliving-action-complete"
-                                data-workflow-state="completed"
-                            >
-                                <i class="fa fa-flag-checkered"></i> Afsluttet
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-default btn-xs earthliving-workflow-action earthliving-action-neutral"
-                                data-workflow-state="open"
-                            >
-                                <i class="fa fa-undo"></i> Genåbn
-                            </button>
+                            <form class="earthliving-report-action-form" method="POST" action="{{ url('/admin/extensions/earthlivingcore?view=reports') }}">
+                                @csrf
+                                <input type="hidden" name="earthliving_report_id" value="{{ $reportId }}">
+                                <input type="hidden" name="earthliving_report_action" value="completed">
+                                <input type="hidden" name="earthliving_report_note" value="{{ e($closePrompt) }}">
+                                <button type="submit" class="btn btn-danger btn-xs earthliving-action-complete">
+                                    <i class="fa fa-flag-checkered"></i> Afsluttet
+                                </button>
+                            </form>
+                            <form class="earthliving-report-action-form" method="POST" action="{{ url('/admin/extensions/earthlivingcore?view=reports') }}">
+                                @csrf
+                                <input type="hidden" name="earthliving_report_id" value="{{ $reportId }}">
+                                <input type="hidden" name="earthliving_report_action" value="open">
+                                <input type="hidden" name="earthliving_report_note" value="Reopened from Panel Report Center.">
+                                <button type="submit" class="btn btn-default btn-xs earthliving-action-neutral">
+                                    <i class="fa fa-undo"></i> Genåbn
+                                </button>
+                            </form>
                         </div>
                         <textarea class="earthliving-report-package" readonly>{{ $chatGptPrompt }}</textarea>
                     </article>
@@ -400,15 +426,6 @@
 
 <script>
 document.addEventListener('click', function (event) {
-    var workflowButton = event.target.closest('.earthliving-workflow-action');
-    if (workflowButton) {
-        var workflowCard = workflowButton.closest('.earthliving-report-card');
-        var nextState = workflowButton.getAttribute('data-workflow-state') || 'open';
-        if (workflowCard) {
-            setWorkflowState(workflowCard, nextState, true);
-        }
-    }
-
     var copyButton = event.target.closest('.earthliving-copy-report');
     if (copyButton) {
         var text = copyButton.getAttribute('data-report-prompt') || '';
@@ -459,39 +476,4 @@ function fallbackCopy(text, callback) {
     document.body.removeChild(area);
     callback();
 }
-
-function setWorkflowState(card, state, persist) {
-    var reportId = card.getAttribute('data-report-id') || '';
-    var workflow = card.querySelector('.earthliving-report-workflow');
-    var status = card.querySelector('.earthliving-workflow-status');
-    if (!workflow || !status) {
-        return;
-    }
-
-    var labels = {
-        open: '<i class="fa fa-circle-o"></i> Workflow: Åben',
-        'repair-approved': '<i class="fa fa-check-square-o"></i> Workflow: Fix godkendt',
-        completed: '<i class="fa fa-flag-checkered"></i> Workflow: Afsluttet lokalt'
-    };
-
-    workflow.setAttribute('data-workflow-state', state);
-    status.innerHTML = labels[state] || labels.open;
-    card.classList.toggle('is-workflow-completed', state === 'completed');
-
-    if (persist && reportId && window.localStorage) {
-        window.localStorage.setItem('earthliving-report-workflow-' + reportId, state);
-    }
-}
-
-document.querySelectorAll('.earthliving-report-card[data-report-id]').forEach(function (card) {
-    var reportId = card.getAttribute('data-report-id');
-    if (!reportId || !window.localStorage) {
-        return;
-    }
-
-    var savedState = window.localStorage.getItem('earthliving-report-workflow-' + reportId);
-    if (savedState) {
-        setWorkflowState(card, savedState, false);
-    }
-});
 </script>

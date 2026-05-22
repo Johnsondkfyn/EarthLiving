@@ -44,6 +44,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         registerModules();
         registerCommands();
         getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService), this);
+        reportService.startPanelActionProcessor();
         discordReportImportService.startLater();
 
         notificationService.console("EarthLivingCore enabled with " + moduleRegistry.enabledModules().size() + " active modules.");
@@ -53,6 +54,9 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     public void onDisable() {
         if (discordReportImportService != null) {
             discordReportImportService.stop();
+        }
+        if (reportService != null) {
+            reportService.stopPanelActionProcessor();
         }
         if (notificationService != null) {
             notificationService.console("EarthLivingCore disabled.");

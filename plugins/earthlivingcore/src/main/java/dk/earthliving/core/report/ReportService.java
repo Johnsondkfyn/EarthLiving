@@ -14,11 +14,16 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -37,8 +42,10 @@ public final class ReportService {
     private final DiscordNotificationService discordNotifications;
     private final File reportsFile;
     private final File panelReportsFile;
+    private final File panelActionsFile;
     private final Map<UUID, ReportCategory> pendingReports = new ConcurrentHashMap<>();
     private FileConfiguration reports;
+    private BukkitTask panelActionTask;
     private int nextId;
 
     public ReportService(JavaPlugin plugin, NotificationService notifications, DiscordNotificationService discordNotifications) {
@@ -47,8 +54,25 @@ public final class ReportService {
         this.discordNotifications = discordNotifications;
         this.reportsFile = new File(plugin.getDataFolder(), "reports.yml");
         this.panelReportsFile = new File(plugin.getDataFolder(), "reports-panel.json");
+        this.panelActionsFile = new File(plugin.getDataFolder(), "reports-actions.queue");
         load();
+        ensurePanelActionsFile();
         exportPanelReports();
+    }
+
+    public void startPanelActionProcessor() {
+        if (panelActionTask != null) {
+            return;
+        }
+
+        panelActionTask = Bukkit.getScheduler().runTaskTimer(plugin, this::processPanelActions, 60L, 60L);
+    }
+
+    public void stopPanelActionProcessor() {
+        if (panelActionTask != null) {
+            panelActionTask.cancel();
+            panelActionTask = null;
+        }
     }
 
     public void open(Player player) {
@@ -288,6 +312,36 @@ public final class ReportService {
         return count;
     }
 
+    public boolean setReportStatus(int id, String status, String staff, String note, String source) {
+        String normalizedStatus = normalizeStatus(status);
+        if (normalizedStatus.isBlank()) {
+            return false;
+        }
+
+        String path = "reports." + id;
+        if (!reports.isConfigurationSection(path)) {
+            return false;
+        }
+
+        String actor = staff == null || staff.isBlank() ? "Panel" : staff.trim();
+        reports.set(path + ".status", normalizedStatus);
+        reports.set(path + ".updated-at", Instant.now().toString());
+        reports.set(path + ".staff-action-source", source == null || source.isBlank() ? "unknown" : source);
+        reports.set(path + ".staff-action-by", actor);
+        if (note != null && !note.isBlank()) {
+            reports.set(path + ".staff-note", note.trim());
+        }
+        if ("completed".equals(normalizedStatus)) {
+            reports.set(path + ".closed-at", Instant.now().toString());
+        } else {
+            reports.set(path + ".closed-at", null);
+        }
+
+        save();
+        notifications.console("Report #" + id + " status set to " + normalizedStatus + " by " + actor + ".");
+        return true;
+    }
+
     private void load() {
         if (!reportsFile.exists()) {
             reportsFile.getParentFile().mkdirs();
@@ -302,6 +356,59 @@ public final class ReportService {
             exportPanelReports();
         } catch (IOException exception) {
             notifications.console("Could not save reports.yml: " + exception.getMessage());
+        }
+    }
+
+    private void ensurePanelActionsFile() {
+        try {
+            panelActionsFile.getParentFile().mkdirs();
+            if (!panelActionsFile.exists()) {
+                Files.writeString(panelActionsFile.toPath(), "", StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+            }
+        } catch (IOException exception) {
+            notifications.console("Could not prepare reports-actions.queue: " + exception.getMessage());
+        }
+    }
+
+    private void processPanelActions() {
+        ensurePanelActionsFile();
+        List<String> actionLines;
+        try {
+            actionLines = Files.readAllLines(panelActionsFile.toPath(), StandardCharsets.UTF_8)
+                    .stream()
+                    .filter(line -> !line.isBlank())
+                    .toList();
+            if (actionLines.isEmpty()) {
+                return;
+            }
+            Files.writeString(panelActionsFile.toPath(), "", StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException exception) {
+            notifications.console("Could not read report action queue: " + exception.getMessage());
+            return;
+        }
+
+        for (String actionLine : actionLines) {
+            applyPanelAction(actionLine);
+        }
+    }
+
+    private void applyPanelAction(String actionLine) {
+        String[] parts = actionLine.split("\\|", 6);
+        if (parts.length < 6) {
+            notifications.console("Ignored malformed report action queue line.");
+            return;
+        }
+
+        try {
+            int reportId = Integer.parseInt(parts[2]);
+            String status = parts[3];
+            String staff = decodeQueueValue(parts[4]);
+            String note = decodeQueueValue(parts[5]);
+            if (!setReportStatus(reportId, status, staff, note, "panel")) {
+                notifications.console("Ignored report action for unknown report #" + reportId + " or invalid status.");
+            }
+        } catch (NumberFormatException exception) {
+            notifications.console("Ignored report action with invalid report id.");
         }
     }
 
@@ -341,6 +448,10 @@ public final class ReportService {
             json.append("      \"y\": ").append(reports.getInt(path + ".y")).append(",\n");
             json.append("      \"z\": ").append(reports.getInt(path + ".z")).append(",\n");
             json.append("      \"createdAt\": \"").append(jsonEscape(reports.getString(path + ".created-at", "unknown"))).append("\",\n");
+            json.append("      \"updatedAt\": \"").append(jsonEscape(reports.getString(path + ".updated-at", ""))).append("\",\n");
+            json.append("      \"closedAt\": \"").append(jsonEscape(reports.getString(path + ".closed-at", ""))).append("\",\n");
+            json.append("      \"staffActionBy\": \"").append(jsonEscape(reports.getString(path + ".staff-action-by", ""))).append("\",\n");
+            json.append("      \"staffNote\": \"").append(jsonEscape(reports.getString(path + ".staff-note", ""))).append("\",\n");
             json.append("      \"note\": \"").append(jsonEscape(reports.getString(path + ".note", ""))).append("\"\n");
             json.append("    }");
             if (index < ids.size() - 1) {
@@ -460,6 +571,30 @@ public final class ReportService {
             return value == null ? "" : value;
         }
         return value.substring(0, maxLength - 3) + "...";
+    }
+
+    private String normalizeStatus(String status) {
+        if (status == null) {
+            return "";
+        }
+
+        String normalized = status.trim().toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "open", "repair-approved", "completed" -> normalized;
+            default -> "";
+        };
+    }
+
+    private String decodeQueueValue(String value) {
+        if (value == null || value.isBlank()) {
+            return "";
+        }
+
+        try {
+            return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException exception) {
+            return "";
+        }
     }
 
     private String jsonEscape(String value) {

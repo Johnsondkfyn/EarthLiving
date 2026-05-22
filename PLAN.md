@@ -43,6 +43,8 @@ Opdatering 2026-05-20: Notion-roadmapet blev ryddet op efter gennemgang af fakti
 
 Opdatering 2026-05-20 aften: Discord verification og rapportflow er færdiggjort på Earth Living Main. DiscordSRV kræver nu linked Discord-konto for join, vanilla whitelist bypass er slået fra, Discord console forwarding er fortsat slået fra, og EarthLivingCore `0.6.2` importerer `!report` fra `bug-reports` til samme `reports.yml`/`reports-panel.json` som in-game EarthOS reports. Report Center i panelet viser derfor både in-game og Discord-rapporter i samme kø.
 
+Opdatering 2026-05-22 aften: EarthLivingCore `0.6.3` er deployet på Main. Report Center i panelet har nu permanente staff workflow-actions via `reports-actions.queue`: `Godkend fix` sætter report status til `repair-approved`, `Afsluttet` sætter status til `completed`, og `Genåbn` sætter status tilbage til `open`. EarthLivingCore behandler køen og opdaterer `reports.yml` og `reports-panel.json`, så Minecraft-plugin'et er source of truth.
+
 Opdatering 2026-05-22: Dagens næste hovedspor er **EarthLiving Web Portal + EarthWebBridge**. Målet er en sikker spillerportal, hvor spillere senere kan linke Minecraft UUID til en website-profil via one-time kode i EarthOS. Første scope er plan/scaffold, link-code design, read-only profile/report exports og ingen Microsoft/Minecraft password-håndtering.
 
 Opdatering 2026-05-22: Notion er ryddet, så hovedopgaven `Discord integration` er markeret `Færdig`, og `EarthLiving Web Portal + EarthWebBridge` er oprettet som ny `I gang`-opgave med høj prioritet. Aktuel website/roadmap-status er **25 Færdig**, **6 I gang**, **66 Planlagt** og **26%**.
@@ -115,7 +117,7 @@ Opdatering 2026-05-22: Notion er ryddet, så hovedopgaven `Discord integration` 
 - Real bot-token er oprettet og lagt i testserverens private DiscordSRV config. Token må aldrig lægges i GitHub, Notion eller chat.
 - DiscordSRV `1.30.5` blev testet på Earth Living Test og flyttet til Earth Living Main efter godkendt test.
 - EarthLivingCore `0.6.0` kører på Main med DiscordSRV bridge, random event announcements og restart countdown-beskeder.
-- EarthLivingCore `0.6.2` kører på Main med DiscordSRV bridge, report staff alerts og Discord report import.
+- EarthLivingCore `0.6.3` kører på Main med DiscordSRV bridge, report staff alerts, Discord report import og permanente Report Center status-actions.
 - `server-status` modtager server start/status og restart countdowns.
 - `server-events` modtager `/earthliving event <message>` announcements.
 - `minecraft-chat` er mappet til Minecraft-to-Discord player chat og testet med en rigtig spillerbesked på main.

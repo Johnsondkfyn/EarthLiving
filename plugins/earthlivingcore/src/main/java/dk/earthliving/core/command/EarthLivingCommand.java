@@ -43,8 +43,22 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
                 notifications.send(sender, "&cYou do not have permission to view reports.");
                 return true;
             }
+            if (args.length >= 4 && args[1].equalsIgnoreCase("set")) {
+                try {
+                    int reportId = Integer.parseInt(args[2]);
+                    String note = args.length >= 5 ? joinArgs(args, 4) : "";
+                    boolean changed = plugin.reportService().setReportStatus(reportId, args[3], sender.getName(), note, "command");
+                    notifications.send(sender, changed
+                            ? "&aReport #" + reportId + " updated to &f" + args[3] + "&a."
+                            : "&cCould not update report #" + reportId + ". Use status open, repair-approved or completed.");
+                } catch (NumberFormatException exception) {
+                    notifications.send(sender, "&cReport id must be a whole number.");
+                }
+                return true;
+            }
             notifications.send(sender, "&dOpen reports: &f" + plugin.reportService().openReportCount());
             notifications.send(sender, "&7Reports are saved in the plugin data folder as reports.yml.");
+            notifications.send(sender, "&eUsage: /" + label + " reports set <id> <open|repair-approved|completed> [note]");
             return true;
         }
 
@@ -108,20 +122,36 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length != 1) {
-            return List.of();
+        if (args.length == 1) {
+            List<String> options = new ArrayList<>(List.of("status", "modules", "earthos"));
+            if (sender.hasPermission("earthliving.admin")) {
+                options.add("reports");
+                options.add("event");
+                options.add("restart");
+                options.add("reload");
+            }
+
+            String input = args[0].toLowerCase();
+            return options.stream().filter(option -> option.startsWith(input)).toList();
         }
 
-        List<String> options = new ArrayList<>(List.of("status", "modules", "earthos"));
-        if (sender.hasPermission("earthliving.admin")) {
-            options.add("reports");
-            options.add("event");
-            options.add("restart");
-            options.add("reload");
+        if (sender.hasPermission("earthliving.admin")
+                && args[0].equalsIgnoreCase("reports")
+                && args.length == 2) {
+            return List.of("set").stream()
+                    .filter(option -> option.startsWith(args[1].toLowerCase()))
+                    .toList();
         }
 
-        String input = args[0].toLowerCase();
-        return options.stream().filter(option -> option.startsWith(input)).toList();
+        if (sender.hasPermission("earthliving.admin")
+                && args[0].equalsIgnoreCase("reports")
+                && args.length == 4) {
+            return List.of("open", "repair-approved", "completed").stream()
+                    .filter(option -> option.startsWith(args[3].toLowerCase()))
+                    .toList();
+        }
+
+        return List.of();
     }
 
     private String joinArgs(String[] args, int startIndex) {

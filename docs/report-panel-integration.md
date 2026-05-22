@@ -44,7 +44,7 @@ The panel should read a safe exported report file from the server volume, then s
 - Location
 - Note
 - Status
-- Quick actions: AI analysis package, Codex handoff, approve repair, copy player reply, and local completion marker
+- Quick actions: AI analysis package, Codex handoff, approve repair, copy player reply, and permanent status updates through EarthLivingCore
 
 ## Safe implementation path
 
@@ -65,14 +65,15 @@ The panel should read a safe exported report file from the server volume, then s
 - Staff workflow buttons now help triage each report:
   - `ChatGPT-analyse` copies a clean analysis prompt.
   - `Send til Codex` copies a scoped implementation handoff.
-  - `Godkend fix` copies a repair approval checklist and marks the card locally.
+  - `Godkend fix` queues a `repair-approved` status update for EarthLivingCore.
   - `Svar til spiller` copies a short player reply draft.
   - `Luk-pakke` copies the close checklist.
-  - `Afsluttet` marks the card completed locally in the browser.
-  - `Genåbn` resets the local workflow marker.
+  - `Afsluttet` queues a `completed` status update for EarthLivingCore.
+  - `Genåbn` queues an `open` status update for EarthLivingCore.
+- EarthLivingCore `0.6.3` processes `reports-actions.queue` and remains the source of truth for report status.
 
 ## Why not edit `reports.yml` directly from the panel?
 
 Direct editing can corrupt the file while the server is running. A read-only export is safer first. Later, panel actions should call a controlled endpoint or command queue that EarthLivingCore processes.
 
-The current completion marker is intentionally local-only. The permanent version should be implemented through EarthLivingCore so the Minecraft server remains the source of truth for report status.
+The permanent workflow uses a controlled queue file. The panel appends a requested action, and EarthLivingCore applies it to `reports.yml`, updates `reports-panel.json`, and keeps Minecraft as the source of truth.

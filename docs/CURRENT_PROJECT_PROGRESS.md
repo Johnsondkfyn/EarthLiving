@@ -63,6 +63,8 @@ Planned systems include, but are not limited to:
 Updated 2026-05-22:
 
 - Discord integration foundation is now complete: chat/status/player count, account linking verification, staff alerts and shared in-game/Discord report flow.
+- EarthLivingCore `0.6.3` is live on Main with permanent Report Center status actions through `reports-actions.queue`.
+- Panel Report Center can now set reports to `repair-approved`, `completed`, or back to `open` without editing `reports.yml` directly.
 - EarthLiving Web Portal + EarthWebBridge has started as the next high-priority track.
 - Current public roadmap estimate: 25 completed, 6 in progress, 66 planned, 26% overall.
 
