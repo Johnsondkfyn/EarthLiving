@@ -114,7 +114,7 @@
             <h2>{{ $showReports ? 'Report Center' : 'Panel Marketplace' }}</h2>
             <p>
                 @if ($showReports)
-                    In-game and Discord reports from EarthLivingCore, shown as a read-only operations queue for staff review.
+                    In-game and Discord reports from EarthLivingCore, shown as a staff triage queue with safe handoff actions.
                 @else
                     Curated Pterodactyl themes, plugin installers, player managers, admin tools and network utilities for Earth Living.
                 @endif
@@ -265,35 +265,35 @@
                         <div class="earthliving-report-actions">
                             <button
                                 type="button"
-                                class="btn btn-primary btn-xs earthliving-copy-report"
+                                class="btn btn-primary btn-xs earthliving-copy-report earthliving-action-ai"
                                 data-copy-label="ChatGPT package copied"
                                 data-report-prompt="{{ e($chatGptPrompt) }}"
                             >
-                                <i class="fa fa-magic"></i> Analyze with ChatGPT
+                                <i class="fa fa-magic"></i> ChatGPT-analyse
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-success btn-xs earthliving-copy-report"
+                                class="btn btn-success btn-xs earthliving-copy-report earthliving-action-codex"
                                 data-copy-label="Codex handoff copied"
                                 data-report-prompt="{{ e($codexPrompt) }}"
                             >
-                                <i class="fa fa-code"></i> Send to Codex
+                                <i class="fa fa-code"></i> Send til Codex
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-default btn-xs earthliving-toggle-report"
+                                class="btn btn-default btn-xs earthliving-toggle-report earthliving-action-neutral"
                                 aria-expanded="false"
                             >
-                                <i class="fa fa-file-text-o"></i> View package
+                                <i class="fa fa-file-text-o"></i> Vis pakke
                             </button>
                         </div>
                         <div class="earthliving-report-workflow" data-workflow-state="open">
                             <span class="earthliving-workflow-status">
-                                <i class="fa fa-circle-o"></i> Workflow: Open
+                                <i class="fa fa-circle-o"></i> Workflow: Åben
                             </span>
                             <button
                                 type="button"
-                                class="btn btn-warning btn-xs earthliving-workflow-action earthliving-copy-report"
+                                class="btn btn-warning btn-xs earthliving-workflow-action earthliving-copy-report earthliving-action-approve"
                                 data-workflow-state="repair-approved"
                                 data-copy-label="Repair approval copied"
                                 data-report-prompt="{{ e($repairPrompt) }}"
@@ -302,7 +302,7 @@
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-info btn-xs earthliving-copy-report"
+                                class="btn btn-info btn-xs earthliving-copy-report earthliving-action-reply"
                                 data-copy-label="Player reply copied"
                                 data-report-prompt="{{ e($playerReply) }}"
                             >
@@ -310,22 +310,22 @@
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-default btn-xs earthliving-copy-report"
+                                class="btn btn-default btn-xs earthliving-copy-report earthliving-action-neutral"
                                 data-copy-label="Close package copied"
                                 data-report-prompt="{{ e($closePrompt) }}"
                             >
-                                <i class="fa fa-archive"></i> Afslutningspakke
+                                <i class="fa fa-archive"></i> Luk-pakke
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-danger btn-xs earthliving-workflow-action"
+                                class="btn btn-danger btn-xs earthliving-workflow-action earthliving-action-complete"
                                 data-workflow-state="completed"
                             >
                                 <i class="fa fa-flag-checkered"></i> Afsluttet
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-default btn-xs earthliving-workflow-action"
+                                class="btn btn-default btn-xs earthliving-workflow-action earthliving-action-neutral"
                                 data-workflow-state="open"
                             >
                                 <i class="fa fa-undo"></i> Genåbn
@@ -442,8 +442,8 @@ document.addEventListener('click', function (event) {
         var expanded = packageBox.classList.toggle('is-visible');
         toggleButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
         toggleButton.innerHTML = expanded
-            ? '<i class="fa fa-eye-slash"></i> Hide package'
-            : '<i class="fa fa-file-text-o"></i> View package';
+            ? '<i class="fa fa-eye-slash"></i> Skjul pakke'
+            : '<i class="fa fa-file-text-o"></i> Vis pakke';
     }
 });
 
@@ -469,7 +469,7 @@ function setWorkflowState(card, state, persist) {
     }
 
     var labels = {
-        open: '<i class="fa fa-circle-o"></i> Workflow: Open',
+        open: '<i class="fa fa-circle-o"></i> Workflow: Åben',
         'repair-approved': '<i class="fa fa-check-square-o"></i> Workflow: Fix godkendt',
         completed: '<i class="fa fa-flag-checkered"></i> Workflow: Afsluttet lokalt'
     };

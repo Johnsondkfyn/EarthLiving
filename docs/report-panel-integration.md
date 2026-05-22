@@ -63,10 +63,11 @@ The panel should read a safe exported report file from the server volume, then s
 - Both flows are exported to the same `reports-panel.json` file.
 - The Blueprint Report Center reads the export and labels each card as `In-game` or `Discord`.
 - Staff workflow buttons now help triage each report:
-  - `Analyze with ChatGPT` copies a clean analysis prompt.
-  - `Send to Codex` copies a scoped implementation handoff.
+  - `ChatGPT-analyse` copies a clean analysis prompt.
+  - `Send til Codex` copies a scoped implementation handoff.
   - `Godkend fix` copies a repair approval checklist and marks the card locally.
   - `Svar til spiller` copies a short player reply draft.
+  - `Luk-pakke` copies the close checklist.
   - `Afsluttet` marks the card completed locally in the browser.
   - `Genåbn` resets the local workflow marker.
 
