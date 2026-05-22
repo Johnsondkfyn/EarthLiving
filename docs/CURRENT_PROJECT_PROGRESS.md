@@ -60,6 +60,12 @@ Planned systems include, but are not limited to:
 
 ## Website status
 
+Updated 2026-05-22:
+
+- Discord integration foundation is now complete: chat/status/player count, account linking verification, staff alerts and shared in-game/Discord report flow.
+- EarthLiving Web Portal + EarthWebBridge has started as the next high-priority track.
+- Current public roadmap estimate: 25 completed, 6 in progress, 66 planned, 26% overall.
+
 Updated 2026-05-20:
 
 - Domain `earthliving.earth` is live.

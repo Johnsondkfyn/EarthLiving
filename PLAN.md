@@ -43,6 +43,10 @@ Opdatering 2026-05-20: Notion-roadmapet blev ryddet op efter gennemgang af fakti
 
 Opdatering 2026-05-20 aften: Discord verification og rapportflow er færdiggjort på Earth Living Main. DiscordSRV kræver nu linked Discord-konto for join, vanilla whitelist bypass er slået fra, Discord console forwarding er fortsat slået fra, og EarthLivingCore `0.6.2` importerer `!report` fra `bug-reports` til samme `reports.yml`/`reports-panel.json` som in-game EarthOS reports. Report Center i panelet viser derfor både in-game og Discord-rapporter i samme kø.
 
+Opdatering 2026-05-22: Dagens næste hovedspor er **EarthLiving Web Portal + EarthWebBridge**. Målet er en sikker spillerportal, hvor spillere senere kan linke Minecraft UUID til en website-profil via one-time kode i EarthOS. Første scope er plan/scaffold, link-code design, read-only profile/report exports og ingen Microsoft/Minecraft password-håndtering.
+
+Opdatering 2026-05-22: Notion er ryddet, så hovedopgaven `Discord integration` er markeret `Færdig`, og `EarthLiving Web Portal + EarthWebBridge` er oprettet som ny `I gang`-opgave med høj prioritet. Aktuel website/roadmap-status er **25 Færdig**, **6 I gang**, **66 Planlagt** og **26%**.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -159,6 +163,7 @@ Opdatering 2026-05-20 aften: Discord verification og rapportflow er færdiggjort
 | Projekt | Prioritet | Notion |
 | --- | --- | --- |
 | Roadmap/status i Notion | Ikke angivet | https://www.notion.so/3619c23d643a80098efacacb46b4bc28 |
+| EarthLiving Web Portal + EarthWebBridge | Høj | Se `docs/EARTH_WEB_PORTAL.md` |
 | Ekstra I gang-række | Ikke angivet | Vises i Notion, men blev ikke returneret med navn af connector-søgningen. |
 | Velocity proxy med servervalg | Høj | https://www.notion.so/3639c23d643a8152a370dc0aa3c373df |
 

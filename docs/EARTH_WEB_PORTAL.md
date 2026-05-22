@@ -96,6 +96,37 @@ Carry Weight: 63 / 80 kg
 6. Add economy/passport/company/mining/backpack/transport data later.
 7. Consider Microsoft/Minecraft OAuth later only if it is needed and implemented securely.
 
+## Start scope - 2026-05-22
+
+The first build should stay deliberately small and safe.
+
+### V1 deliverables
+
+- `EarthWebBridge` module/plugin scaffold.
+- Private config with API token placeholder only, never a real token in GitHub.
+- One-time link code model.
+- EarthOS Profile entry point design.
+- Read-only player profile export.
+- Read-only report status export for linked players.
+- Website-side placeholder route/page for "My EarthLiving".
+
+### V1 non-goals
+
+- No Microsoft/Minecraft password handling.
+- No public account registration until the security model is reviewed.
+- No wallet/passport/company/private economy data until the profile link flow is tested.
+- No write actions from the website into live Minecraft data.
+
+### Open implementation decision
+
+Choose the web stack before coding the portal backend:
+
+- Static website + JSON exports first: safest and fastest, but limited login/profile support.
+- Small server-side app later: needed for real accounts, sessions and private player dashboards.
+- Existing Pterodactyl/Blueprint panel only: good for staff tools, not for public player login.
+
+Recommended path: keep the current public site static, then add a separate private web service for authenticated player profiles when the link-code flow is ready.
+
 ## EarthWebBridge
 
 ### Goal
