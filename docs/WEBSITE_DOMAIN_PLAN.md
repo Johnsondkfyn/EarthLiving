@@ -21,6 +21,10 @@ Implemented:
 - The website is deployed under `/var/www/earthliving-site` on the server.
 - The live site includes EarthLiving branding, animated hero title, fixed centered logo background, desktop/mobile preview toggle, automatic mobile layout, and English/Danish language toggle.
 - The roadmap numbers are stored in `docs/data/roadmap-status.json`.
+- The website now has public private-test access cards for Discord onboarding status, live BlueMap access, and current server status.
+- The website has a visual progress area for EarthOS, BlueMap and server screenshots/media as approved captures become available.
+- A small devlog/news section is live for foundation updates.
+- The website shows a technical note that production hosting is Nginx on the EarthLiving server while GitHub remains source of truth for website files.
 
 ## Purpose
 The website should become the public information and marketing hub for EarthLiving. It should explain the project, show progress, help attract future players and testers, and make the server look serious before public launch.
@@ -93,10 +97,11 @@ Future option: GitHub Pages can still be used later if we want static hosting ou
 ## Future improvements
 
 - Add trailer or hero video
-- Add screenshots from EarthOS and the Earth map
+- Replace visual placeholders with approved screenshots/video from EarthOS, BlueMap and the server
 - Add feature pages for EarthOS, transport, mining and nightlife
-- Add development blog/news posts
-- Add Discord call-to-action
+- Move live map to `map.earthliving.earth` when the permanent subdomain is ready
+- Move server status to `status.earthliving.earth` or connect a real status API later
+- Replace Discord onboarding placeholder with the final invite/landing flow
 - Expand multilingual website content beyond the current English/Danish landing page
 
 ## Safety note

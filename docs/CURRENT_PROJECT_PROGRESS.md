@@ -69,6 +69,7 @@ Updated 2026-05-24:
 - Panel Report Center can now set reports to `repair-approved`, `completed`, or back to `open` without editing `reports.yml` directly.
 - EarthLivingCore foundation V1 is now considered complete; future work should be split into smaller EarthOS apps/modules.
 - EarthLiving Web Portal + EarthWebBridge has started implementation: EarthOS profile link entry, one-time link code command, read-only server/profile/report exports and no Microsoft/Minecraft password handling.
+- Website next actions from the domain plan are now partly implemented: Discord onboarding placeholder, clear BlueMap link, server status section, visual progress area, devlog/news foundation and a technical hosting note.
 - Current public roadmap estimate: 27 completed, 4 in progress, 66 planned, 28% overall.
 
 Updated 2026-05-20:
@@ -78,7 +79,7 @@ Updated 2026-05-20:
 - Website is hosted through Nginx on the EarthLiving server.
 - Website source lives under `docs/` in GitHub.
 - Landing page now has EarthLiving logo branding, animated green/cyan title, fixed centered background logo, automatic mobile layout, desktop mobile-preview toggle, and English/Danish language toggle.
-- The website is still considered in progress because content pages, screenshots, Discord CTA, map/status links, and future devlog/news pages are not finished yet.
+- The website is still considered in progress because final Discord invite flow, permanent `map.`/`status.` subdomains, approved real screenshots/video, and deeper feature pages are not finished yet.
 
 ## Website progress display
 

@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260524-3" />
+    <link rel="stylesheet" href="./styles.css?v=20260524-4" />
   </head>
   <body>
     <canvas id="world-canvas" aria-hidden="true"></canvas>
@@ -92,6 +92,36 @@
         <span data-i18n="signals.systems">Living-world systems</span>
         <span data-i18n="signals.discord">DiscordSRV live on main</span>
         <span data-i18n="signals.earthos">EarthOS first apps</span>
+      </section>
+      <section class="section public-links-section" id="server-status" aria-labelledby="server-status-title">
+        <div class="section-heading compact">
+          <p class="eyebrow" data-i18n="public.eyebrow">Live foundation</p>
+          <h2 id="server-status-title" data-i18n="public.title">Useful links for the private test phase.</h2>
+          <p data-i18n="public.body">The server is still invite-only, but the public site now shows the important access points clearly: community, live map, status and development updates.</p>
+        </div>
+        <div class="public-link-grid">
+          <article class="public-link-card">
+            <span class="feature-kicker" data-i18n="public.discord.kicker">Community</span>
+            <h3 data-i18n="public.discord.title">Discord invitation flow</h3>
+            <p data-i18n="public.discord.body">Discord is connected to the server. Public invites open when tester onboarding is ready.</p>
+            <a class="button secondary" href="#community" data-i18n="public.discord.button">Follow community status</a>
+          </article>
+          <article class="public-link-card">
+            <span class="feature-kicker" data-i18n="public.map.kicker">Live map</span>
+            <h3 data-i18n="public.map.title">BlueMap foundation</h3>
+            <p data-i18n="public.map.body">The Earth map foundation is rendered and available while the permanent map domain is prepared.</p>
+            <a class="button primary" href="https://bluemap.159.195.149.253.nip.io/" target="_blank" rel="noreferrer" data-i18n="public.map.button">Open live map</a>
+          </article>
+          <article class="public-link-card">
+            <span class="feature-kicker" data-i18n="public.status.kicker">Server status</span>
+            <h3 data-i18n="public.status.title">Private test online</h3>
+            <dl class="mini-status-grid">
+              <div><dt data-i18n="public.status.phase">Phase</dt><dd data-i18n="public.status.phaseValue">Foundation</dd></div>
+              <div><dt data-i18n="public.status.core">Core</dt><dd>v0.7.1</dd></div>
+              <div><dt data-i18n="public.status.access">Access</dt><dd data-i18n="public.status.accessValue">Invite-only</dd></div>
+            </dl>
+          </article>
+        </div>
       </section>
       <section class="section" id="overview" aria-labelledby="overview-title">
         <div class="section-heading">
@@ -202,12 +232,54 @@
           </article>
         </div>
       </section>
+      <section class="section media-section" id="media" aria-labelledby="media-title">
+        <div class="section-heading compact">
+          <p class="eyebrow" data-i18n="media.eyebrow">Visual progress</p>
+          <h2 id="media-title" data-i18n="media.title">Screenshots and updates are being gathered.</h2>
+          <p data-i18n="media.body">The public page now has a dedicated place for EarthOS, BlueMap and server visuals. Real gameplay screenshots can be dropped in as soon as private test captures are approved.</p>
+        </div>
+        <div class="visual-grid">
+          <article class="visual-card">
+            <img src="./assets/earthos/earthos-hotbar-icon-128.png" alt="" width="128" height="128" />
+            <span class="feature-kicker">EarthOS</span>
+            <h3 data-i18n="media.earthos.title">Profile and reports menu</h3>
+            <p data-i18n="media.earthos.body">EarthOS now connects reports, status and the first My EarthLiving profile-link flow.</p>
+          </article>
+          <article class="visual-card visual-card-map">
+            <img src="./assets/earthliving-logo.png" alt="" width="128" height="128" />
+            <span class="feature-kicker">BlueMap</span>
+            <h3 data-i18n="media.map.title">Earth map preview</h3>
+            <p data-i18n="media.map.body">The live map is available during foundation work and will move to a cleaner map domain later.</p>
+          </article>
+          <article class="visual-card">
+            <img src="./assets/logo.svg" alt="" width="128" height="128" />
+            <span class="feature-kicker">Server</span>
+            <h3 data-i18n="media.server.title">Private test systems</h3>
+            <p data-i18n="media.server.body">Discord, Report Center, player stats exports and website status are now part of the foundation.</p>
+          </article>
+        </div>
+      </section>
+      <section class="section devlog-section" id="devlog" aria-labelledby="devlog-title">
+        <div class="section-heading compact">
+          <p class="eyebrow" data-i18n="devlog.eyebrow">Devlog</p>
+          <h2 id="devlog-title" data-i18n="devlog.title">Recent foundation updates.</h2>
+        </div>
+        <div class="update-list">
+          <article><time datetime="2026-05-24">2026-05-24</time><h3 data-i18n="devlog.item1.title">Player profile stats export</h3><p data-i18n="devlog.item1.body">EarthWebBridge now exports playtime, blocks broken, blocks placed, deaths, mob kills, distance and report summaries.</p></article>
+          <article><time datetime="2026-05-24">2026-05-24</time><h3 data-i18n="devlog.item2.title">My EarthLiving foundation</h3><p data-i18n="devlog.item2.body">EarthOS gained the first website profile link flow through one-time codes.</p></article>
+          <article><time datetime="2026-05-22">2026-05-22</time><h3 data-i18n="devlog.item3.title">Report Center workflow</h3><p data-i18n="devlog.item3.body">Panel actions can approve fixes, complete reports and reopen reports through the server plugin.</p></article>
+        </div>
+      </section>
+      <section class="section technical-note" aria-labelledby="technical-note-title">
+        <h2 id="technical-note-title" data-i18n="technical.title">Technical note</h2>
+        <p data-i18n="technical.body">Current hosting is Nginx on the EarthLiving server, not GitHub Pages. GitHub remains the source of truth for the website files.</p>
+      </section>
       <section class="section community-section" id="community" aria-labelledby="community-title">
         <div><p class="eyebrow" data-i18n="community.eyebrow">Community</p><h2 id="community-title" data-i18n="community.title">Follow the project as it grows.</h2><p data-i18n="community.body">Public access is not open yet. The goal right now is to share clear progress, keep the roadmap visible, and build the server properly before wider testing.</p></div>
-        <div class="community-actions"><a class="button primary" href="https://github.com/Johnsondkfyn/EarthLiving" target="_blank" rel="noreferrer" data-i18n="community.github">GitHub Project</a><a class="button secondary" href="#roadmap" data-i18n="community.roadmap">Roadmap Status</a></div>
+        <div class="community-actions"><a class="button primary" href="https://github.com/Johnsondkfyn/EarthLiving" target="_blank" rel="noreferrer" data-i18n="community.github">GitHub Project</a><a class="button secondary" href="#devlog" data-i18n="community.devlog">Devlog</a><a class="button secondary" href="#roadmap" data-i18n="community.roadmap">Roadmap Status</a></div>
       </section>
     </main>
     <footer class="site-footer"><span>EarthLiving</span><span data-i18n="footer.tagline">Living Earth-map Minecraft civilization sandbox, in development.</span></footer>
-    <script src="./app.js?v=20260524-3"></script>
+    <script src="./app.js?v=20260524-4"></script>
   </body>
 </html>

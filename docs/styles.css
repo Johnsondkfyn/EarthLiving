@@ -122,7 +122,10 @@ a {
 .mobile-preview .feature-grid,
 .mobile-preview .portal-layout,
 .mobile-preview .priority-list,
-.mobile-preview .status-list {
+.mobile-preview .status-list,
+.mobile-preview .public-link-grid,
+.mobile-preview .visual-grid,
+.mobile-preview .update-list {
   grid-template-columns: 1fr;
 }
 
@@ -461,8 +464,12 @@ h1 {
 .hero-side-panel,
 .launch-panel,
 .feature,
+.public-link-card,
+.visual-card,
+.update-list article,
 .roadmap-section,
 .portal-card,
+.technical-note,
 .community-section,
 .priority-list article {
   border: 1px solid var(--line);
@@ -629,6 +636,71 @@ h1 {
   max-width: 780px;
 }
 
+.public-links-section {
+  border-bottom: 1px solid rgba(247, 243, 234, 0.08);
+}
+
+.public-link-grid,
+.visual-grid,
+.update-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.public-link-card {
+  display: flex;
+  min-height: 250px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 22px;
+}
+
+.public-link-card h3,
+.visual-card h3,
+.update-list h3 {
+  margin: 26px 0 10px;
+  font-size: 1.24rem;
+  line-height: 1.12;
+}
+
+.public-link-card p,
+.visual-card p,
+.update-list p,
+.technical-note p {
+  color: var(--muted);
+}
+
+.public-link-card .button {
+  margin-top: auto;
+}
+
+.mini-status-grid {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  margin: auto 0 0;
+}
+
+.mini-status-grid div {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+.mini-status-grid dt {
+  color: var(--soft);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.mini-status-grid dd {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -688,6 +760,77 @@ h1 {
   border-radius: 50%;
   background: var(--cyan);
   box-shadow: 0 0 16px rgba(73, 183, 217, 0.5);
+}
+
+.media-section {
+  border-top: 1px solid rgba(247, 243, 234, 0.08);
+  background:
+    linear-gradient(120deg, rgba(73, 183, 217, 0.08), transparent 38%),
+    linear-gradient(280deg, rgba(167, 206, 114, 0.08), transparent 42%);
+}
+
+.visual-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 310px;
+  padding: 22px;
+}
+
+.visual-card::after {
+  content: "";
+  position: absolute;
+  right: -28px;
+  bottom: -38px;
+  width: 190px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(73, 183, 217, 0.17), transparent 64%);
+  pointer-events: none;
+}
+
+.visual-card img {
+  display: block;
+  width: 86px;
+  height: 86px;
+  margin-bottom: 22px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.42));
+}
+
+.visual-card-map {
+  background:
+    linear-gradient(180deg, rgba(167, 206, 114, 0.11), rgba(13, 18, 20, 0.78)),
+    var(--panel);
+}
+
+.devlog-section {
+  padding-top: clamp(50px, 7vw, 90px);
+}
+
+.update-list article {
+  min-height: 220px;
+  padding: 22px;
+}
+
+.update-list time {
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.technical-note {
+  margin: 0 clamp(20px, 4vw, 60px) clamp(58px, 8vw, 96px);
+  padding: 22px;
+}
+
+.technical-note h2 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+}
+
+.technical-note p {
+  max-width: 920px;
+  margin: 0;
 }
 
 .feature-grid-strong .feature {
@@ -926,6 +1069,9 @@ h1 {
 
   .feature-grid,
   .portal-layout,
+  .public-link-grid,
+  .visual-grid,
+  .update-list,
   .status-list {
     grid-template-columns: 1fr;
   }
