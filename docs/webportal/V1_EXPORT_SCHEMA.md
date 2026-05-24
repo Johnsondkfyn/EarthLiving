@@ -8,13 +8,14 @@ The first portal bridge should export read-only JSON from server systems. The we
 
 ```json
 {
-  "updatedAt": "2026-05-24T12:00:00Z",
+  "generatedAt": "2026-05-24T12:00:00Z",
   "server": "Earth Living Main",
   "phase": "private-test",
   "onlinePlayers": 0,
   "maxPlayers": 20,
-  "coreVersion": "0.6.3",
-  "mapStatus": "foundation-live"
+  "coreVersion": "0.7.0",
+  "mapStatus": "foundation-live",
+  "linkedProfiles": 0
 }
 ```
 
@@ -26,7 +27,11 @@ The first portal bridge should export read-only JSON from server systems. The we
   "minecraftUuid": "00000000-0000-0000-0000-000000000000",
   "playerName": "PlayerName",
   "linkedAt": "2026-05-24T12:00:00Z",
-  "status": "linked"
+  "lastSeenAt": "2026-05-24T12:00:00Z",
+  "online": false,
+  "playtimeSeconds": 0,
+  "openReports": 0,
+  "totalReports": 0
 }
 ```
 
@@ -35,15 +40,20 @@ The first portal bridge should export read-only JSON from server systems. The we
 ```json
 {
   "minecraftUuid": "00000000-0000-0000-0000-000000000000",
+  "playerName": "PlayerName",
   "openReports": 1,
+  "totalReports": 1,
   "reports": [
     {
       "id": 1,
-      "source": "in-game",
+      "source": "minecraft",
       "category": "bug",
+      "categoryTitle": "Bug",
       "status": "open",
       "createdAt": "2026-05-20T18:00:00Z",
-      "lastUpdatedAt": "2026-05-24T12:00:00Z"
+      "updatedAt": "2026-05-24T12:00:00Z",
+      "closedAt": "",
+      "staffNote": ""
     }
   ]
 }

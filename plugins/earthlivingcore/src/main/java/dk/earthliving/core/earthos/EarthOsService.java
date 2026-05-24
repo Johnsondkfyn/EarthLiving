@@ -2,6 +2,7 @@ package dk.earthliving.core.earthos;
 
 import dk.earthliving.core.notification.NotificationService;
 import dk.earthliving.core.report.ReportService;
+import dk.earthliving.core.webportal.WebPortalService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,16 +30,19 @@ public final class EarthOsService {
     public static final int SLOT_REPORTS = 14;
     public static final int SLOT_STATUS = 15;
     public static final int SLOT_SETTINGS = 16;
+    public static final int SLOT_PROFILE = 22;
 
     private final JavaPlugin plugin;
     private final NotificationService notifications;
     private final ReportService reportService;
+    private final WebPortalService webPortalService;
     private final NamespacedKey itemKey;
 
-    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService) {
+    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService, WebPortalService webPortalService) {
         this.plugin = plugin;
         this.notifications = notifications;
         this.reportService = reportService;
+        this.webPortalService = webPortalService;
         this.itemKey = new NamespacedKey(plugin, "earthos_device");
     }
 
@@ -94,6 +98,10 @@ public final class EarthOsService {
         )));
         inventory.setItem(SLOT_STATUS, menuItem(Material.REDSTONE_TORCH, "&cServer Status", List.of("&7Status, maintenance and updates")));
         inventory.setItem(SLOT_SETTINGS, menuItem(Material.COMPARATOR, "&fSettings", List.of("&7Player preferences")));
+        inventory.setItem(SLOT_PROFILE, menuItem(Material.PLAYER_HEAD, "&bMy EarthLiving", List.of(
+                "&7Link your website profile",
+                "&7Linked profile: &f" + linkedProfileLabel(player)
+        )));
         player.openInventory(inventory);
     }
 
@@ -115,9 +123,18 @@ public final class EarthOsService {
                 giveDevice(player);
                 sendConfiguredLines(player, "earthos.settings");
             }
+            case SLOT_PROFILE -> {
+                sendConfiguredLines(player, "earthos.profile");
+                webPortalService.beginLinkInput(player);
+            }
             default -> {
             }
         }
+    }
+
+    private String linkedProfileLabel(Player player) {
+        String profileId = webPortalService.linkedProfileId(player.getUniqueId());
+        return profileId.isBlank() ? "Not linked" : profileId;
     }
 
     private void sendConfiguredLines(Player player, String path) {

@@ -65,9 +65,10 @@ Updated 2026-05-24:
 
 - Discord integration foundation is now complete: chat/status/player count, account linking verification, staff alerts and shared in-game/Discord report flow.
 - EarthLivingCore `0.6.3` is live on Main with permanent Report Center status actions through `reports-actions.queue`.
+- EarthLivingCore `0.7.0` is live on Main with the first EarthWebBridge/Web Portal foundation.
 - Panel Report Center can now set reports to `repair-approved`, `completed`, or back to `open` without editing `reports.yml` directly.
 - EarthLivingCore foundation V1 is now considered complete; future work should be split into smaller EarthOS apps/modules.
-- EarthLiving Web Portal + EarthWebBridge has a V1 scope: one-time link code flow, read-only exports and no Microsoft/Minecraft password handling.
+- EarthLiving Web Portal + EarthWebBridge has started implementation: EarthOS profile link entry, one-time link code command, read-only server/profile/report exports and no Microsoft/Minecraft password handling.
 - Current public roadmap estimate: 27 completed, 4 in progress, 66 planned, 28% overall.
 
 Updated 2026-05-20:

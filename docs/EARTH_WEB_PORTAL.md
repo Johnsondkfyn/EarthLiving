@@ -7,7 +7,7 @@ High priority after the core website and EarthOS foundation.
 Planned development start: Friday 22 May.
 
 ## Current status
-V1 scope defined on 2026-05-24. The public website stays static for now, while the portal foundation starts with safe one-time account linking and read-only exports.
+V1 server-side foundation implemented in EarthLivingCore `0.7.0` on 2026-05-24. The public website stays mostly static for now, while the portal foundation starts with safe one-time account linking and read-only exports.
 
 ## Goal
 Create a web profile system where players can link their Minecraft account to an EarthLiving website profile and view their progress, status and server information online.
@@ -114,6 +114,17 @@ The first build should stay deliberately small and safe.
 - Public server status export.
 - Website-side placeholder route/page for "My EarthLiving".
 - Export schema documented in `docs/webportal/V1_EXPORT_SCHEMA.md`.
+
+### Implemented in EarthLivingCore 0.7.0
+
+- EarthOS `My EarthLiving` menu entry.
+- Chat-based one-time code input from EarthOS.
+- Admin command `/earthliving portal code <website-profile-id>`.
+- Admin command `/earthliving portal export`.
+- `web-portal.yml` storage for link codes and linked profiles.
+- `web-exports/server-status.json`.
+- `web-exports/player-profiles.json`.
+- `web-exports/player-report-summaries.json`.
 
 ### V1 non-goals
 

@@ -51,6 +51,8 @@ Opdatering 2026-05-22: Notion er ryddet, så hovedopgaven `Discord integration` 
 
 Opdatering 2026-05-24: Punkt 2, 3 og 4 fra den aktive plan er ryddet op. `Website til serveren` bliver fortsat `I gang`, men public copy er gjort mindre intern og roadmap-data er opdateret. `EarthLivingCore foundation plugin` er V1-færdig med `0.6.3` live på Main og permanente Report Center-actions. `EarthLiving Web Portal + EarthWebBridge` bliver næste konkrete V1-spor med one-time link codes, read-only exports og ingen Minecraft/Microsoft password-håndtering. Aktuel website/roadmap-status er **27 Færdig**, **4 I gang**, **66 Planlagt** og **28%**.
 
+Opdatering 2026-05-24 eftermiddag: EarthLivingCore `0.7.0` er bygget og deployet på Main som første EarthWebBridge/Web Portal foundation. EarthOS har nu `My EarthLiving` profile-link entry, staff kan lave link-koder med `/earthliving portal code <website-profile-id>`, og pluginet eksporterer read-only JSON til `plugins/EarthLivingCore/web-exports/`: serverstatus, linked player profiles og player report summaries. Hjemmesiden har fået sektionen `Min EarthLiving`, mens rigtig login/donation stadig afventer næste portal-backend.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift

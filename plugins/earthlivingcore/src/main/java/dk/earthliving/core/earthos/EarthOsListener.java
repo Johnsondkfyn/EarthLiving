@@ -1,6 +1,7 @@
 package dk.earthliving.core.earthos;
 
 import dk.earthliving.core.report.ReportService;
+import dk.earthliving.core.webportal.WebPortalService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,15 +16,18 @@ public final class EarthOsListener implements Listener {
     private final Plugin plugin;
     private final EarthOsService earthOsService;
     private final ReportService reportService;
+    private final WebPortalService webPortalService;
 
-    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService) {
+    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService, WebPortalService webPortalService) {
         this.plugin = plugin;
         this.earthOsService = earthOsService;
         this.reportService = reportService;
+        this.webPortalService = webPortalService;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        webPortalService.recordJoin(event.getPlayer());
         if (earthOsService.shouldGiveOnJoin()) {
             earthOsService.giveDevice(event.getPlayer());
         }
@@ -73,6 +77,16 @@ public final class EarthOsListener implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
+        if (webPortalService.hasPendingLinkInput(player)) {
+            event.setCancelled(true);
+            String message = event.getMessage();
+            player.getServer().getScheduler().runTask(
+                    plugin,
+                    () -> webPortalService.submitLinkInput(player, message)
+            );
+            return;
+        }
+
         if (!reportService.hasPendingReport(player)) {
             return;
         }

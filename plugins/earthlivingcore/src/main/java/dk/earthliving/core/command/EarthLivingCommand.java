@@ -62,6 +62,30 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("portal")) {
+            if (!sender.hasPermission("earthliving.admin")) {
+                notifications.send(sender, "&cYou do not have permission to manage the web portal.");
+                return true;
+            }
+            if (args.length >= 3 && args[1].equalsIgnoreCase("code")) {
+                String profileId = joinArgs(args, 2);
+                String code = plugin.webPortalService().createLinkCode(profileId);
+                notifications.send(sender, "&aWebsite link code created: &f" + code);
+                notifications.send(sender, "&7Profile id: &f" + profileId);
+                notifications.send(sender, "&7The player enters this code in EarthOS -> My EarthLiving.");
+                return true;
+            }
+            if (args.length >= 2 && args[1].equalsIgnoreCase("export")) {
+                plugin.webPortalService().exportAll();
+                notifications.send(sender, "&aWeb portal JSON exports refreshed.");
+                notifications.send(sender, "&7Folder: &fplugins/EarthLivingCore/web-exports/");
+                return true;
+            }
+            notifications.send(sender, "&eUsage: /" + label + " portal code <website-profile-id>");
+            notifications.send(sender, "&eUsage: /" + label + " portal export");
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("event")) {
             if (!sender.hasPermission("earthliving.admin")) {
                 notifications.send(sender, "&cYou do not have permission to announce events.");
@@ -116,7 +140,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|event|restart|earthos|reload>");
+        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|portal|event|restart|earthos|reload>");
         return true;
     }
 
@@ -126,6 +150,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             List<String> options = new ArrayList<>(List.of("status", "modules", "earthos"));
             if (sender.hasPermission("earthliving.admin")) {
                 options.add("reports");
+                options.add("portal");
                 options.add("event");
                 options.add("restart");
                 options.add("reload");
@@ -139,6 +164,14 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
                 && args[0].equalsIgnoreCase("reports")
                 && args.length == 2) {
             return List.of("set").stream()
+                    .filter(option -> option.startsWith(args[1].toLowerCase()))
+                    .toList();
+        }
+
+        if (sender.hasPermission("earthliving.admin")
+                && args[0].equalsIgnoreCase("portal")
+                && args.length == 2) {
+            return List.of("code", "export").stream()
                     .filter(option -> option.startsWith(args[1].toLowerCase()))
                     .toList();
         }

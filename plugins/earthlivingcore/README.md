@@ -2,7 +2,7 @@
 
 EarthLivingCore is the foundation plugin for Earth Living.
 
-Version: `0.6.3`
+Version: `0.7.0`
 
 Status: V1 foundation live on Earth Living Main.
 
@@ -36,6 +36,10 @@ EarthLivingCore is the backend/hub layer behind:
 - Permanent staff workflow actions through `reports-actions.queue`.
 - Report status transitions: `open`, `repair-approved`, `completed`.
 - Staff command: `/earthliving reports set <id> <open|repair-approved|completed> [note]`.
+- EarthWebBridge V1 foundation:
+  - EarthOS `My EarthLiving` profile link entry.
+  - One-time website profile link codes.
+  - Read-only JSON exports for server status, linked player profiles and player report summaries.
 
 ## Build
 
@@ -46,7 +50,7 @@ gradle build
 The output jar is expected under:
 
 ```text
-build/libs/EarthLivingCore-0.6.3.jar
+build/libs/EarthLivingCore-0.7.0.jar
 ```
 
 ## Notes

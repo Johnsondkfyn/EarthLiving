@@ -312,6 +312,49 @@ public final class ReportService {
         return count;
     }
 
+    public int openReportCountForPlayer(String playerUuid) {
+        return reportCountForPlayer(playerUuid, true);
+    }
+
+    public int totalReportCountForPlayer(String playerUuid) {
+        return reportCountForPlayer(playerUuid, false);
+    }
+
+    public String playerReportsJson(String playerUuid) {
+        String normalizedUuid = playerUuid == null ? "" : playerUuid;
+        StringBuilder json = new StringBuilder();
+        json.append("[");
+
+        List<Integer> ids = reportIds().stream()
+                .filter(id -> normalizedUuid.equals(reports.getString("reports." + id + ".player-uuid", "")))
+                .toList();
+
+        for (int index = 0; index < ids.size(); index++) {
+            String id = String.valueOf(ids.get(index));
+            String path = "reports." + id;
+            json.append("\n        {\n");
+            json.append("          \"id\": ").append(id).append(",\n");
+            json.append("          \"source\": \"").append(jsonEscape(reports.getString(path + ".source", "minecraft"))).append("\",\n");
+            json.append("          \"category\": \"").append(jsonEscape(reports.getString(path + ".category", "unknown"))).append("\",\n");
+            json.append("          \"categoryTitle\": \"").append(jsonEscape(reports.getString(path + ".category-title", "Unknown"))).append("\",\n");
+            json.append("          \"status\": \"").append(jsonEscape(reports.getString(path + ".status", "unknown"))).append("\",\n");
+            json.append("          \"createdAt\": \"").append(jsonEscape(reports.getString(path + ".created-at", ""))).append("\",\n");
+            json.append("          \"updatedAt\": \"").append(jsonEscape(reports.getString(path + ".updated-at", ""))).append("\",\n");
+            json.append("          \"closedAt\": \"").append(jsonEscape(reports.getString(path + ".closed-at", ""))).append("\",\n");
+            json.append("          \"staffNote\": \"").append(jsonEscape(reports.getString(path + ".staff-note", ""))).append("\"\n");
+            json.append("        }");
+            if (index < ids.size() - 1) {
+                json.append(",");
+            }
+        }
+
+        if (!ids.isEmpty()) {
+            json.append("\n      ");
+        }
+        json.append("]");
+        return json.toString();
+    }
+
     public boolean setReportStatus(int id, String status, String staff, String note, String source) {
         String normalizedStatus = normalizeStatus(status);
         if (normalizedStatus.isBlank()) {
@@ -493,6 +536,24 @@ public final class ReportService {
         }
         ids.sort(Comparator.reverseOrder());
         return ids;
+    }
+
+    private int reportCountForPlayer(String playerUuid, boolean openOnly) {
+        if (playerUuid == null || playerUuid.isBlank() || !reports.isConfigurationSection("reports")) {
+            return 0;
+        }
+
+        int count = 0;
+        for (String id : reports.getConfigurationSection("reports").getKeys(false)) {
+            String path = "reports." + id;
+            if (!playerUuid.equals(reports.getString(path + ".player-uuid", ""))) {
+                continue;
+            }
+            if (!openOnly || "open".equalsIgnoreCase(reports.getString(path + ".status", ""))) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private ItemStack reportItem(String id) {

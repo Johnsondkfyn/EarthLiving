@@ -14,6 +14,9 @@ earthos:
     - "&aTest server is online."
     - "&7Paper 26.1.2 + Java 25"
     - "&7EarthLivingCore foundation active"
+  profile:
+    - "&bMy EarthLiving profile"
+    - "&7Use this app to link your website profile."
   events:
     - "&eNo public events are running yet."
     - "&7Discord event announcements are planned next."
@@ -32,11 +35,21 @@ earthos:
 
 modules:
   earthos: true
+  webportal: true
   notifications: true
   events: true
   reports: true
   passports: true
   discord: true
+
+webportal:
+  enabled: true
+  export-interval-seconds: 30
+  link-code-minutes: 10
+  public-server-name: "Earth Living Main"
+  phase: "private-test"
+  max-players: 20
+  map-status: "foundation-live"
 
 discord:
   discordsrv:

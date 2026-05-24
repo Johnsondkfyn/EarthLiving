@@ -120,6 +120,7 @@ a {
 
 .mobile-preview .hero-stats,
 .mobile-preview .feature-grid,
+.mobile-preview .portal-layout,
 .mobile-preview .priority-list,
 .mobile-preview .status-list {
   grid-template-columns: 1fr;
@@ -461,6 +462,7 @@ h1 {
 .launch-panel,
 .feature,
 .roadmap-section,
+.portal-card,
 .community-section,
 .priority-list article {
   border: 1px solid var(--line);
@@ -586,6 +588,7 @@ h1 {
 .launch-panel p,
 .hero-side-panel dd,
 .feature p,
+.portal-card p,
 .section-heading p,
 .community-section p,
 .timeline p,
@@ -630,6 +633,61 @@ h1 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+}
+
+.portal-section {
+  border-block: 1px solid rgba(247, 243, 234, 0.08);
+  background:
+    linear-gradient(90deg, rgba(167, 206, 114, 0.09), transparent 36%),
+    linear-gradient(270deg, rgba(73, 183, 217, 0.1), transparent 42%);
+}
+
+.portal-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 14px;
+}
+
+.portal-card {
+  min-height: 280px;
+  padding: 22px;
+}
+
+.portal-card-primary {
+  background:
+    linear-gradient(160deg, rgba(73, 183, 217, 0.16), rgba(13, 18, 20, 0.78) 48%),
+    var(--panel);
+}
+
+.portal-card h3 {
+  margin: 42px 0 10px;
+  font-size: 1.28rem;
+}
+
+.portal-card ul {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.portal-card li {
+  display: flex;
+  gap: 10px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.portal-card li::before {
+  content: "";
+  flex: 0 0 auto;
+  margin-top: 0.55em;
+  width: 7px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 16px rgba(73, 183, 217, 0.5);
 }
 
 .feature-grid-strong .feature {
@@ -867,6 +925,7 @@ h1 {
   }
 
   .feature-grid,
+  .portal-layout,
   .status-list {
     grid-template-columns: 1fr;
   }

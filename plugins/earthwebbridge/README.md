@@ -2,7 +2,7 @@
 
 Planned bridge between the EarthLiving Minecraft server and the public/player website.
 
-Status: V1 scope defined, started for the 2026-05-22 Web Portal track and refined on 2026-05-24.
+Status: V1 server-side foundation implemented in EarthLivingCore `0.7.0`.
 
 ## Goal
 
@@ -17,6 +17,7 @@ EarthWebBridge should expose safe, minimal server data to the EarthLiving websit
 - Read-only report status export for linked players.
 - Private API token stored only in live server config if an HTTP endpoint is added later.
 - No write actions from the website into live Minecraft data in V1.
+- EarthOS `My EarthLiving` entry for entering link codes.
 
 ## First Implementation Recommendation
 
@@ -24,9 +25,14 @@ Start with file-based JSON exports beside the existing EarthLivingCore report ex
 
 Suggested first files:
 
-- `plugins/EarthWebBridge/server-status.json`
-- `plugins/EarthWebBridge/linked-profiles.json`
-- `plugins/EarthWebBridge/player-report-summaries.json`
+- `plugins/EarthLivingCore/web-exports/server-status.json`
+- `plugins/EarthLivingCore/web-exports/player-profiles.json`
+- `plugins/EarthLivingCore/web-exports/player-report-summaries.json`
+
+Admin commands in EarthLivingCore:
+
+- `/earthliving portal code <website-profile-id>`
+- `/earthliving portal export`
 
 Detailed docs:
 
@@ -51,6 +57,5 @@ Detailed docs:
 ## Not Yet Started
 
 - Website login/session backend.
-- In-game EarthOS Profile app UI for entering link codes.
-- Public "My EarthLiving" route.
+- Public "My EarthLiving" route with real authentication.
 - Token-protected API endpoint.

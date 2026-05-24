@@ -12,6 +12,7 @@ import dk.earthliving.core.module.ModuleRegistry;
 import dk.earthliving.core.notification.DiscordNotificationService;
 import dk.earthliving.core.notification.NotificationService;
 import dk.earthliving.core.report.ReportService;
+import dk.earthliving.core.webportal.WebPortalService;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,6 +28,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private EarthLivingEventService eventService;
     private EarthOsService earthOsService;
     private ReportService reportService;
+    private WebPortalService webPortalService;
 
     @Override
     public void onEnable() {
@@ -38,13 +40,15 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         eventService = new EarthLivingEventService(this, notificationService, discordBridgeService);
         moduleRegistry = new ModuleRegistry();
         reportService = new ReportService(this, notificationService, discordNotificationService);
+        webPortalService = new WebPortalService(this, notificationService, reportService);
         discordReportImportService = new DiscordReportImportService(this, notificationService, reportService);
-        earthOsService = new EarthOsService(this, notificationService, reportService);
+        earthOsService = new EarthOsService(this, notificationService, reportService, webPortalService);
 
         registerModules();
         registerCommands();
-        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService), this);
+        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService), this);
         reportService.startPanelActionProcessor();
+        webPortalService.startExporter();
         discordReportImportService.startLater();
 
         notificationService.console("EarthLivingCore enabled with " + moduleRegistry.enabledModules().size() + " active modules.");
@@ -57,6 +61,9 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         }
         if (reportService != null) {
             reportService.stopPanelActionProcessor();
+        }
+        if (webPortalService != null) {
+            webPortalService.stopExporter();
         }
         if (notificationService != null) {
             notificationService.console("EarthLivingCore disabled.");
@@ -86,6 +93,10 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         return reportService;
     }
 
+    public WebPortalService webPortalService() {
+        return webPortalService;
+    }
+
     public EarthLivingEventService eventService() {
         return eventService;
     }
@@ -93,6 +104,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private void registerModules() {
         List<CoreModule> modules = List.of(
                 new CoreModule("earthos", "EarthOS menu/device"),
+                new CoreModule("webportal", "Website profile bridge and read-only exports"),
                 new CoreModule("notifications", "Player and admin notifications"),
                 new CoreModule("events", "Server event feed foundation"),
                 new CoreModule("reports", "Support/report workflow foundation"),

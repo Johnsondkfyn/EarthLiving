@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260520-17" />
+    <link rel="stylesheet" href="./styles.css?v=20260524-2" />
   </head>
   <body>
     <canvas id="world-canvas" aria-hidden="true"></canvas>
@@ -27,6 +27,7 @@
         <a href="#earthos" data-i18n="nav.earthos">EarthOS</a>
         <a href="#systems" data-i18n="nav.systems">Systems</a>
         <a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a>
+        <a href="#my-earthliving" data-i18n="nav.profile">My Profile</a>
         <a href="#community" data-i18n="nav.community">Community</a>
       </nav>
       <div class="header-actions">
@@ -70,7 +71,7 @@
           </div>
           <dl class="hero-stats" aria-label="Project status">
             <div><dt data-i18n="stats.progress">Progress</dt><dd data-roadmap-value="progressPercent">23%</dd></div>
-            <div><dt data-i18n="stats.core">Core</dt><dd>v0.6.3</dd></div>
+            <div><dt data-i18n="stats.core">Core</dt><dd>v0.7.0</dd></div>
             <div><dt data-i18n="stats.server">Server</dt><dd data-i18n="stats.private">Private test</dd></div>
           </dl>
         </div>
@@ -171,12 +172,41 @@
         </div>
         <p class="roadmap-note" data-i18n="roadmap.note">Current phase: Core foundation is live, the website is being refined, and the first player portal scope is being planned. Progress is an early estimate and will change as systems move from planning into development.</p>
       </section>
+      <section class="section portal-section" id="my-earthliving" aria-labelledby="portal-title">
+        <div class="section-heading compact">
+          <p class="eyebrow" data-i18n="portal.eyebrow">My EarthLiving</p>
+          <h2 id="portal-title" data-i18n="portal.title">Player profiles are the next layer.</h2>
+          <p data-i18n="portal.body">The first portal build links a website profile to a Minecraft UUID through EarthOS, then shows read-only server data such as playtime, reports and basic status.</p>
+        </div>
+        <div class="portal-layout">
+          <article class="portal-card portal-card-primary">
+            <span class="feature-kicker" data-i18n="portal.card1.kicker">Link flow</span>
+            <h3 data-i18n="portal.card1.title">One-time code through EarthOS</h3>
+            <p data-i18n="portal.card1.body">Players will create or open a website profile, receive a short link code, then enter it in-game through EarthOS -> My EarthLiving.</p>
+          </article>
+          <article class="portal-card">
+            <span class="feature-kicker" data-i18n="portal.card2.kicker">Profile data</span>
+            <h3 data-i18n="portal.card2.title">Read-only and safe</h3>
+            <ul>
+              <li data-i18n="portal.card2.item1">Minecraft name and UUID</li>
+              <li data-i18n="portal.card2.item2">Playtime and last seen status</li>
+              <li data-i18n="portal.card2.item3">Own report history and status</li>
+              <li data-i18n="portal.card2.item4">Supporter/donation status later</li>
+            </ul>
+          </article>
+          <article class="portal-card">
+            <span class="feature-kicker" data-i18n="portal.card3.kicker">Current state</span>
+            <h3 data-i18n="portal.card3.title">Foundation build</h3>
+            <p data-i18n="portal.card3.body">EarthWebBridge now has the first server-side export plan. Public login and donations will be connected after the secure profile link flow is tested.</p>
+          </article>
+        </div>
+      </section>
       <section class="section community-section" id="community" aria-labelledby="community-title">
         <div><p class="eyebrow" data-i18n="community.eyebrow">Community</p><h2 id="community-title" data-i18n="community.title">Follow the project as it grows.</h2><p data-i18n="community.body">Public access is not open yet. The goal right now is to share clear progress, keep the roadmap visible, and build the server properly before wider testing.</p></div>
         <div class="community-actions"><a class="button primary" href="https://github.com/Johnsondkfyn/EarthLiving" target="_blank" rel="noreferrer" data-i18n="community.github">GitHub Project</a><a class="button secondary" href="#roadmap" data-i18n="community.roadmap">Roadmap Status</a></div>
       </section>
     </main>
     <footer class="site-footer"><span>EarthLiving</span><span data-i18n="footer.tagline">Living Earth-map Minecraft civilization sandbox, in development.</span></footer>
-    <script src="./app.js?v=20260524-1"></script>
+    <script src="./app.js?v=20260524-2"></script>
   </body>
 </html>
