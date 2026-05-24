@@ -2,7 +2,7 @@
 
 EarthLivingCore is the foundation plugin for Earth Living.
 
-Version: `0.7.0`
+Version: `0.7.1`
 
 Status: V1 foundation live on Earth Living Main.
 
@@ -40,6 +40,7 @@ EarthLivingCore is the backend/hub layer behind:
   - EarthOS `My EarthLiving` profile link entry.
   - One-time website profile link codes.
   - Read-only JSON exports for server status, linked player profiles and player report summaries.
+  - Read-only player activity stats: playtime, blocks broken/placed, deaths, mob kills and walked distance.
 
 ## Build
 
@@ -50,7 +51,7 @@ gradle build
 The output jar is expected under:
 
 ```text
-build/libs/EarthLivingCore-0.7.0.jar
+build/libs/EarthLivingCore-0.7.1.jar
 ```
 
 ## Notes

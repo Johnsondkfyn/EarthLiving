@@ -2,7 +2,7 @@
 
 Planned bridge between the EarthLiving Minecraft server and the public/player website.
 
-Status: V1 server-side foundation implemented in EarthLivingCore `0.7.0`.
+Status: V1 server-side foundation implemented in EarthLivingCore `0.7.1`.
 
 ## Goal
 
@@ -27,6 +27,7 @@ Suggested first files:
 
 - `plugins/EarthLivingCore/web-exports/server-status.json`
 - `plugins/EarthLivingCore/web-exports/player-profiles.json`
+- `plugins/EarthLivingCore/web-exports/player-stats.json`
 - `plugins/EarthLivingCore/web-exports/player-report-summaries.json`
 
 Admin commands in EarthLivingCore:

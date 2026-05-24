@@ -3,6 +3,7 @@ package dk.earthliving.core.webportal;
 import dk.earthliving.core.notification.NotificationService;
 import dk.earthliving.core.report.ReportService;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,6 +33,7 @@ public final class WebPortalService {
     private final File exportDirectory;
     private final File serverStatusFile;
     private final File profilesFile;
+    private final File playerStatsFile;
     private final File reportSummariesFile;
     private final Map<UUID, Boolean> pendingLinkInputs = new ConcurrentHashMap<>();
     private FileConfiguration data;
@@ -45,6 +47,7 @@ public final class WebPortalService {
         this.exportDirectory = new File(plugin.getDataFolder(), "web-exports");
         this.serverStatusFile = new File(exportDirectory, "server-status.json");
         this.profilesFile = new File(exportDirectory, "player-profiles.json");
+        this.playerStatsFile = new File(exportDirectory, "player-stats.json");
         this.reportSummariesFile = new File(exportDirectory, "player-report-summaries.json");
         load();
         exportAll();
@@ -180,6 +183,7 @@ public final class WebPortalService {
             exportDirectory.mkdirs();
             Files.writeString(serverStatusFile.toPath(), serverStatusJson(), StandardCharsets.UTF_8);
             Files.writeString(profilesFile.toPath(), playerProfilesJson(), StandardCharsets.UTF_8);
+            Files.writeString(playerStatsFile.toPath(), playerStatsJson(), StandardCharsets.UTF_8);
             Files.writeString(reportSummariesFile.toPath(), playerReportSummariesJson(), StandardCharsets.UTF_8);
         } catch (IOException exception) {
             notifications.console("Could not export web portal JSON: " + exception.getMessage());
@@ -214,9 +218,7 @@ public final class WebPortalService {
                 Player onlinePlayer = Bukkit.getPlayer(UUID.fromString(uuid));
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
                 String playerName = onlinePlayer == null ? data.getString(path + ".player-name", "Unknown") : onlinePlayer.getName();
-                int playTicks = onlinePlayer == null
-                        ? offlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE)
-                        : onlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE);
+                PlayerStats stats = playerStats(offlinePlayer, onlinePlayer);
                 json.append("    {\n");
                 json.append("      \"profileId\": \"").append(jsonEscape(data.getString(path + ".profile-id", ""))).append("\",\n");
                 json.append("      \"minecraftUuid\": \"").append(jsonEscape(uuid)).append("\",\n");
@@ -224,9 +226,56 @@ public final class WebPortalService {
                 json.append("      \"linkedAt\": \"").append(jsonEscape(data.getString(path + ".linked-at", ""))).append("\",\n");
                 json.append("      \"lastSeenAt\": \"").append(jsonEscape(data.getString(path + ".last-seen-at", ""))).append("\",\n");
                 json.append("      \"online\": ").append(onlinePlayer != null).append(",\n");
-                json.append("      \"playtimeSeconds\": ").append(playTicks / 20).append(",\n");
+                json.append("      \"playtimeSeconds\": ").append(stats.playtimeSeconds()).append(",\n");
+                json.append("      \"blocksBroken\": ").append(stats.blocksBroken()).append(",\n");
+                json.append("      \"blocksPlaced\": ").append(stats.blocksPlaced()).append(",\n");
+                json.append("      \"deaths\": ").append(stats.deaths()).append(",\n");
+                json.append("      \"mobKills\": ").append(stats.mobKills()).append(",\n");
+                json.append("      \"distanceWalkedMeters\": ").append(stats.distanceWalkedMeters()).append(",\n");
                 json.append("      \"openReports\": ").append(reports.openReportCountForPlayer(uuid)).append(",\n");
                 json.append("      \"totalReports\": ").append(reports.totalReportCountForPlayer(uuid)).append("\n");
+                json.append("    }");
+                if (index < size - 1) {
+                    json.append(",");
+                }
+                json.append("\n");
+                index++;
+            }
+        }
+
+        json.append("  ]\n");
+        json.append("}\n");
+        return json.toString();
+    }
+
+    private String playerStatsJson() {
+        StringBuilder json = new StringBuilder();
+        json.append("{\n");
+        json.append("  \"generatedAt\": \"").append(jsonEscape(Instant.now().toString())).append("\",\n");
+        json.append("  \"players\": [\n");
+
+        ConfigurationSection section = data.getConfigurationSection("linked-profiles");
+        if (section != null) {
+            int index = 0;
+            int size = section.getKeys(false).size();
+            for (String uuid : section.getKeys(false)) {
+                String path = "linked-profiles." + uuid;
+                UUID playerUuid = UUID.fromString(uuid);
+                Player onlinePlayer = Bukkit.getPlayer(playerUuid);
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUuid);
+                String playerName = onlinePlayer == null ? data.getString(path + ".player-name", "Unknown") : onlinePlayer.getName();
+                PlayerStats stats = playerStats(offlinePlayer, onlinePlayer);
+
+                json.append("    {\n");
+                json.append("      \"profileId\": \"").append(jsonEscape(data.getString(path + ".profile-id", ""))).append("\",\n");
+                json.append("      \"minecraftUuid\": \"").append(jsonEscape(uuid)).append("\",\n");
+                json.append("      \"playerName\": \"").append(jsonEscape(playerName)).append("\",\n");
+                json.append("      \"playtimeSeconds\": ").append(stats.playtimeSeconds()).append(",\n");
+                json.append("      \"blocksBroken\": ").append(stats.blocksBroken()).append(",\n");
+                json.append("      \"blocksPlaced\": ").append(stats.blocksPlaced()).append(",\n");
+                json.append("      \"deaths\": ").append(stats.deaths()).append(",\n");
+                json.append("      \"mobKills\": ").append(stats.mobKills()).append(",\n");
+                json.append("      \"distanceWalkedMeters\": ").append(stats.distanceWalkedMeters()).append("\n");
                 json.append("    }");
                 if (index < size - 1) {
                     json.append(",");
@@ -294,6 +343,48 @@ public final class WebPortalService {
         return Duration.ofMinutes(Math.max(1, plugin.getConfig().getLong("webportal.link-code-minutes", 10L)));
     }
 
+    private PlayerStats playerStats(OfflinePlayer offlinePlayer, Player onlinePlayer) {
+        long playtimeSeconds = statistic(offlinePlayer, onlinePlayer, Statistic.PLAY_ONE_MINUTE) / 20L;
+        long distanceWalkedMeters = statistic(offlinePlayer, onlinePlayer, Statistic.WALK_ONE_CM) / 100L;
+        long blocksBroken = 0;
+        long blocksPlaced = 0;
+
+        for (Material material : Material.values()) {
+            if (!material.isBlock()) {
+                continue;
+            }
+            blocksBroken += materialStatistic(offlinePlayer, onlinePlayer, Statistic.MINE_BLOCK, material);
+            blocksPlaced += materialStatistic(offlinePlayer, onlinePlayer, Statistic.USE_ITEM, material);
+        }
+
+        return new PlayerStats(
+                playtimeSeconds,
+                blocksBroken,
+                blocksPlaced,
+                statistic(offlinePlayer, onlinePlayer, Statistic.DEATHS),
+                statistic(offlinePlayer, onlinePlayer, Statistic.MOB_KILLS),
+                distanceWalkedMeters
+        );
+    }
+
+    private int statistic(OfflinePlayer offlinePlayer, Player onlinePlayer, Statistic statistic) {
+        try {
+            return onlinePlayer == null ? offlinePlayer.getStatistic(statistic) : onlinePlayer.getStatistic(statistic);
+        } catch (IllegalArgumentException exception) {
+            return 0;
+        }
+    }
+
+    private int materialStatistic(OfflinePlayer offlinePlayer, Player onlinePlayer, Statistic statistic, Material material) {
+        try {
+            return onlinePlayer == null
+                    ? offlinePlayer.getStatistic(statistic, material)
+                    : onlinePlayer.getStatistic(statistic, material);
+        } catch (IllegalArgumentException exception) {
+            return 0;
+        }
+    }
+
     private String normalizeProfileId(String profileId) {
         String normalized = profileId == null ? "" : profileId.trim();
         if (normalized.isBlank()) {
@@ -357,5 +448,15 @@ public final class WebPortalService {
         UNKNOWN,
         ALREADY_USED,
         INVALID
+    }
+
+    private record PlayerStats(
+            long playtimeSeconds,
+            long blocksBroken,
+            long blocksPlaced,
+            long deaths,
+            long mobKills,
+            long distanceWalkedMeters
+    ) {
     }
 }
