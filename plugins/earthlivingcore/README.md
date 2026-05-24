@@ -2,7 +2,9 @@
 
 EarthLivingCore is the foundation plugin for Earth Living.
 
-Version: `0.6.0`
+Version: `0.6.3`
+
+Status: V1 foundation live on Earth Living Main.
 
 ## Purpose
 
@@ -16,7 +18,7 @@ EarthLivingCore is the backend/hub layer behind:
 - Discord integration
 - future transport and economy modules
 
-## Current v1 Scope
+## Current V1 Scope
 
 - Clean Paper plugin bootstrap.
 - `/earthliving` and `/earthos` commands.
@@ -30,6 +32,10 @@ EarthLivingCore is the backend/hub layer behind:
 - Read-only panel export in `reports-panel.json`.
 - Optional Discord webhook notification when a new report is created.
 - DiscordSRV bridge for event announcements and restart countdown messages.
+- Discord `!report` import into the same report store as in-game EarthOS reports.
+- Permanent staff workflow actions through `reports-actions.queue`.
+- Report status transitions: `open`, `repair-approved`, `completed`.
+- Staff command: `/earthliving reports set <id> <open|repair-approved|completed> [note]`.
 
 ## Build
 
@@ -40,7 +46,7 @@ gradle build
 The output jar is expected under:
 
 ```text
-build/libs/EarthLivingCore-0.6.0.jar
+build/libs/EarthLivingCore-0.6.3.jar
 ```
 
 ## Notes
@@ -48,3 +54,4 @@ build/libs/EarthLivingCore-0.6.0.jar
 - Built against Paper API `1.21.11-R0.1-SNAPSHOT`.
 - Java source target is 21 for broad Paper plugin compatibility while the server can still run on Java 25.
 - The real custom item texture belongs in a future resource pack using the EarthOS hotbar icon asset.
+- Future feature work should be tracked as smaller EarthOS apps/modules instead of keeping the broad foundation task open forever.

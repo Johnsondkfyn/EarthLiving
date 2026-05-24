@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-24",
   "source": "Notion Earth Living Roadmap",
-  "completed": 25,
-  "inProgress": 6,
+  "completed": 27,
+  "inProgress": 4,
   "planned": 66,
-  "progressPercent": 26,
+  "progressPercent": 28,
   "phase": {
-    "en": "Foundation, live website, EarthOS concept, report flow, branding and core planning.",
-    "da": "Foundation, live hjemmeside, EarthOS-koncept, report flow, branding og core planning."
+    "en": "Core foundation is live, website is being refined, and the player portal track is now scoped.",
+    "da": "Core foundation er live, hjemmesiden bliver finpudset, og player portal-sporet er nu afgrænset."
   }
 }

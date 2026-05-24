@@ -49,6 +49,8 @@ Opdatering 2026-05-22: Dagens næste hovedspor er **EarthLiving Web Portal + Ear
 
 Opdatering 2026-05-22: Notion er ryddet, så hovedopgaven `Discord integration` er markeret `Færdig`, og `EarthLiving Web Portal + EarthWebBridge` er oprettet som ny `I gang`-opgave med høj prioritet. Aktuel website/roadmap-status er **25 Færdig**, **6 I gang**, **66 Planlagt** og **26%**.
 
+Opdatering 2026-05-24: Punkt 2, 3 og 4 fra den aktive plan er ryddet op. `Website til serveren` bliver fortsat `I gang`, men public copy er gjort mindre intern og roadmap-data er opdateret. `EarthLivingCore foundation plugin` er V1-færdig med `0.6.3` live på Main og permanente Report Center-actions. `EarthLiving Web Portal + EarthWebBridge` bliver næste konkrete V1-spor med one-time link codes, read-only exports og ingen Minecraft/Microsoft password-håndtering. Aktuel website/roadmap-status er **27 Færdig**, **4 I gang**, **66 Planlagt** og **28%**.
+
 ## Udført 2026-05-18
 
 ### Pterodactyl og serverdrift
@@ -136,7 +138,7 @@ Opdatering 2026-05-22: Notion er ryddet, så hovedopgaven `Discord integration` 
 - Første tekniske version bør være en inventory GUI med et `COMPASS` eller `CLOCK` item som EarthOS-device.
 - Første apps bør være Server Status, World Map/BlueMap, Events, Passport/Countries, Support & Reports og Settings.
 
-## I gang 2026-05-19: EarthLivingCore v0.1.0
+## Færdig V1 2026-05-24: EarthLivingCore foundation
 
 - Plugin scaffold er oprettet i `plugins/earthlivingcore/`.
 - EarthLivingCore fungerer som backend/hjerne for EarthOS, events, reports, passports, notifications og Discord hooks.
@@ -146,6 +148,10 @@ Opdatering 2026-05-22: Notion er ryddet, så hovedopgaven `Discord integration` 
 - EarthOS-device bruger `COMPASS` med custom model data `260519`, så resource packen senere kan koble hotbar-ikonet på.
 - EarthOS placeholder-menu har knapper til World Map, Server Events, Passport, Wallet, Reports, Server Status og Settings.
 - Main-spillertest 2026-05-20 bekræftede EarthOS/kommando-flow og oprettede `Report #1`.
+- EarthLivingCore `0.6.3` kører på Main.
+- Discord `!report` importeres til samme report store som in-game reports.
+- Report Center kan nu styre permanente status-actions via `reports-actions.queue`.
+- Foundation-opgaven bør lukkes; nye Core-ændringer skal oprettes som mindre EarthOS/app/module-opgaver.
 
 ## Sikkerhedsfokus 2026-05-18
 
@@ -166,8 +172,8 @@ Opdatering 2026-05-22: Notion er ryddet, så hovedopgaven `Discord integration` 
 | --- | --- | --- |
 | Roadmap/status i Notion | Ikke angivet | https://www.notion.so/3619c23d643a80098efacacb46b4bc28 |
 | EarthLiving Web Portal + EarthWebBridge | Høj | Se `docs/EARTH_WEB_PORTAL.md` |
-| Ekstra I gang-række | Ikke angivet | Vises i Notion, men blev ikke returneret med navn af connector-søgningen. |
 | Velocity proxy med servervalg | Høj | https://www.notion.so/3639c23d643a8152a370dc0aa3c373df |
+| Website til serveren | Høj | https://www.notion.so/3619c23d643a8020b74be8af46263f37 |
 
 ## I gang: Velocity proxy og servervalg
 

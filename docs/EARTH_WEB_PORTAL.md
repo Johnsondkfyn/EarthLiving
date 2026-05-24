@@ -6,6 +6,9 @@ High priority after the core website and EarthOS foundation.
 ## Planned start
 Planned development start: Friday 22 May.
 
+## Current status
+V1 scope defined on 2026-05-24. The public website stays static for now, while the portal foundation starts with safe one-time account linking and read-only exports.
+
 ## Goal
 Create a web profile system where players can link their Minecraft account to an EarthLiving website profile and view their progress, status and server information online.
 
@@ -104,11 +107,13 @@ The first build should stay deliberately small and safe.
 
 - `EarthWebBridge` module/plugin scaffold.
 - Private config with API token placeholder only, never a real token in GitHub.
-- One-time link code model.
+- One-time link code model documented in `docs/webportal/LINK_CODE_FLOW.md`.
 - EarthOS Profile entry point design.
 - Read-only player profile export.
 - Read-only report status export for linked players.
+- Public server status export.
 - Website-side placeholder route/page for "My EarthLiving".
+- Export schema documented in `docs/webportal/V1_EXPORT_SCHEMA.md`.
 
 ### V1 non-goals
 
@@ -125,7 +130,7 @@ Choose the web stack before coding the portal backend:
 - Small server-side app later: needed for real accounts, sessions and private player dashboards.
 - Existing Pterodactyl/Blueprint panel only: good for staff tools, not for public player login.
 
-Recommended path: keep the current public site static, then add a separate private web service for authenticated player profiles when the link-code flow is ready.
+Recommended path: keep the current public site static, add file-based read-only exports first, then add a separate private web service for authenticated player profiles when the link-code flow is ready.
 
 ## EarthWebBridge
 

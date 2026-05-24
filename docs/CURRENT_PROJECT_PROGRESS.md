@@ -2,7 +2,7 @@
 
 ## Overall progress
 
-Estimated overall progress: **23%**.
+Estimated overall progress: **28%**.
 
 This is an early project estimate, not a mathematically exact completion percentage. EarthLiving is a large long-term project with many planned systems, so the percentage should be updated as features move from planning into development and testing.
 
@@ -10,16 +10,16 @@ This is an early project estimate, not a mathematically exact completion percent
 
 | Status | Count | Meaning |
 |---|---:|---|
-| Completed | 22 | Notion roadmap items marked `Færdig` |
-| In Progress | 7 | Notion roadmap items marked `I gang` |
-| Planned | 67 | Notion roadmap items marked `Ikke startet` |
+| Completed | 27 | Notion roadmap items marked `Færdig` |
+| In Progress | 4 | Notion roadmap items marked `I gang` |
+| Planned | 66 | Notion roadmap items marked `Ikke startet` |
 
 ## Current phase
 
 Current phase:
 
 ```text
-Foundation, website, EarthOS concept, report flow, branding and core planning.
+Core foundation is live, the website is being refined, and the first player portal scope is being planned.
 ```
 
 ## Completed
@@ -28,13 +28,14 @@ Foundation, website, EarthOS concept, report flow, branding and core planning.
 - Public website is live on `https://earthliving.earth` with HTTPS.
 - Website domain and DNS foundation are configured.
 - Core planning documents exist for future systems and server direction.
+- EarthLivingCore foundation V1 is live on Main as `0.6.3`.
 
 ## In progress
 
-- EarthLivingCore foundation.
 - EarthOS concept and GUI-first direction.
 - Basic report flow planning/implementation direction.
 - Website content, bilingual copy, branding polish and public presentation.
+- EarthLiving Web Portal + EarthWebBridge V1 scope.
 
 ## Planned systems
 
@@ -60,13 +61,14 @@ Planned systems include, but are not limited to:
 
 ## Website status
 
-Updated 2026-05-22:
+Updated 2026-05-24:
 
 - Discord integration foundation is now complete: chat/status/player count, account linking verification, staff alerts and shared in-game/Discord report flow.
 - EarthLivingCore `0.6.3` is live on Main with permanent Report Center status actions through `reports-actions.queue`.
 - Panel Report Center can now set reports to `repair-approved`, `completed`, or back to `open` without editing `reports.yml` directly.
-- EarthLiving Web Portal + EarthWebBridge has started as the next high-priority track.
-- Current public roadmap estimate: 25 completed, 6 in progress, 66 planned, 26% overall.
+- EarthLivingCore foundation V1 is now considered complete; future work should be split into smaller EarthOS apps/modules.
+- EarthLiving Web Portal + EarthWebBridge has a V1 scope: one-time link code flow, read-only exports and no Microsoft/Minecraft password handling.
+- Current public roadmap estimate: 27 completed, 4 in progress, 66 planned, 28% overall.
 
 Updated 2026-05-20:
 
@@ -82,16 +84,16 @@ Updated 2026-05-20:
 The public website should display:
 
 ```text
-Overall Progress: 23%
-Completed: 22
-In Progress: 7
-Planned: 67
+Overall Progress: 28%
+Completed: 27
+In Progress: 4
+Planned: 66
 ```
 
 Recommended note:
 
 ```text
-Current phase: foundation, live website, EarthOS concept, report flow, branding and core planning.
+Current phase: Core foundation is live, the website is being refined, and the first player portal scope is being planned.
 Progress follows the current Notion roadmap counts and should be refreshed when Notion statuses change.
 ```
 
