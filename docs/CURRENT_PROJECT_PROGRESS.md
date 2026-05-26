@@ -63,7 +63,7 @@ Planned systems include, but are not limited to:
 
 Updated 2026-05-26:
 
-- Velocity proxy test is online on `159.195.149.253:25567`, currently routing to the former test server as `hub`. Main server remains direct on `25565` until the final proxy port swap is intentionally performed.
+- Velocity proxy test is online on `159.195.149.253:25567`, currently routing to the former test server as `hub`. Velocity was updated to `3.5.0-SNAPSHOT` build `599` so it supports `26.1.2`/protocol `775`. Main server remains direct on `25565` until the final proxy port swap is intentionally performed.
 - The website now has the first public-safe "My EarthLiving" profile view: not-linked profile state, read-only stat cards, live EarthWebBridge status display and a documented Discord verification/whitelist plan. Main server JSON exports were verified as active and valid, with `0` linked profiles until a player completes the in-game link flow.
 - Discord integration foundation is now complete: chat/status/player count, account linking verification, staff alerts and shared in-game/Discord report flow.
 - EarthLivingCore `0.6.3` is live on Main with permanent Report Center status actions through `reports-actions.queue`.

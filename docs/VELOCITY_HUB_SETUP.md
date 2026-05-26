@@ -2,6 +2,22 @@
 
 Status: V1 proxy test online, 2026-05-26.
 
+## Current Velocity Build
+
+Velocity was updated on 2026-05-26 after client login showed:
+
+```text
+Incompatible client! Please use 1.7.2-1.21.11
+```
+
+The old proxy jar was `Velocity 3.4.0-SNAPSHOT`, which only advertised protocol `771`. The proxy now runs:
+
+```text
+Velocity 3.5.0-SNAPSHOT build 599
+Status ping: Velocity 1.7.2-26.1.2
+Protocol: 775
+```
+
 ## Current Live Layout
 
 | Address | Current target |
@@ -28,6 +44,7 @@ Status: V1 proxy test online, 2026-05-26.
 2026-05-26 checks:
 
 - `159.195.149.253:25567` responds to Minecraft status ping as Velocity with `EarthLiving Network`.
+- `159.195.149.253:25567` advertises protocol `775` and version range `Velocity 1.7.2-26.1.2`.
 - `159.195.149.253:25566` times out to external Minecraft status ping, which is expected because direct backend access is blocked.
 - `159.195.149.253:25565` still responds as the existing main Paper server.
 - Hub server starts with Paper Velocity forwarding enabled.
