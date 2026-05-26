@@ -393,6 +393,20 @@ Give cities and regions identity and influence.
 ## Goal
 Create passport, citizenship, visa and border gameplay.
 
+## Current V1
+
+EarthLivingCore `0.7.2` now owns the first passport foundation:
+
+- EarthOS Passport app
+- player passport profile
+- citizenship/home country
+- visa records
+- country reputation
+- staff admin commands
+- read-only JSON export for the future web profile
+
+The older `PassportBorders` plugin remains the polygon/border prototype. Future work should connect it to EarthLivingCore passport data instead of letting both systems own separate passport rules.
+
 ---
 
 # 29. DynamicMediaNetwork

@@ -1,5 +1,6 @@
 package dk.earthliving.core.earthos;
 
+import dk.earthliving.core.passport.PassportService;
 import dk.earthliving.core.report.ReportService;
 import dk.earthliving.core.webportal.WebPortalService;
 import org.bukkit.entity.Player;
@@ -17,17 +18,20 @@ public final class EarthOsListener implements Listener {
     private final EarthOsService earthOsService;
     private final ReportService reportService;
     private final WebPortalService webPortalService;
+    private final PassportService passportService;
 
-    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService, WebPortalService webPortalService) {
+    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService, WebPortalService webPortalService, PassportService passportService) {
         this.plugin = plugin;
         this.earthOsService = earthOsService;
         this.reportService = reportService;
         this.webPortalService = webPortalService;
+        this.passportService = passportService;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         webPortalService.recordJoin(event.getPlayer());
+        passportService.recordJoin(event.getPlayer());
         if (earthOsService.shouldGiveOnJoin()) {
             earthOsService.giveDevice(event.getPlayer());
         }
@@ -55,7 +59,8 @@ public final class EarthOsListener implements Listener {
                 && !ReportService.MENU_TITLE.equals(title)
                 && !ReportService.CREATE_MENU_TITLE.equals(title)
                 && !ReportService.MY_REPORTS_TITLE.equals(title)
-                && !ReportService.ADMIN_REPORTS_TITLE.equals(title)) {
+                && !ReportService.ADMIN_REPORTS_TITLE.equals(title)
+                && !PassportService.MENU_TITLE.equals(title)) {
             return;
         }
 
@@ -69,6 +74,8 @@ public final class EarthOsListener implements Listener {
                 reportService.handleCreateClick(player, event.getRawSlot());
             } else if (ReportService.MY_REPORTS_TITLE.equals(title) || ReportService.ADMIN_REPORTS_TITLE.equals(title)) {
                 reportService.handleReportListClick(player, event.getRawSlot());
+            } else if (PassportService.MENU_TITLE.equals(title)) {
+                passportService.handleClick(player, event.getRawSlot());
             }
             player.updateInventory();
         }

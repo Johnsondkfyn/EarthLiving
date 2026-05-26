@@ -11,6 +11,7 @@ import dk.earthliving.core.module.CoreModule;
 import dk.earthliving.core.module.ModuleRegistry;
 import dk.earthliving.core.notification.DiscordNotificationService;
 import dk.earthliving.core.notification.NotificationService;
+import dk.earthliving.core.passport.PassportService;
 import dk.earthliving.core.report.ReportService;
 import dk.earthliving.core.webportal.WebPortalService;
 import org.bukkit.command.PluginCommand;
@@ -29,6 +30,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private EarthOsService earthOsService;
     private ReportService reportService;
     private WebPortalService webPortalService;
+    private PassportService passportService;
 
     @Override
     public void onEnable() {
@@ -40,13 +42,14 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         eventService = new EarthLivingEventService(this, notificationService, discordBridgeService);
         moduleRegistry = new ModuleRegistry();
         reportService = new ReportService(this, notificationService, discordNotificationService);
+        passportService = new PassportService(this, notificationService);
         webPortalService = new WebPortalService(this, notificationService, reportService);
         discordReportImportService = new DiscordReportImportService(this, notificationService, reportService);
-        earthOsService = new EarthOsService(this, notificationService, reportService, webPortalService);
+        earthOsService = new EarthOsService(this, notificationService, reportService, webPortalService, passportService);
 
         registerModules();
         registerCommands();
-        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService), this);
+        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService, passportService), this);
         reportService.startPanelActionProcessor();
         webPortalService.startExporter();
         discordReportImportService.startLater();
@@ -95,6 +98,10 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
 
     public WebPortalService webPortalService() {
         return webPortalService;
+    }
+
+    public PassportService passportService() {
+        return passportService;
     }
 
     public EarthLivingEventService eventService() {

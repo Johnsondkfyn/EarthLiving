@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-05-26T11:26:54.391833152Z",
+  "generatedAt": "2026-05-26T16:51:29.134527231Z",
   "server": "Earth Living Main",
   "phase": "private-test",
   "onlinePlayers": 0,
   "maxPlayers": 20,
-  "coreVersion": "0.7.1",
+  "coreVersion": "0.7.2",
   "mapStatus": "foundation-live",
   "linkedProfiles": 0
 }

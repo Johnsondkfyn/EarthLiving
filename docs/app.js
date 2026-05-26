@@ -36,7 +36,7 @@ function applyPortalStatus(status) {
   const values = {
     server: status.server || "Earth Living Main",
     players: `${status.onlinePlayers ?? 0} / ${status.maxPlayers ?? 20}`,
-    coreVersion: status.coreVersion ? `v${status.coreVersion}` : "v0.7.1",
+    coreVersion: status.coreVersion ? `v${status.coreVersion}` : "v0.7.2",
     linkedProfiles: String(status.linkedProfiles ?? 0),
     generatedAt: updated && !Number.isNaN(updated.getTime())
       ? updated.toLocaleString(language, { dateStyle: "short", timeStyle: "short" })
@@ -126,7 +126,7 @@ const translations = {
     "earthos.body": "EarthLiving is designed to be GUI-first. Instead of memorizing long command lists, players use EarthOS from a hotbar device to access the server's systems.",
     "earthos.card1.kicker": "Apps",
     "earthos.card1.title": "Everything in one menu",
-    "earthos.card1.body": "EarthOS is planned to include transport, maps, economy, reports, mining, nightlife, news, passport, language settings, and server status.",
+    "earthos.card1.body": "EarthOS now starts connecting reports, profile linking and passport identity, with transport, economy, mining, nightlife, news, language settings and server status still expanding.",
     "earthos.card2.kicker": "Access",
     "earthos.card2.title": "No command-heavy gameplay",
     "earthos.card2.body": "Normal players should interact through menus, tickets, apps, dashboards, buttons, and visual feedback instead of command spam.",
@@ -296,7 +296,7 @@ const translations = {
     "earthos.body": "EarthLiving er designet GUI-first. I stedet for lange kommandolister bruger spillere EarthOS fra et hotbar-device til at åbne serverens systemer.",
     "earthos.card1.kicker": "Apps",
     "earthos.card1.title": "Alt i én menu",
-    "earthos.card1.body": "EarthOS skal rumme transport, map, økonomi, reports, mining, nightlife, news, passport, sprogindstillinger og serverstatus.",
+    "earthos.card1.body": "EarthOS begynder nu at forbinde reports, profil-linking og passport-identitet, mens transport, økonomi, mining, nightlife, news, sprogindstillinger og serverstatus udbygges.",
     "earthos.card2.kicker": "Adgang",
     "earthos.card2.title": "Ikke command-heavy gameplay",
     "earthos.card2.body": "Almindelige spillere skal bruge menuer, tickets, apps, dashboards, knapper og visuel feedback i stedet for command-spam.",

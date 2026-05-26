@@ -21,8 +21,8 @@ earthos:
     - "&eNo public events are running yet."
     - "&7Discord event announcements are planned next."
   passport:
-    - "&6Passport system is planned."
-    - "&7Country access and border travel will connect here."
+    - "&6Earth Passport"
+    - "&7Open EarthOS -> Passport to view citizenship, visas and reputation."
   wallet:
     - "&aWallet system is planned."
     - "&7Economy and player balance will connect here."

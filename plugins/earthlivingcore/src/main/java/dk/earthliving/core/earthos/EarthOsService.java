@@ -1,6 +1,7 @@
 package dk.earthliving.core.earthos;
 
 import dk.earthliving.core.notification.NotificationService;
+import dk.earthliving.core.passport.PassportService;
 import dk.earthliving.core.report.ReportService;
 import dk.earthliving.core.webportal.WebPortalService;
 import net.kyori.adventure.text.Component;
@@ -36,13 +37,15 @@ public final class EarthOsService {
     private final NotificationService notifications;
     private final ReportService reportService;
     private final WebPortalService webPortalService;
+    private final PassportService passportService;
     private final NamespacedKey itemKey;
 
-    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService, WebPortalService webPortalService) {
+    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService, WebPortalService webPortalService, PassportService passportService) {
         this.plugin = plugin;
         this.notifications = notifications;
         this.reportService = reportService;
         this.webPortalService = webPortalService;
+        this.passportService = passportService;
         this.itemKey = new NamespacedKey(plugin, "earthos_device");
     }
 
@@ -90,7 +93,10 @@ public final class EarthOsService {
         Inventory inventory = Bukkit.createInventory(player, 27, MENU_TITLE);
         inventory.setItem(SLOT_MAP, menuItem(Material.MAP, "&bWorld Map", List.of("&7Open BlueMap in chat")));
         inventory.setItem(SLOT_EVENTS, menuItem(Material.CLOCK, "&eServer Events", List.of("&7Random events and competitions")));
-        inventory.setItem(SLOT_PASSPORT, menuItem(Material.PAPER, "&6Passport", List.of("&7Countries, access and travel")));
+        inventory.setItem(SLOT_PASSPORT, menuItem(Material.PAPER, "&6Passport", List.of(
+                "&7Citizenship, visas and travel",
+                "&7Home country: &f" + passportCountryLabel(player)
+        )));
         inventory.setItem(SLOT_WALLET, menuItem(Material.EMERALD, "&aWallet", List.of("&7Economy placeholder")));
         inventory.setItem(SLOT_REPORTS, menuItem(Material.WRITABLE_BOOK, "&dReports", List.of(
                 "&7Create a quick report",
@@ -115,7 +121,7 @@ public final class EarthOsService {
                     plugin.getConfig().getString("earthos.bluemap-url", "http://159.195.149.253:8100/")
             );
             case SLOT_EVENTS -> sendConfiguredLines(player, "earthos.events");
-            case SLOT_PASSPORT -> sendConfiguredLines(player, "earthos.passport");
+            case SLOT_PASSPORT -> passportService.open(player);
             case SLOT_WALLET -> sendConfiguredLines(player, "earthos.wallet");
             case SLOT_REPORTS -> reportService.open(player);
             case SLOT_STATUS -> sendConfiguredLines(player, "earthos.server-status");
@@ -135,6 +141,11 @@ public final class EarthOsService {
     private String linkedProfileLabel(Player player) {
         String profileId = webPortalService.linkedProfileId(player.getUniqueId());
         return profileId.isBlank() ? "Not linked" : profileId;
+    }
+
+    private String passportCountryLabel(Player player) {
+        String country = passportService.profile(player.getUniqueId(), player.getName()).citizenshipCountry();
+        return country.isBlank() ? "Not selected" : country;
     }
 
     private void sendConfiguredLines(Player player, String path) {

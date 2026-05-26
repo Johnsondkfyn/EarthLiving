@@ -86,6 +86,69 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("passport")) {
+            if (args.length == 1 || args[1].equalsIgnoreCase("info")) {
+                if (sender instanceof Player player) {
+                    plugin.passportService().open(player);
+                } else {
+                    notifications.send(sender, "&eUsage: /" + label + " passport <setcitizenship|addvisa|reputation|export>");
+                }
+                return true;
+            }
+            if (!sender.hasPermission("earthliving.admin")) {
+                notifications.send(sender, "&cYou do not have permission to manage passports.");
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("setcitizenship")) {
+                if (args.length < 4) {
+                    notifications.send(sender, "&eUsage: /" + label + " passport setcitizenship <player> <country> [status]");
+                    return true;
+                }
+                String status = args.length >= 5 ? args[4] : "active";
+                boolean changed = plugin.passportService().setCitizenship(args[2], args[3], status);
+                notifications.send(sender, changed
+                        ? "&aCitizenship set for &f" + args[2] + "&a: &f" + args[3] + " &7(" + status + "&7)"
+                        : "&cCould not update passport for " + args[2] + ".");
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("addvisa")) {
+                if (args.length < 5) {
+                    notifications.send(sender, "&eUsage: /" + label + " passport addvisa <player> <country> <visitor|work|resident|event> [status] [expiresAt]");
+                    return true;
+                }
+                String status = args.length >= 6 ? args[5] : "active";
+                String expiresAt = args.length >= 7 ? args[6] : "";
+                boolean changed = plugin.passportService().addVisa(args[2], args[3], args[4], status, expiresAt);
+                notifications.send(sender, changed
+                        ? "&aVisa added for &f" + args[2] + "&a: &f" + args[3] + " / " + args[4]
+                        : "&cCould not add visa for " + args[2] + ".");
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("reputation")) {
+                if (args.length < 5) {
+                    notifications.send(sender, "&eUsage: /" + label + " passport reputation <player> <country> <-100..100>");
+                    return true;
+                }
+                try {
+                    boolean changed = plugin.passportService().setReputation(args[2], args[3], Integer.parseInt(args[4]));
+                    notifications.send(sender, changed
+                            ? "&aReputation updated for &f" + args[2] + "&a in &f" + args[3] + "&a."
+                            : "&cCould not update reputation for " + args[2] + ".");
+                } catch (NumberFormatException exception) {
+                    notifications.send(sender, "&cReputation must be a whole number from -100 to 100.");
+                }
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("export")) {
+                plugin.passportService().exportAll();
+                notifications.send(sender, "&aPassport JSON export refreshed.");
+                notifications.send(sender, "&7File: &fplugins/EarthLivingCore/web-exports/player-passports.json");
+                return true;
+            }
+            notifications.send(sender, "&eUsage: /" + label + " passport <info|setcitizenship|addvisa|reputation|export>");
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("event")) {
             if (!sender.hasPermission("earthliving.admin")) {
                 notifications.send(sender, "&cYou do not have permission to announce events.");
@@ -140,14 +203,14 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|portal|event|restart|earthos|reload>");
+        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|portal|passport|event|restart|earthos|reload>");
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            List<String> options = new ArrayList<>(List.of("status", "modules", "earthos"));
+            List<String> options = new ArrayList<>(List.of("status", "modules", "earthos", "passport"));
             if (sender.hasPermission("earthliving.admin")) {
                 options.add("reports");
                 options.add("portal");
@@ -173,6 +236,24 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
                 && args.length == 2) {
             return List.of("code", "export").stream()
                     .filter(option -> option.startsWith(args[1].toLowerCase()))
+                    .toList();
+        }
+
+        if (args[0].equalsIgnoreCase("passport") && args.length == 2) {
+            List<String> options = sender.hasPermission("earthliving.admin")
+                    ? List.of("info", "setcitizenship", "addvisa", "reputation", "export")
+                    : List.of("info");
+            return options.stream()
+                    .filter(option -> option.startsWith(args[1].toLowerCase()))
+                    .toList();
+        }
+
+        if (sender.hasPermission("earthliving.admin")
+                && args[0].equalsIgnoreCase("passport")
+                && args.length == 5
+                && args[1].equalsIgnoreCase("addvisa")) {
+            return List.of("visitor", "work", "resident", "event").stream()
+                    .filter(option -> option.startsWith(args[4].toLowerCase()))
                     .toList();
         }
 
