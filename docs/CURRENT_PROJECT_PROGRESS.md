@@ -64,7 +64,7 @@ Planned systems include, but are not limited to:
 Updated 2026-05-26:
 
 - Velocity proxy test is online on `159.195.149.253:25567`, currently routing to the former test server as `hub`. Velocity was updated to `3.5.0-SNAPSHOT` build `599` so it supports `26.1.2`/protocol `775`. Main server remains direct on `25565` until the final proxy port swap is intentionally performed.
-- The hub backend has been reset to a flat creative/peaceful build world with a `1000` block worldborder, spawn at `0 80 0`, spawn chunks force-loaded, and `TheKing189` set as operator level `4`.
+- The hub backend now runs the uploaded BreadBuilds "Modern Age lobby" world as the first visual hub test. The previous flat hub world is backed up, Paper completed the 1.18+ world migration successfully, and Velocity status ping on `159.195.149.253:25567` still works.
 - EarthPassportSystem V1 is implemented in EarthLivingCore `0.7.2`: EarthOS Passport profile view, citizenship/home country, visas, country reputation, staff commands and read-only passport JSON export.
 - Main Discord verification testing found that DiscordSRV sees `minecraft-chat` code messages, but the linking flow does not consume them yet; a temporary owner/dev bypass for `TheKing189` is active so live Passport and hub testing can continue.
 - The website now has the first public-safe "My EarthLiving" profile view: not-linked profile state, read-only stat cards, live EarthWebBridge status display and a documented Discord verification/whitelist plan. Main server JSON exports were verified as active and valid, with `0` linked profiles until a player completes the in-game link flow.

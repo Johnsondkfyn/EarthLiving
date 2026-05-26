@@ -1,6 +1,6 @@
 # Velocity Hub Setup
 
-Status: V1 proxy + flat hub test online, 2026-05-26.
+Status: V1 proxy + Modern Age lobby hub test online, 2026-05-26.
 
 ## Current Velocity Build
 
@@ -43,9 +43,17 @@ Protocol: 775
 
 Updated 2026-05-26:
 
+- The flat hub test world was replaced with the BreadBuilds "Modern Age lobby" world for the first visual hub test.
+- Source path on the local workstation:
+  - `C:\Users\Johna\Downloads\Modern Age lobby by BreadBuilds (2)\Modern Age lobby by BreadBuilds\Files\files for 1.18+\world`
+- The uploaded world is a 1.18+ world and Paper upgraded/migrated it successfully on first start.
+- The previous flat hub world was backed up before replacement:
+  - `.earthliving-backups/hub-world-flat-before-modern-age-20260526-200743.tar.gz`
+- The previous flat hub world folder was also kept as:
+  - `world.before-modern-age-20260526-200743`
 - The old normal hub world was backed up before reset:
   - `.earthliving-backups/hub-world-before-flat-20260526-140103.tar.gz`
-- Hub was regenerated as a flat world:
+- The earlier temporary hub was regenerated as a flat world:
   - `level-type=minecraft\:flat`
   - grass surface, dirt base and bedrock floor
 - Hub defaults are set for building:
@@ -70,7 +78,8 @@ Updated 2026-05-26:
 - `159.195.149.253:25566` times out to external Minecraft status ping, which is expected because direct backend access is blocked.
 - `159.195.149.253:25565` still responds as the existing main Paper server.
 - Hub server starts with Paper Velocity forwarding enabled.
-- Hub server starts as a flat creative/peaceful build world for the first hub design pass.
+- Hub server starts as the upgraded Modern Age lobby world for the first visual hub design pass.
+- Paper completed world storage migration and vanilla import for the uploaded 1.18+ world.
 
 ## Player Test
 
@@ -86,7 +95,7 @@ That should send the player to the hub backend.
 
 - Main is not behind Velocity yet.
 - `earthliving.earth:25565` still points directly to Main.
-- Hub spawn/build design is not done, but the flat build world is ready.
+- Hub spawn/build design still needs in-game review, portal placement, signs, EarthOS/Passport terminal locations and server-selection flow.
 - Main needs a planned maintenance window before moving `25565` to Velocity.
 
 ## Recommended Next Step
