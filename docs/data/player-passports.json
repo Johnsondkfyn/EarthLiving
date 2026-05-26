@@ -1,5 +1,19 @@
 {
-  "generatedAt": "2026-05-26T16:50:58.786539085Z",
+  "generatedAt": "2026-05-26T17:31:43.992125335Z",
   "players": [
+    {
+      "minecraftUuid": "e7bee957-ed9c-4cfa-a42d-83594696a22a",
+      "playerName": "TheKing189",
+      "issuedAt": "2026-05-26T17:26:58.608176538Z",
+      "citizenship": {
+        "country": "denmark",
+        "status": "active",
+        "grantedAt": "2026-05-26T17:31:27.951878779Z"
+      },
+      "visas": [
+        {"country": "germany", "type": "visitor", "status": "active", "issuedAt": "2026-05-26T17:31:28.356141414Z", "expiresAt": "2026-06-30"}
+      ],
+      "reputation": {"denmark": 25}
+    }
   ]
 }

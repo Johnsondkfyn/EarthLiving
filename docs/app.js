@@ -2,6 +2,7 @@ const canvas = document.querySelector("#world-canvas");
 const ctx = canvas.getContext("2d");
 const viewToggle = document.querySelector(".view-toggle");
 const languageToggle = document.querySelector(".language-toggle");
+let latestPassportPreview = null;
 
 function applyRoadmapStatus(status) {
   if (!status) {
@@ -49,6 +50,80 @@ function applyPortalStatus(status) {
       element.textContent = values[key];
     }
   });
+}
+
+function formatCountryName(country) {
+  if (!country) {
+    return "Not set";
+  }
+  return country
+    .split(/[-_]/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function applyPassportPreview(data) {
+  latestPassportPreview = data || latestPassportPreview;
+  const players = latestPassportPreview && Array.isArray(latestPassportPreview.players)
+    ? latestPassportPreview.players
+    : [];
+  if (!players.length) {
+    return;
+  }
+
+  const profile = players[0];
+  const language = document.documentElement.lang === "da" ? "da" : "en";
+  const citizenship = profile.citizenship || {};
+  const firstVisa = Array.isArray(profile.visas) && profile.visas.length ? profile.visas[0] : null;
+  const reputationEntries = profile.reputation ? Object.entries(profile.reputation) : [];
+  const reputation = reputationEntries.length ? `${formatCountryName(reputationEntries[0][0])} ${reputationEntries[0][1]}` : "--";
+  const visaLabel = firstVisa
+    ? `${formatCountryName(firstVisa.country)} ${firstVisa.type || "visitor"}`
+    : "--";
+
+  const status = document.querySelector(".portal-status-pill");
+  if (status) {
+    status.textContent = language === "da" ? "Passport test aktiv" : "Passport test active";
+  }
+
+  const title = document.querySelector("[data-i18n='portal.profile.title']");
+  if (title) {
+    title.textContent = profile.playerName || "EarthLiving player";
+  }
+
+  const body = document.querySelector("[data-i18n='portal.profile.body']");
+  if (body) {
+    body.textContent = language === "da"
+      ? "Første live Passport-profil er oprettet fra main-serverens read-only export."
+      : "The first live Passport profile is now created from the main server read-only export.";
+  }
+
+  const previewValues = {
+    playtime: formatCountryName(citizenship.country),
+    blocksBroken: citizenship.status || "--",
+    blocksPlaced: visaLabel,
+    distance: reputation,
+    reports: String(players.length),
+  };
+
+  document.querySelectorAll("[data-profile-preview]").forEach((element) => {
+    const key = element.dataset.profilePreview;
+    if (Object.prototype.hasOwnProperty.call(previewValues, key)) {
+      element.textContent = previewValues[key];
+    }
+  });
+
+  const locked = document.querySelector("[data-i18n='portal.stats.locked']");
+  if (locked) {
+    locked.textContent = language === "da" ? "Read-only test" : "Read-only test";
+  }
+}
+
+function refreshPassportPreviewText() {
+  if (latestPassportPreview) {
+    applyPassportPreview(latestPassportPreview);
+  }
 }
 
 const translations = {
@@ -181,11 +256,11 @@ const translations = {
     "portal.flow.step3": "Enter the code in Minecraft through EarthOS -> My EarthLiving.",
     "portal.stats.kicker": "Profile stats",
     "portal.stats.title": "First read-only data",
-    "portal.stats.playtime": "Playtime",
-    "portal.stats.blocksBroken": "Blocks broken",
-    "portal.stats.blocksPlaced": "Blocks placed",
-    "portal.stats.distance": "Distance",
-    "portal.stats.reports": "Reports",
+    "portal.stats.playtime": "Citizenship",
+    "portal.stats.blocksBroken": "Status",
+    "portal.stats.blocksPlaced": "First visa",
+    "portal.stats.distance": "Reputation",
+    "portal.stats.reports": "Passport profiles",
     "portal.stats.status": "Status",
     "portal.stats.locked": "Login later",
     "portal.bridge.kicker": "Live bridge",
@@ -351,11 +426,11 @@ const translations = {
     "portal.flow.step3": "Indtast koden i Minecraft gennem EarthOS -> My EarthLiving.",
     "portal.stats.kicker": "Profilstats",
     "portal.stats.title": "Første read-only data",
-    "portal.stats.playtime": "Spilletid",
-    "portal.stats.blocksBroken": "Blocks ødelagt",
-    "portal.stats.blocksPlaced": "Blocks placeret",
-    "portal.stats.distance": "Distance",
-    "portal.stats.reports": "Reports",
+    "portal.stats.playtime": "Statsborgerskab",
+    "portal.stats.blocksBroken": "Status",
+    "portal.stats.blocksPlaced": "Første visa",
+    "portal.stats.distance": "Reputation",
+    "portal.stats.reports": "Passport-profiler",
     "portal.stats.status": "Status",
     "portal.stats.locked": "Login senere",
     "portal.bridge.kicker": "Live bridge",
@@ -559,6 +634,7 @@ if (languageToggle) {
       }
     }
     window.localStorage.setItem("earthliving-language", language);
+    refreshPassportPreviewText();
   };
   const browserLanguage = navigator.language && navigator.language.toLowerCase().startsWith("da") ? "da" : "en";
   setLanguage(window.localStorage.getItem("earthliving-language") || browserLanguage);
@@ -585,6 +661,16 @@ fetch("./data/webportal-server-status.json", { cache: "no-store" })
     return response.json();
   })
   .then(applyPortalStatus)
+  .catch(() => {});
+
+fetch("./data/player-passports.json", { cache: "no-store" })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Passport preview not available");
+    }
+    return response.json();
+  })
+  .then(applyPassportPreview)
   .catch(() => {});
 
 resize();

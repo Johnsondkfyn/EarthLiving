@@ -43,6 +43,14 @@
 - Discord-to-Minecraft remains disabled.
 - Discord console forwarding remains disabled.
 
+## Verification Test Update - 2026-05-26
+
+- Main was tested with DiscordSRV account-link enforcement enabled.
+- DiscordSRV receives messages from `minecraft-chat`, but live code messages were not consumed by the account-linking flow.
+- Bot DM linking failed for the owner account because Discord could not deliver the DM to `Minecraft Monitor#1807`.
+- Temporary owner/dev bypass was added on Main for `TheKing189` so Passport and hub testing can continue.
+- Before public launch, remove the temporary bypass and verify one normal non-owner account can complete the full Discord link flow.
+
 ## Production Rules
 
 - Use test server first.
@@ -50,3 +58,4 @@
 - Keep real token off GitHub.
 - Take a backup before copying config to Earth Living Main.
 - After production install, document the exact jar version and test result in `PLAN.md`.
+- Temporary owner/dev bypasses are allowed only for testing and must be documented.

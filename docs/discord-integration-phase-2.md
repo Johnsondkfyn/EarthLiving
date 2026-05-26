@@ -1,6 +1,6 @@
 # Discord Integration Phase 2
 
-Updated: 2026-05-20
+Updated: 2026-05-26
 
 ## Goal
 
@@ -127,6 +127,14 @@ Example:
 - Discord reports are saved into `plugins/EarthLivingCore/reports.yml` and exported to `reports-panel.json` together with in-game reports.
 - Server log confirmed after restart: DiscordSRV connected and EarthLivingCore enabled Discord report import for channel `1505977375907643502`.
 
+## Verification Test Update - 2026-05-26
+
+- Main now runs EarthLivingCore `0.7.2` with EarthPassportSystem V1.
+- DiscordSRV receives messages from `minecraft-chat`, but the manual channel-code linking flow did not consume the code during live testing.
+- Bot DM linking also failed because Discord blocked direct delivery to `Minecraft Monitor#1807`.
+- Temporary owner/dev bypass added on Main for `TheKing189` in DiscordSRV `linking.yml` so the owner can enter and test Passport, hub and staff systems while the final verification flow is fixed.
+- This bypass is not a public launch rule. Remove it before public access, or replace it with a tested website/Discord verification flow.
+
 ## Security Rules
 
 - Never commit `BotToken`.
@@ -134,3 +142,4 @@ Example:
 - Never put console output into public channels.
 - Staff alerts should stay private.
 - Test with a normal non-owner Discord account before public launch.
+- Keep temporary owner/dev Discord-link bypasses documented and remove them before public launch.
