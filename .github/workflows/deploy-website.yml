@@ -9,6 +9,9 @@ on:
       - ".github/workflows/deploy-website.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -33,28 +36,41 @@ jobs:
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Install SSH key
+        if: steps.deploy_secrets.outputs.configured == 'true'
+        env:
+          EARTHLIVING_SSH_HOST: ${{ secrets.EARTHLIVING_SSH_HOST }}
+          EARTHLIVING_SSH_KEY: ${{ secrets.EARTHLIVING_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$EARTHLIVING_SSH_KEY" > ~/.ssh/earthliving_deploy
+          chmod 600 ~/.ssh/earthliving_deploy
+          ssh-keyscan -H "$EARTHLIVING_SSH_HOST" >> ~/.ssh/known_hosts
+
       - name: Upload website package
         if: steps.deploy_secrets.outputs.configured == 'true'
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EARTHLIVING_SSH_HOST }}
-          username: ${{ secrets.EARTHLIVING_SSH_USER }}
-          key: ${{ secrets.EARTHLIVING_SSH_KEY }}
-          source: "earthliving-site.tar.gz"
-          target: "/tmp"
+        env:
+          EARTHLIVING_SSH_HOST: ${{ secrets.EARTHLIVING_SSH_HOST }}
+          EARTHLIVING_SSH_USER: ${{ secrets.EARTHLIVING_SSH_USER }}
+        run: |
+          set -euo pipefail
+          scp -i ~/.ssh/earthliving_deploy earthliving-site.tar.gz "$EARTHLIVING_SSH_USER@$EARTHLIVING_SSH_HOST:/tmp/earthliving-site.tar.gz"
 
       - name: Deploy on server
         if: steps.deploy_secrets.outputs.configured == 'true'
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EARTHLIVING_SSH_HOST }}
-          username: ${{ secrets.EARTHLIVING_SSH_USER }}
-          key: ${{ secrets.EARTHLIVING_SSH_KEY }}
-          script: |
-            set -euo pipefail
-            sudo rm -rf /var/www/earthliving-site.new
-            sudo mkdir -p /var/www/earthliving-site.new
-            sudo tar -xzf /tmp/earthliving-site.tar.gz -C /var/www/earthliving-site.new
-            sudo chown -R www-data:www-data /var/www/earthliving-site.new
-            sudo rsync -a --delete /var/www/earthliving-site.new/ /var/www/earthliving-site/
-            sudo nginx -t
+        env:
+          EARTHLIVING_SSH_HOST: ${{ secrets.EARTHLIVING_SSH_HOST }}
+          EARTHLIVING_SSH_USER: ${{ secrets.EARTHLIVING_SSH_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/earthliving_deploy "$EARTHLIVING_SSH_USER@$EARTHLIVING_SSH_HOST" <<'REMOTE'
+          set -euo pipefail
+          sudo rm -rf /var/www/earthliving-site.new
+          sudo mkdir -p /var/www/earthliving-site.new
+          sudo tar -xzf /tmp/earthliving-site.tar.gz -C /var/www/earthliving-site.new
+          sudo chown -R www-data:www-data /var/www/earthliving-site.new
+          sudo rsync -a --delete /var/www/earthliving-site.new/ /var/www/earthliving-site/
+          sudo nginx -t
+          sudo systemctl reload nginx
+          REMOTE
