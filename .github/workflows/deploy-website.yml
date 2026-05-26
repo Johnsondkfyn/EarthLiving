@@ -17,7 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch "${GITHUB_REF_NAME:-main}" "https://github.com/${GITHUB_REPOSITORY}.git" repo
+          cp -a repo/. .
+          rm -rf repo
 
       - name: Prepare website package
         run: tar -C docs -czf earthliving-site.tar.gz .
