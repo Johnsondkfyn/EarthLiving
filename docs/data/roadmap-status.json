@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-05-24",
+  "updatedAt": "2026-05-26",
   "source": "Notion Earth Living Roadmap",
   "completed": 27,
   "inProgress": 4,
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "Core 0.7.1 adds player activity stats to the portal bridge while the website is being refined.",
-    "da": "Core 0.7.1 tilføjer spilleraktivitet til portal-broen, mens hjemmesiden bliver finpudset."
+    "en": "Core 0.7.1 adds player activity stats to the portal bridge, and the Velocity hub is ready as a flat private build world.",
+    "da": "Core 0.7.1 tilføjer spilleraktivitet til portal-broen, og Velocity-hubben er klar som flad privat bygge-verden."
   }
 }

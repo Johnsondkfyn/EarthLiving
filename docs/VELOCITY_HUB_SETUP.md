@@ -1,6 +1,6 @@
 # Velocity Hub Setup
 
-Status: V1 proxy test online, 2026-05-26.
+Status: V1 proxy + flat hub test online, 2026-05-26.
 
 ## Current Velocity Build
 
@@ -39,6 +39,28 @@ Protocol: 775
 - Hub `server.properties` is set to `online-mode=false` as required behind Velocity.
 - A persistent systemd firewall unit applies `DOCKER-USER` rules to block public direct access to the hub backend port.
 
+## Hub World Setup
+
+Updated 2026-05-26:
+
+- The old normal hub world was backed up before reset:
+  - `.earthliving-backups/hub-world-before-flat-20260526-140103.tar.gz`
+- Hub was regenerated as a flat world:
+  - `level-type=minecraft\:flat`
+  - grass surface, dirt base and bedrock floor
+- Hub defaults are set for building:
+  - `gamemode=creative`
+  - `difficulty=peaceful`
+  - `pvp=false`
+  - `spawn-monsters=false`
+  - `spawn-animals=false`
+  - `allow-flight=true`
+- Spawn is set to `0 80 0`.
+- A `500` block worldborder is centered at `0 0`.
+- The spawn chunks around `0 0` are force-loaded for a stable first login area.
+- `TheKing189` is operator level `4` on the hub.
+- RCON was used only temporarily for setup and was disabled again afterwards.
+
 ## Verification
 
 2026-05-26 checks:
@@ -48,6 +70,7 @@ Protocol: 775
 - `159.195.149.253:25566` times out to external Minecraft status ping, which is expected because direct backend access is blocked.
 - `159.195.149.253:25565` still responds as the existing main Paper server.
 - Hub server starts with Paper Velocity forwarding enabled.
+- Hub server starts as a flat creative/peaceful build world for the first hub design pass.
 
 ## Player Test
 
@@ -63,7 +86,7 @@ That should send the player to the hub backend.
 
 - Main is not behind Velocity yet.
 - `earthliving.earth:25565` still points directly to Main.
-- Hub spawn/build design is not done.
+- Hub spawn/build design is not done, but the flat build world is ready.
 - Main needs a planned maintenance window before moving `25565` to Velocity.
 
 ## Recommended Next Step
