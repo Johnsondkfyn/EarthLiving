@@ -63,7 +63,8 @@ Updated 2026-05-26:
   - `spawn-monsters=false`
   - `spawn-animals=false`
   - `allow-flight=true`
-- Spawn is set to `0 80 0`.
+- Initial flat-world spawn was set to `0 80 0`.
+- Modern Age lobby spawn was set in-game to `405 44 -384`.
 - A `1000` block worldborder is centered at `0 0`.
 - The spawn chunks around `0 0` are force-loaded for a stable first login area.
 - `TheKing189` is operator level `4` on the hub.
