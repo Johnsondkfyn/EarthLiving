@@ -56,7 +56,7 @@ Updated 2026-05-26:
   - `spawn-animals=false`
   - `allow-flight=true`
 - Spawn is set to `0 80 0`.
-- A `500` block worldborder is centered at `0 0`.
+- A `1000` block worldborder is centered at `0 0`.
 - The spawn chunks around `0 0` are force-loaded for a stable first login area.
 - `TheKing189` is operator level `4` on the hub.
 - RCON was used only temporarily for setup and was disabled again afterwards.
