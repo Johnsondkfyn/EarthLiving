@@ -80,6 +80,7 @@ Updated 2026-05-26:
 - Hub server starts with Paper Velocity forwarding enabled.
 - Hub server starts as the upgraded Modern Age lobby world for the first visual hub design pass.
 - Paper completed world storage migration and vanilla import for the uploaded 1.18+ world.
+- Player login test confirmed that the Modern Age lobby hub loads correctly in-game.
 
 ## Player Test
 
