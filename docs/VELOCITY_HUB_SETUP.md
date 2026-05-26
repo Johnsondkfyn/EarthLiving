@@ -81,6 +81,13 @@ Updated 2026-05-26:
 - Hub server starts as the upgraded Modern Age lobby world for the first visual hub design pass.
 - Paper completed world storage migration and vanilla import for the uploaded 1.18+ world.
 - Player login test confirmed that the Modern Age lobby hub loads correctly in-game.
+- Hub build tools installed and verified:
+  - EarthLivingCore `0.7.2`
+  - LuckPerms `5.5.0`
+  - WorldEdit `7.4.3`
+  - WorldGuard `7.0.16`
+- WorldEdit is available for build cleanup commands such as `//wand`, `//set air` and `//replace`.
+- WorldGuard is installed for later spawn, portal and protected-area setup, but no final hub regions are defined yet.
 
 ## Player Test
 
