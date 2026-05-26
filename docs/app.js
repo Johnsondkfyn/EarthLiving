@@ -23,6 +23,34 @@ function applyRoadmapStatus(status) {
   });
 }
 
+function applyPortalStatus(status) {
+  if (!status) {
+    return;
+  }
+
+  const timestamp = status.generatedAt
+    ? status.generatedAt.replace(/\.(\d{3})\d+Z$/, ".$1Z")
+    : "";
+  const updated = timestamp ? new Date(timestamp) : null;
+  const language = document.documentElement.lang === "da" ? "da-DK" : "en";
+  const values = {
+    server: status.server || "Earth Living Main",
+    players: `${status.onlinePlayers ?? 0} / ${status.maxPlayers ?? 20}`,
+    coreVersion: status.coreVersion ? `v${status.coreVersion}` : "v0.7.1",
+    linkedProfiles: String(status.linkedProfiles ?? 0),
+    generatedAt: updated && !Number.isNaN(updated.getTime())
+      ? updated.toLocaleString(language, { dateStyle: "short", timeStyle: "short" })
+      : "",
+  };
+
+  document.querySelectorAll("[data-portal-value]").forEach((element) => {
+    const key = element.dataset.portalValue;
+    if (Object.prototype.hasOwnProperty.call(values, key)) {
+      element.textContent = values[key];
+    }
+  });
+}
+
 const translations = {
   en: {
     "nav.overview": "Overview",
@@ -140,21 +168,31 @@ const translations = {
     "roadmap.planned": "Planned",
     "roadmap.note": "Current phase: Core foundation is live, the website is being refined, and the first player portal scope is being planned. Progress is an early estimate and will change as systems move from planning into development.",
     "portal.eyebrow": "My EarthLiving",
-    "portal.title": "Player profiles are the next layer.",
-    "portal.body": "The first portal build links a website profile to a Minecraft UUID through EarthOS, then shows read-only server data such as playtime, reports and basic status.",
-    "portal.card1.kicker": "Link flow",
-    "portal.card1.title": "One-time code through EarthOS",
-    "portal.card1.body": "Players will create or open a website profile, receive a short link code, then enter it in-game through EarthOS -> My EarthLiving.",
-    "portal.card2.kicker": "Profile data",
-    "portal.card2.title": "Read-only and safe",
-    "portal.card2.item1": "Minecraft name and UUID",
-    "portal.card2.item2": "Playtime and last seen status",
-    "portal.card2.item3": "Blocks broken, blocks placed and distance",
-    "portal.card2.item4": "Own report history and status",
-    "portal.card2.item5": "Supporter/donation status later",
-    "portal.card3.kicker": "Current state",
-    "portal.card3.title": "Foundation build",
-    "portal.card3.body": "EarthWebBridge now exports profile, report and player activity stats from the server. Public login and donations will be connected after the secure profile link flow is tested.",
+    "portal.title": "The first player profile view is taking shape.",
+    "portal.body": "The public site can now show the safe profile shell and live bridge status. Private player data will only appear after the secure website login and Minecraft link flow are ready.",
+    "portal.profile.status": "Not linked yet",
+    "portal.profile.kicker": "Player profile",
+    "portal.profile.title": "Your EarthLiving profile",
+    "portal.profile.body": "When login opens, this area will show the Minecraft account that has been linked through EarthOS.",
+    "portal.flow.step1": "Create or open a website profile.",
+    "portal.flow.step2": "Generate a short one-time link code.",
+    "portal.flow.step3": "Enter the code in Minecraft through EarthOS -> My EarthLiving.",
+    "portal.stats.kicker": "Profile stats",
+    "portal.stats.title": "First read-only data",
+    "portal.stats.playtime": "Playtime",
+    "portal.stats.blocksBroken": "Blocks broken",
+    "portal.stats.blocksPlaced": "Blocks placed",
+    "portal.stats.distance": "Distance",
+    "portal.stats.reports": "Reports",
+    "portal.stats.status": "Status",
+    "portal.stats.locked": "Login later",
+    "portal.bridge.kicker": "Live bridge",
+    "portal.bridge.title": "EarthWebBridge export",
+    "portal.bridge.server": "Server",
+    "portal.bridge.players": "Players",
+    "portal.bridge.core": "Core",
+    "portal.bridge.linked": "Linked profiles",
+    "portal.bridge.updated": "Updated",
     "media.eyebrow": "Visual progress",
     "media.title": "Screenshots and updates are being gathered.",
     "media.body": "The public page now has a dedicated place for EarthOS, BlueMap and server visuals. Real gameplay screenshots can be dropped in as soon as private test captures are approved.",
@@ -298,21 +336,31 @@ const translations = {
     "roadmap.planned": "Planlagt",
     "roadmap.note": "Nuværende fase: Core foundation er live, hjemmesiden bliver finpudset, og første player portal-scope er under planlægning. Fremskridt er et tidligt estimat og ændrer sig, når systemer går fra plan til udvikling.",
     "portal.eyebrow": "Min EarthLiving",
-    "portal.title": "Spillerprofiler er næste lag.",
-    "portal.body": "Første portal-build linker en website-profil til en Minecraft UUID gennem EarthOS og viser derefter read-only serverdata som spilletid, reports og basisstatus.",
-    "portal.card1.kicker": "Link flow",
-    "portal.card1.title": "Engangskode gennem EarthOS",
-    "portal.card1.body": "Spillere opretter eller åbner en website-profil, får en kort link-kode og indtaster den inde i spillet via EarthOS -> My EarthLiving.",
-    "portal.card2.kicker": "Profildata",
-    "portal.card2.title": "Read-only og sikkert",
-    "portal.card2.item1": "Minecraft navn og UUID",
-    "portal.card2.item2": "Spilletid og sidst set-status",
-    "portal.card2.item3": "Blocks ødelagt, blocks placeret og distance",
-    "portal.card2.item4": "Egen report-historik og status",
-    "portal.card2.item5": "Supporter/donation-status senere",
-    "portal.card3.kicker": "Nuværende status",
-    "portal.card3.title": "Foundation build",
-    "portal.card3.body": "EarthWebBridge eksporterer nu profil, reports og spilleraktivitet fra serveren. Public login og donationer kobles på efter det sikre profil-link flow er testet.",
+    "portal.title": "Første spillerprofil-visning tager form.",
+    "portal.body": "Den offentlige side kan nu vise en sikker profilskal og live bridge-status. Private spillerdata bliver først vist efter sikkert website-login og Minecraft link-flow.",
+    "portal.profile.status": "Ikke linket endnu",
+    "portal.profile.kicker": "Spillerprofil",
+    "portal.profile.title": "Din EarthLiving-profil",
+    "portal.profile.body": "Når login åbner, viser dette område den Minecraft-konto, der er linket gennem EarthOS.",
+    "portal.flow.step1": "Opret eller åbn en website-profil.",
+    "portal.flow.step2": "Generer en kort engangs-linkkode.",
+    "portal.flow.step3": "Indtast koden i Minecraft gennem EarthOS -> My EarthLiving.",
+    "portal.stats.kicker": "Profilstats",
+    "portal.stats.title": "Første read-only data",
+    "portal.stats.playtime": "Spilletid",
+    "portal.stats.blocksBroken": "Blocks ødelagt",
+    "portal.stats.blocksPlaced": "Blocks placeret",
+    "portal.stats.distance": "Distance",
+    "portal.stats.reports": "Reports",
+    "portal.stats.status": "Status",
+    "portal.stats.locked": "Login senere",
+    "portal.bridge.kicker": "Live bridge",
+    "portal.bridge.title": "EarthWebBridge export",
+    "portal.bridge.server": "Server",
+    "portal.bridge.players": "Spillere",
+    "portal.bridge.core": "Core",
+    "portal.bridge.linked": "Linkede profiler",
+    "portal.bridge.updated": "Opdateret",
     "media.eyebrow": "Visuel fremgang",
     "media.title": "Screenshots og updates bliver samlet.",
     "media.body": "Den offentlige side har nu et fast sted til EarthOS, BlueMap og server-visuals. Rigtige gameplay-screenshots kan lægges ind, når private test-captures er godkendt.",
@@ -523,6 +571,16 @@ fetch("./data/roadmap-status.json", { cache: "no-store" })
     return response.json();
   })
   .then(applyRoadmapStatus)
+  .catch(() => {});
+
+fetch("./data/webportal-server-status.json", { cache: "no-store" })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Portal status not available");
+    }
+    return response.json();
+  })
+  .then(applyPortalStatus)
   .catch(() => {});
 
 resize();

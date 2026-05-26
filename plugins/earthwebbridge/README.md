@@ -4,6 +4,8 @@ Planned bridge between the EarthLiving Minecraft server and the public/player we
 
 Status: V1 server-side foundation implemented in EarthLivingCore `0.7.1`.
 
+Website status: first public-safe "My EarthLiving" profile shell and live bridge status added on 2026-05-26.
+
 ## Goal
 
 EarthWebBridge should expose safe, minimal server data to the EarthLiving website without leaking secrets or letting the website edit live Minecraft files directly.
@@ -60,3 +62,4 @@ Detailed docs:
 - Website login/session backend.
 - Public "My EarthLiving" route with real authentication.
 - Token-protected API endpoint.
+- Discord verification/whitelist implementation.

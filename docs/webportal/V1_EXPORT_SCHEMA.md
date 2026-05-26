@@ -83,6 +83,7 @@ The first portal bridge should export read-only JSON from server systems. The we
 ## Security Boundary
 
 - Public status can be shown on `earthliving.earth`.
+- The static website may mirror a sanitized public status file as `docs/data/webportal-server-status.json`.
 - Linked player data requires a future authenticated portal session.
 - Staff-only report details stay in the panel Report Center.
 - API tokens and private config stay only on the live server.

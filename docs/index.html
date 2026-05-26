@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260524-4" />
+    <link rel="stylesheet" href="./styles.css?v=20260526-portal-1" />
   </head>
   <body>
     <canvas id="world-canvas" aria-hidden="true"></canvas>
@@ -205,31 +205,51 @@
       <section class="section portal-section" id="my-earthliving" aria-labelledby="portal-title">
         <div class="section-heading compact">
           <p class="eyebrow" data-i18n="portal.eyebrow">My EarthLiving</p>
-          <h2 id="portal-title" data-i18n="portal.title">Player profiles are the next layer.</h2>
-          <p data-i18n="portal.body">The first portal build links a website profile to a Minecraft UUID through EarthOS, then shows read-only server data such as playtime, reports and basic status.</p>
+          <h2 id="portal-title" data-i18n="portal.title">The first player profile view is taking shape.</h2>
+          <p data-i18n="portal.body">The public site can now show the safe profile shell and live bridge status. Private player data will only appear after the secure website login and Minecraft link flow are ready.</p>
         </div>
-        <div class="portal-layout">
-          <article class="portal-card portal-card-primary">
-            <span class="feature-kicker" data-i18n="portal.card1.kicker">Link flow</span>
-            <h3 data-i18n="portal.card1.title">One-time code through EarthOS</h3>
-            <p data-i18n="portal.card1.body">Players will create or open a website profile, receive a short link code, then enter it in-game through EarthOS -> My EarthLiving.</p>
+        <div class="portal-dashboard">
+          <article class="profile-panel">
+            <div class="profile-panel-top">
+              <span class="portal-status-pill" data-i18n="portal.profile.status">Not linked yet</span>
+              <span class="feature-kicker" data-i18n="portal.profile.kicker">Player profile</span>
+            </div>
+            <div class="profile-identity">
+              <div class="profile-avatar" aria-hidden="true">EL</div>
+              <div>
+                <h3 data-i18n="portal.profile.title">Your EarthLiving profile</h3>
+                <p data-i18n="portal.profile.body">When login opens, this area will show the Minecraft account that has been linked through EarthOS.</p>
+              </div>
+            </div>
+            <ol class="link-flow-list">
+              <li data-i18n="portal.flow.step1">Create or open a website profile.</li>
+              <li data-i18n="portal.flow.step2">Generate a short one-time link code.</li>
+              <li data-i18n="portal.flow.step3">Enter the code in Minecraft through EarthOS -> My EarthLiving.</li>
+            </ol>
           </article>
-          <article class="portal-card">
-            <span class="feature-kicker" data-i18n="portal.card2.kicker">Profile data</span>
-            <h3 data-i18n="portal.card2.title">Read-only and safe</h3>
-            <ul>
-              <li data-i18n="portal.card2.item1">Minecraft name and UUID</li>
-              <li data-i18n="portal.card2.item2">Playtime and last seen status</li>
-              <li data-i18n="portal.card2.item3">Blocks broken, blocks placed and distance</li>
-              <li data-i18n="portal.card2.item4">Own report history and status</li>
-              <li data-i18n="portal.card2.item5">Supporter/donation status later</li>
-            </ul>
+          <article class="profile-stats-panel">
+            <span class="feature-kicker" data-i18n="portal.stats.kicker">Profile stats</span>
+            <h3 data-i18n="portal.stats.title">First read-only data</h3>
+            <div class="profile-stat-grid">
+              <div><span data-i18n="portal.stats.playtime">Playtime</span><strong data-profile-preview="playtime">--</strong></div>
+              <div><span data-i18n="portal.stats.blocksBroken">Blocks broken</span><strong data-profile-preview="blocksBroken">--</strong></div>
+              <div><span data-i18n="portal.stats.blocksPlaced">Blocks placed</span><strong data-profile-preview="blocksPlaced">--</strong></div>
+              <div><span data-i18n="portal.stats.distance">Distance</span><strong data-profile-preview="distance">--</strong></div>
+              <div><span data-i18n="portal.stats.reports">Reports</span><strong data-profile-preview="reports">--</strong></div>
+              <div><span data-i18n="portal.stats.status">Status</span><strong data-i18n="portal.stats.locked">Login later</strong></div>
+            </div>
           </article>
-          <article class="portal-card">
-            <span class="feature-kicker" data-i18n="portal.card3.kicker">Current state</span>
-            <h3 data-i18n="portal.card3.title">Foundation build</h3>
-            <p data-i18n="portal.card3.body">EarthWebBridge now has the first server-side export plan. Public login and donations will be connected after the secure profile link flow is tested.</p>
-          </article>
+          <aside class="portal-bridge-panel">
+            <span class="feature-kicker" data-i18n="portal.bridge.kicker">Live bridge</span>
+            <h3 data-i18n="portal.bridge.title">EarthWebBridge export</h3>
+            <dl class="portal-bridge-list">
+              <div><dt data-i18n="portal.bridge.server">Server</dt><dd data-portal-value="server">Earth Living Main</dd></div>
+              <div><dt data-i18n="portal.bridge.players">Players</dt><dd data-portal-value="players">0 / 20</dd></div>
+              <div><dt data-i18n="portal.bridge.core">Core</dt><dd data-portal-value="coreVersion">v0.7.1</dd></div>
+              <div><dt data-i18n="portal.bridge.linked">Linked profiles</dt><dd data-portal-value="linkedProfiles">0</dd></div>
+              <div><dt data-i18n="portal.bridge.updated">Updated</dt><dd data-portal-value="generatedAt">Waiting</dd></div>
+            </dl>
+          </aside>
         </div>
       </section>
       <section class="section media-section" id="media" aria-labelledby="media-title">
@@ -280,6 +300,6 @@
       </section>
     </main>
     <footer class="site-footer"><span>EarthLiving</span><span data-i18n="footer.tagline">Living Earth-map Minecraft civilization sandbox, in development.</span></footer>
-    <script src="./app.js?v=20260524-4"></script>
+    <script src="./app.js?v=20260526-portal-1"></script>
   </body>
 </html>

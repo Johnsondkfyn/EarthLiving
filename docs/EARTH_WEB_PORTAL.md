@@ -7,7 +7,7 @@ High priority after the core website and EarthOS foundation.
 Planned development start: Friday 22 May.
 
 ## Current status
-V1 server-side foundation implemented in EarthLivingCore `0.7.1` on 2026-05-24. The public website stays mostly static for now, while the portal foundation starts with safe one-time account linking, read-only exports and player activity stats.
+V1 server-side foundation implemented in EarthLivingCore `0.7.1` on 2026-05-24. On 2026-05-26 the public website gained the first safe "My EarthLiving" profile shell, live bridge status display and Discord verification/whitelist plan.
 
 ## Goal
 Create a web profile system where players can link their Minecraft account to an EarthLiving website profile and view their progress, status and server information online.
@@ -127,6 +127,14 @@ The first build should stay deliberately small and safe.
 - `web-exports/player-stats.json`.
 - `web-exports/player-report-summaries.json`.
 
+### Implemented on website 2026-05-26
+
+- "My EarthLiving" profile shell with not-linked state.
+- Safe profile stat cards for playtime, blocks broken, blocks placed, distance, reports and status.
+- Live bridge status card fed by `docs/data/webportal-server-status.json`.
+- Discord verification and whitelist plan documented in `docs/webportal/DISCORD_VERIFICATION_WHITELIST_PLAN.md`.
+- Private player profile data is still not exposed on the public static website.
+
 ### V1 non-goals
 
 - No Microsoft/Minecraft password handling.
@@ -143,6 +151,13 @@ Choose the web stack before coding the portal backend:
 - Existing Pterodactyl/Blueprint panel only: good for staff tools, not for public player login.
 
 Recommended path: keep the current public site static, add file-based read-only exports first, then add a separate private web service for authenticated player profiles when the link-code flow is ready.
+
+### 2026-05-26 verification notes
+
+- Main server exports exist and update under `plugins/EarthLivingCore/web-exports/`.
+- Public status export showed EarthLivingCore `0.7.1`, `0 / 20` players online and `0` linked profiles.
+- Linked profile exports are valid JSON but empty because no player has completed the link flow yet.
+- RCON is disabled on the Minecraft server, so the full in-game link-code test must be completed from the panel console or while a player is online.
 
 ## EarthWebBridge
 
