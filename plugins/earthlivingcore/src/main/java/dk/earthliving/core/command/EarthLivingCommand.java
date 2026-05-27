@@ -162,18 +162,30 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
                 plugin.placementPreviewService().clear(player);
                 return true;
             }
-            if (args.length < 4) {
+            int offset = 1;
+            boolean useLookTarget = args.length >= 2 && args[1].equalsIgnoreCase("look");
+            if (useLookTarget) {
+                offset = 2;
+            }
+            if (args.length < offset + 3) {
                 notifications.send(sender, "&eUsage: /" + label + " preview <width> <height> <depth> [yOffset] [seconds]");
+                notifications.send(sender, "&eUsage: /" + label + " preview look <width> <height> <depth> [yOffset] [seconds] [distance]");
                 notifications.send(sender, "&7Example: /" + label + " preview 25 18 25 -1 60");
+                notifications.send(sender, "&7Look example: /" + label + " preview look 25 18 25 0 60");
                 return true;
             }
             try {
-                int width = Integer.parseInt(args[1]);
-                int height = Integer.parseInt(args[2]);
-                int depth = Integer.parseInt(args[3]);
-                int yOffset = args.length >= 5 ? Integer.parseInt(args[4]) : 0;
-                int seconds = args.length >= 6 ? Integer.parseInt(args[5]) : 45;
-                plugin.placementPreviewService().show(player, width, height, depth, yOffset, seconds);
+                int width = Integer.parseInt(args[offset]);
+                int height = Integer.parseInt(args[offset + 1]);
+                int depth = Integer.parseInt(args[offset + 2]);
+                int yOffset = args.length >= offset + 4 ? Integer.parseInt(args[offset + 3]) : 0;
+                int seconds = args.length >= offset + 5 ? Integer.parseInt(args[offset + 4]) : 45;
+                if (useLookTarget) {
+                    int distance = args.length >= offset + 6 ? Integer.parseInt(args[offset + 5]) : 80;
+                    plugin.placementPreviewService().showLook(player, width, height, depth, yOffset, seconds, distance);
+                } else {
+                    plugin.placementPreviewService().show(player, width, height, depth, yOffset, seconds);
+                }
             } catch (NumberFormatException exception) {
                 notifications.send(sender, "&cWidth, height, depth, yOffset and seconds must be whole numbers.");
             }
@@ -283,7 +295,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
         if (sender.hasPermission("earthliving.admin")
                 && args[0].equalsIgnoreCase("preview")
                 && args.length == 2) {
-            return List.of("clear", "16", "24", "32", "48").stream()
+            return List.of("look", "clear", "16", "24", "32", "48").stream()
                     .filter(option -> option.startsWith(args[1].toLowerCase()))
                     .toList();
         }

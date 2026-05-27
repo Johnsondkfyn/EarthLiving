@@ -2,10 +2,13 @@ package dk.earthliving.core.preview;
 
 import dk.earthliving.core.notification.NotificationService;
 import org.bukkit.Color;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
@@ -14,7 +17,7 @@ import java.util.UUID;
 
 public final class PlacementPreviewService {
     private static final int MAX_SIZE = 256;
-    private static final int DEFAULT_SECONDS = 45;
+    private static final int MAX_LOOK_DISTANCE = 120;
     private static final double EDGE_STEP = 0.45D;
     private static final double GRID_STEP = 2.0D;
 
@@ -29,6 +32,21 @@ public final class PlacementPreviewService {
     }
 
     public boolean show(Player player, int width, int height, int depth, int yOffset, int seconds) {
+        return showAt(player, player.getLocation().getBlock().getLocation().add(0.5D, yOffset, 0.5D), width, height, depth, seconds);
+    }
+
+    public boolean showLook(Player player, int width, int height, int depth, int yOffset, int seconds, int distance) {
+        RayTraceResult result = player.rayTraceBlocks(Math.max(5, Math.min(MAX_LOOK_DISTANCE, distance)), FluidCollisionMode.NEVER);
+        if (result == null || result.getHitBlock() == null) {
+            notifications.send(player, "&cLook at a solid block within &f" + MAX_LOOK_DISTANCE + " &cblocks.");
+            return false;
+        }
+        Block block = result.getHitBlock();
+        Location origin = block.getLocation().add(0.5D, 1.0D + yOffset, 0.5D);
+        return showAt(player, origin, width, height, depth, seconds);
+    }
+
+    private boolean showAt(Player player, Location origin, int width, int height, int depth, int seconds) {
         if (width <= 0 || height <= 0 || depth <= 0) {
             notifications.send(player, "&cPreview size must be positive.");
             return false;
@@ -39,7 +57,6 @@ public final class PlacementPreviewService {
         }
 
         int safeSeconds = Math.max(5, Math.min(180, seconds));
-        Location origin = player.getLocation().getBlock().getLocation().add(0.5D, yOffset, 0.5D);
         PreviewSession session = new PreviewSession(origin, width, height, depth, System.currentTimeMillis() + safeSeconds * 1000L);
         previews.put(player.getUniqueId(), session);
         ensureTask();
