@@ -495,11 +495,12 @@ Commands:
 /architect generate <building> [scale] [style]
 /architect preview <id>
 /architect paste <id>
+/architect paste <id> look
 /architect list
 /architect reload
 ```
 
-V1 is admin-only with `earthliving.architect.admin`, writes `.schem` files to `plugins/ArchitectModule/generated/`, uses WorldEdit's schematic writer/paste API, and keeps web/AI lookup disabled by default. The first generator is a safe local Minecraft interpretation generator for civic buildings, stations, airports, ports, towers and landmarks. Generation and schematic file loading run async; actual world paste remains on the server thread through WorldEdit because Bukkit world edits must be synchronous unless a safe FAWE-specific paste path is added later.
+V1 is admin-only with `earthliving.architect.admin`, writes `.schem` files to `plugins/ArchitectModule/generated/`, uses WorldEdit's schematic writer/paste API, and keeps web/AI lookup disabled by default. The first generator is a safe local Minecraft interpretation generator for civic buildings, stations, airports, ports, towers and landmarks. Generation and schematic file loading run async; actual world paste remains on the server thread through WorldEdit because Bukkit world edits must be synchronous unless a safe FAWE-specific paste path is added later. `/architect paste <id> look` pastes onto the block the admin is looking at, which better matches the `/el preview look` workflow.
 
 Hub status: deployed to the hub/test server on 2026-05-27 and loaded cleanly with WorldEdit, Citizens and Constructor. Next test is in-game: generate one small station/tower schematic, preview its dimensions with `/el preview look`, then paste into a disposable area. Do not deploy to Main until hub paste behavior and rollback/cleanup flow are verified.
 

@@ -114,8 +114,8 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
             plugin.tell(sender, "&cPaste skal kores af en spiller in-game.");
             return;
         }
-        if (args.length != 1) {
-            plugin.tell(sender, "&cBrug: &f/architect paste <id>");
+        if (args.length < 1 || args.length > 2) {
+            plugin.tell(sender, "&cBrug: &f/architect paste <id> [look]");
             return;
         }
         BlueprintJob job = architectService.find(args[0]).orElse(null);
@@ -123,8 +123,11 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
             plugin.tell(sender, "&cUkendt blueprint-id.");
             return;
         }
-        plugin.tell(sender, "&7Loader schematic async. Paste sker ved din nuvaerende placering...");
-        architectService.pasteAsync(player, job);
+        boolean pasteAtLook = args.length == 2 && "look".equalsIgnoreCase(args[1]);
+        plugin.tell(sender, pasteAtLook
+                ? "&7Loader schematic async. Paste sker paa blokken du kigger paa..."
+                : "&7Loader schematic async. Paste sker ved din nuvaerende placering...");
+        architectService.pasteAsync(player, job, pasteAtLook);
     }
 
     private void list(CommandSender sender) {
@@ -150,7 +153,7 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
         plugin.tell(sender, "&f/architect search <building>");
         plugin.tell(sender, "&f/architect generate <building> [scale] [style]");
         plugin.tell(sender, "&f/architect preview <id>");
-        plugin.tell(sender, "&f/architect paste <id>");
+        plugin.tell(sender, "&f/architect paste <id> [look]");
         plugin.tell(sender, "&f/architect list");
     }
 

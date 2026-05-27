@@ -13,6 +13,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import dk.earthliving.architect.ArchitectModulePlugin;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -179,7 +180,7 @@ public final class ArchitectService {
                 }));
     }
 
-    public void pasteAsync(Player player, BlueprintJob job) {
+    public void pasteAsync(Player player, BlueprintJob job, boolean pasteAtLook) {
         CompletableFuture.supplyAsync(() -> {
             try {
                 return loadClipboard(job);
@@ -192,7 +193,8 @@ public final class ArchitectService {
                 return;
             }
             try {
-                pasteLoaded(player, job, clipboard);
+                Location origin = pasteAtLook ? targetLocation(player) : player.getLocation();
+                pasteLoaded(player, job, clipboard, origin);
             } catch (Exception exception) {
                 plugin.tell(player, "&cPaste failed: &f" + exception.getMessage());
                 plugin.getLogger().warning("Paste failed for " + job.id() + ": " + exception.getMessage());
@@ -215,12 +217,19 @@ public final class ArchitectService {
         }
     }
 
-    private void pasteLoaded(Player player, BlueprintJob job, Clipboard clipboard) throws Exception {
+    private Location targetLocation(Player player) {
+        Block block = player.getTargetBlockExact(120);
+        if (block == null) {
+            return player.getLocation();
+        }
+        return block.getLocation().add(0, 1, 0);
+    }
+
+    private void pasteLoaded(Player player, BlueprintJob job, Clipboard clipboard, Location location) throws Exception {
         long blockCount = (long) job.width() * job.height() * job.depth();
         if (blockCount > pasteMaxBlocks) {
             throw new IllegalStateException("Blueprint is too large for paste limit: " + blockCount + "/" + pasteMaxBlocks);
         }
-        Location location = player.getLocation();
         BlockVector3 pasteAt = BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(player.getWorld()))) {
             Operation operation = new ClipboardHolder(clipboard)

@@ -51,6 +51,10 @@ WorldEdit or FAWE with WorldEdit API
    ```text
    /architect paste arch-abc123
    ```
+   Or paste onto the block you are looking at:
+   ```text
+   /architect paste arch-abc123 look
+   ```
 
 ## Generated Files
 
