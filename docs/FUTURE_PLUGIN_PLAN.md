@@ -477,6 +477,17 @@ Let the world remember major events.
 ## Goal
 Create an admin-only system for generating and managing building blueprints/schematics.
 
+## Current plugin test
+
+Hub test server has Citizens and Constructor installed for evaluation:
+
+- Citizens `2.0.42-SNAPSHOT build 4160`
+- Constructor `3.5`
+
+Citizens is a good fit for hub guides, passport/verification staff NPCs, departure hall NPCs and later city ambience.
+
+Constructor is useful only as an experimental builder-NPC prototype. It depends on Citizens and WorldEdit and loaded cleanly on the hub, but it is older (`api-version: 1.13`) and should not become a core production dependency until it has passed an in-game builder test on the current Paper version.
+
 ---
 
 # 39. ArchitectPreviewModule
@@ -490,6 +501,19 @@ Fix the WorldEdit placement problem with visual schematic preview.
 
 ## Goal
 Allow NPCs to build schematics slowly block-by-block.
+
+## Current test direction
+
+Use Citizens as the NPC foundation. Test Constructor on the hub only:
+
+- create one builder NPC
+- load one small schematic
+- preview the build
+- test material donation or creative/admin build mode
+- cancel and clean up safely
+- confirm no console errors, stuck NPC loops or chunk issues
+
+If Constructor behaves poorly, replace it with a custom EarthLiving BuilderNPCModule later instead of depending on the old plugin.
 
 ---
 

@@ -87,8 +87,12 @@ Updated 2026-05-26:
   - LuckPerms `5.5.0`
   - WorldEdit `7.4.3`
   - WorldGuard `7.0.16`
+  - Citizens `2.0.42-SNAPSHOT build 4160`
+  - Constructor `3.5`
 - WorldEdit is available for build cleanup commands such as `//wand`, `//set air` and `//replace`.
 - WorldGuard is installed for later spawn, portal and protected-area setup, but no final hub regions are defined yet.
+- Citizens loaded cleanly and is available for hub NPC tests.
+- Constructor loaded cleanly with Citizens and WorldEdit on the hub. Treat it as experimental because it is an older `api-version: 1.13` plugin; do not deploy it to Main until a real builder-NPC test has been completed on the hub.
 
 ## Player Test
 
