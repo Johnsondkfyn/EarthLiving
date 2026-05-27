@@ -1,0 +1,6 @@
+name: supporter
+parents:
+- citizen
+permissions:
+- weight.20
+- prefix.20.&d[Supporter] 

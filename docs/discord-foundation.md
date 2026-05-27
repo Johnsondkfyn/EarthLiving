@@ -31,4 +31,4 @@ Updated: 2026-05-18
 - Add server status and player count. Prepared: `server-status` exists and has a channel ID.
 - Add whitelist or verification flow.
 - Add report and staff alert flow. Prepared: `staff-alerts` exists and has a channel ID.
-- Later connect Discord roles to LuckPerms/supporter roles.
+- Main now has the first LuckPerms rank ladder and TAB installed. Later connect Discord roles to LuckPerms/supporter roles once public role rules are final.

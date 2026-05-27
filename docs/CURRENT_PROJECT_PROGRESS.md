@@ -72,6 +72,7 @@ Updated 2026-05-26:
 - Modern Age lobby spawn was set in-game to `405 44 -384` for the current hub test layout.
 - EarthPassportSystem V1 is implemented in EarthLivingCore `0.7.2`: EarthOS Passport profile view, citizenship/home country, visas, country reputation, staff commands and read-only passport JSON export.
 - PassportBorders `0.4.0` is deployed on Main as the live polygon/border prototype with 220 Natural Earth countries, world-reflective base prices and configurable visa price multipliers for visitor, event, work, resident and citizenship flows.
+- Main now has a LuckPerms rank ladder (`owner`, `developer`, `admin`, `moderator`, `staff`, `builder`, `supporter`, `citizen`, `default`) and TAB `6.0.2` installed with EarthLiving header/footer and LuckPerms prefix-based tablist/nametag formatting.
 - Main Discord verification testing found that DiscordSRV sees `minecraft-chat` code messages, but the linking flow does not consume them yet; a temporary owner/dev bypass for `TheKing189` is active so live Passport and hub testing can continue.
 - The website now has the first public-safe "My EarthLiving" profile view: not-linked profile state, read-only stat cards, live EarthWebBridge status display and a documented Discord verification/whitelist plan. Main server JSON exports were verified as active and valid, with `0` linked profiles until a player completes the in-game link flow.
 - Discord integration foundation is now complete: chat/status/player count, account linking verification, staff alerts and shared in-game/Discord report flow.

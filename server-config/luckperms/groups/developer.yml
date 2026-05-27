@@ -1,0 +1,9 @@
+name: developer
+parents:
+- admin
+permissions:
+- weight.90
+- prefix.90.&3[Dev] 
+- spark.*
+- bluemap.*
+- chunky.*

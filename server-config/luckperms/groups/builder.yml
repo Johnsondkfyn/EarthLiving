@@ -1,0 +1,8 @@
+name: builder
+parents:
+- citizen
+permissions:
+- weight.40
+- prefix.40.&b[Builder] 
+- worldedit.*
+- worldguard.region.*

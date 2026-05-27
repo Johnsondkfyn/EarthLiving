@@ -1,0 +1,6 @@
+name: default
+permissions:
+- weight.1
+- prefix.1.&7[Visitor] 
+- earthliving.command
+- earthliving.earthos

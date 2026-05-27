@@ -1,0 +1,8 @@
+name: staff
+parents:
+- citizen
+permissions:
+- weight.50
+- prefix.50.&e[Staff] 
+- earthliving.command
+- earthliving.earthos

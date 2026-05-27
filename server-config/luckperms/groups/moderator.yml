@@ -1,0 +1,11 @@
+name: moderator
+parents:
+- staff
+permissions:
+- weight.60
+- prefix.60.&6[Mod] 
+- minecraft.command.kick
+- minecraft.command.ban
+- minecraft.command.pardon
+- minecraft.command.teleport
+- passportborders.admin

@@ -1,0 +1,7 @@
+name: owner
+parents:
+- developer
+permissions:
+- weight.100
+- prefix.100.&4[Owner] 
+- '*'

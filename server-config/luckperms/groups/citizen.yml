@@ -1,0 +1,6 @@
+name: citizen
+parents:
+- default
+permissions:
+- weight.10
+- prefix.10.&a[Citizen] 

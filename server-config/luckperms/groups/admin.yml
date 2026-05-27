@@ -1,0 +1,12 @@
+name: admin
+parents:
+- moderator
+permissions:
+- weight.80
+- prefix.80.&c[Admin] 
+- earthliving.admin
+- passportborders.admin
+- worldedit.*
+- worldguard.*
+- tab.*
+- minecraft.command.*
