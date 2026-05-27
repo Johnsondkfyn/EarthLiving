@@ -83,6 +83,20 @@ public final class PlacementPreviewService {
         return removed;
     }
 
+    public boolean info(Player player) {
+        PreviewSession session = previews.get(player.getUniqueId());
+        if (session == null) {
+            notifications.send(player, "&7No active placement preview.");
+            return false;
+        }
+        Bounds bounds = session.bounds();
+        notifications.send(player, "&aPlacement preview bounds:");
+        notifications.send(player, "&7Origin: &f" + bounds.minX() + " " + bounds.minY() + " " + bounds.minZ());
+        notifications.send(player, "&7Opposite corner: &f" + bounds.maxX() + " " + bounds.maxY() + " " + bounds.maxZ());
+        notifications.send(player, "&7Size: &f" + session.width() + "x" + session.height() + "x" + session.depth());
+        return true;
+    }
+
     public boolean lock(Player player) {
         PreviewSession session = previews.get(player.getUniqueId());
         if (session == null || !session.followLook()) {
@@ -100,6 +114,33 @@ public final class PlacementPreviewService {
         notifications.send(player, "&aPlacement preview locked.");
         notifications.send(player, "&7Locked origin: &f" + origin.getBlockX() + " " + origin.getBlockY() + " " + origin.getBlockZ());
         notifications.send(player, "&7Use /el preview look again to move it or /el preview clear to remove it.");
+        return true;
+    }
+
+    public boolean applyWorldEditSelection(Player player) {
+        PreviewSession session = previews.get(player.getUniqueId());
+        if (session == null) {
+            notifications.send(player, "&cNo active placement preview to apply.");
+            return false;
+        }
+        if (plugin.getServer().getPluginManager().getPlugin("WorldEdit") == null) {
+            notifications.send(player, "&cWorldEdit is not installed on this server.");
+            return false;
+        }
+
+        Bounds bounds = session.bounds();
+        boolean pos1 = player.performCommand("pos1 " + bounds.minX() + "," + bounds.minY() + "," + bounds.minZ());
+        boolean pos2 = player.performCommand("pos2 " + bounds.maxX() + "," + bounds.maxY() + "," + bounds.maxZ());
+        if (!pos1 || !pos2) {
+            notifications.send(player, "&cCould not set WorldEdit selection. Try: &f//pos1 "
+                    + bounds.minX() + "," + bounds.minY() + "," + bounds.minZ());
+            notifications.send(player, "&cThen: &f//pos2 " + bounds.maxX() + "," + bounds.maxY() + "," + bounds.maxZ());
+            return false;
+        }
+
+        notifications.send(player, "&aWorldEdit selection set from placement preview.");
+        notifications.send(player, "&7Pos1: &f" + bounds.minX() + " " + bounds.minY() + " " + bounds.minZ()
+                + " &7Pos2: &f" + bounds.maxX() + " " + bounds.maxY() + " " + bounds.maxZ());
         return true;
     }
 
@@ -244,5 +285,15 @@ public final class PlacementPreviewService {
         private PreviewSession withOrigin(Location newOrigin) {
             return new PreviewSession(newOrigin, width, height, depth, expiresAt, followLook, yOffset, distance);
         }
+
+        private Bounds bounds() {
+            int minX = origin.getBlockX();
+            int minY = origin.getBlockY();
+            int minZ = origin.getBlockZ();
+            return new Bounds(minX, minY, minZ, minX + width - 1, minY + height - 1, minZ + depth - 1);
+        }
+    }
+
+    private record Bounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
     }
 }

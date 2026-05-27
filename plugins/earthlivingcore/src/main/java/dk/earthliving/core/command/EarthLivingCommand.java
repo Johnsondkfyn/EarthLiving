@@ -162,6 +162,14 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
                 plugin.placementPreviewService().clear(player);
                 return true;
             }
+            if (args.length >= 2 && args[1].equalsIgnoreCase("info")) {
+                plugin.placementPreviewService().info(player);
+                return true;
+            }
+            if (args.length >= 2 && (args[1].equalsIgnoreCase("we") || args[1].equalsIgnoreCase("worldedit"))) {
+                plugin.placementPreviewService().applyWorldEditSelection(player);
+                return true;
+            }
             int offset = 1;
             boolean useLookTarget = args.length >= 2 && args[1].equalsIgnoreCase("look");
             if (useLookTarget) {
@@ -170,6 +178,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             if (args.length < offset + 3) {
                 notifications.send(sender, "&eUsage: /" + label + " preview <width> <height> <depth> [yOffset] [seconds]");
                 notifications.send(sender, "&eUsage: /" + label + " preview look <width> <height> <depth> [yOffset] [seconds] [distance]");
+                notifications.send(sender, "&eUsage: /" + label + " preview <info|we|clear>");
                 notifications.send(sender, "&7Example: /" + label + " preview 25 18 25 -1 60");
                 notifications.send(sender, "&7Look example: /" + label + " preview look 25 18 25 0 60");
                 return true;
@@ -295,7 +304,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
         if (sender.hasPermission("earthliving.admin")
                 && args[0].equalsIgnoreCase("preview")
                 && args.length == 2) {
-            return List.of("look", "clear", "16", "24", "32", "48").stream()
+            return List.of("look", "info", "we", "worldedit", "clear", "16", "24", "32", "48").stream()
                     .filter(option -> option.startsWith(args[1].toLowerCase()))
                     .toList();
         }
