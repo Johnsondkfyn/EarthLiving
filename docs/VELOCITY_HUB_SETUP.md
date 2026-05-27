@@ -94,11 +94,11 @@ Updated 2026-05-26:
 - Citizens loaded cleanly and is available for hub NPC tests.
 - Constructor loaded cleanly with Citizens and WorldEdit on the hub. Treat it as experimental because it is an older `api-version: 1.13` plugin; do not deploy it to Main until a real builder-NPC test has been completed on the hub.
 - Constructor update check on 2026-05-27 found `3.5` as the newest visible release/changelog entry, so the currently installed jar is already the newest version confirmed during this review.
-- EarthLivingCore `0.7.5` adds a clearer hub/test placement preview command for schematic alignment:
+- EarthLivingCore `0.7.6` adds a clearer hub/test placement preview command for schematic alignment:
   - `/el preview <width> <height> <depth> [yOffset] [seconds]`
   - `/el preview look <width> <height> <depth> [yOffset] [seconds] [distance]`
   - `/el preview clear`
-- The normal preview draws from the player's current block position. The `look` preview raycasts to the solid block the player is looking at, then places the preview above that block for free-roam placement. Use it before Constructor/WorldEdit placement to check height, floor level and footprint.
+- The normal preview draws from the player's current block position. The `look` preview raycasts to the solid block the player is looking at and keeps following the player's aim until the timer expires or `/el preview clear` is used. Use it before Constructor/WorldEdit placement to check height, floor level and footprint.
 
 ## Player Test
 

@@ -32,21 +32,21 @@ public final class PlacementPreviewService {
     }
 
     public boolean show(Player player, int width, int height, int depth, int yOffset, int seconds) {
-        return showAt(player, player.getLocation().getBlock().getLocation().add(0.5D, yOffset, 0.5D), width, height, depth, seconds);
+        return showAt(player, player.getLocation().getBlock().getLocation().add(0.5D, yOffset, 0.5D),
+                width, height, depth, seconds, false, yOffset, 0);
     }
 
     public boolean showLook(Player player, int width, int height, int depth, int yOffset, int seconds, int distance) {
-        RayTraceResult result = player.rayTraceBlocks(Math.max(5, Math.min(MAX_LOOK_DISTANCE, distance)), FluidCollisionMode.NEVER);
-        if (result == null || result.getHitBlock() == null) {
+        int safeDistance = Math.max(5, Math.min(MAX_LOOK_DISTANCE, distance));
+        Location origin = findLookOrigin(player, yOffset, safeDistance);
+        if (origin == null) {
             notifications.send(player, "&cLook at a solid block within &f" + MAX_LOOK_DISTANCE + " &cblocks.");
             return false;
         }
-        Block block = result.getHitBlock();
-        Location origin = block.getLocation().add(0.5D, 1.0D + yOffset, 0.5D);
-        return showAt(player, origin, width, height, depth, seconds);
+        return showAt(player, origin, width, height, depth, seconds, true, yOffset, safeDistance);
     }
 
-    private boolean showAt(Player player, Location origin, int width, int height, int depth, int seconds) {
+    private boolean showAt(Player player, Location origin, int width, int height, int depth, int seconds, boolean followLook, int yOffset, int distance) {
         if (width <= 0 || height <= 0 || depth <= 0) {
             notifications.send(player, "&cPreview size must be positive.");
             return false;
@@ -57,15 +57,19 @@ public final class PlacementPreviewService {
         }
 
         int safeSeconds = Math.max(5, Math.min(180, seconds));
-        PreviewSession session = new PreviewSession(origin, width, height, depth, System.currentTimeMillis() + safeSeconds * 1000L);
+        PreviewSession session = new PreviewSession(origin, width, height, depth,
+                System.currentTimeMillis() + safeSeconds * 1000L, followLook, yOffset, distance);
         previews.put(player.getUniqueId(), session);
         ensureTask();
         draw(player, session);
 
         notifications.send(player, "&aPlacement preview shown for &f" + safeSeconds + "s&a.");
+        if (followLook) {
+            notifications.send(player, "&7Free-roam mode: preview follows the block you look at.");
+        }
         notifications.send(player, "&7Origin: &f" + origin.getBlockX() + " " + origin.getBlockY() + " " + origin.getBlockZ()
                 + " &7Size: &f" + width + "x" + height + "x" + depth);
-        notifications.send(player, "&7Move and run the command again to test a new height/position.");
+        notifications.send(player, "&7Use /el preview clear to stop it.");
         return true;
     }
 
@@ -97,7 +101,15 @@ public final class PlacementPreviewService {
             for (Map.Entry<UUID, PreviewSession> entry : previews.entrySet()) {
                 Player player = plugin.getServer().getPlayer(entry.getKey());
                 if (player != null && player.isOnline()) {
-                    draw(player, entry.getValue());
+                    PreviewSession session = entry.getValue();
+                    if (session.followLook()) {
+                        Location origin = findLookOrigin(player, session.yOffset(), session.distance());
+                        if (origin != null) {
+                            session = session.withOrigin(origin);
+                            entry.setValue(session);
+                        }
+                    }
+                    draw(player, session);
                 }
             }
             if (previews.isEmpty() && task != null) {
@@ -198,6 +210,19 @@ public final class PlacementPreviewService {
         player.spawnParticle(Particle.DUST, x, y, z, 1, 0, 0, 0, 0, color);
     }
 
-    private record PreviewSession(Location origin, int width, int height, int depth, long expiresAt) {
+    private Location findLookOrigin(Player player, int yOffset, int distance) {
+        RayTraceResult result = player.rayTraceBlocks(distance, FluidCollisionMode.NEVER);
+        if (result == null || result.getHitBlock() == null) {
+            return null;
+        }
+        Block block = result.getHitBlock();
+        return block.getLocation().add(0.5D, 1.0D + yOffset, 0.5D);
+    }
+
+    private record PreviewSession(Location origin, int width, int height, int depth, long expiresAt,
+                                  boolean followLook, int yOffset, int distance) {
+        private PreviewSession withOrigin(Location newOrigin) {
+            return new PreviewSession(newOrigin, width, height, depth, expiresAt, followLook, yOffset, distance);
+        }
     }
 }
