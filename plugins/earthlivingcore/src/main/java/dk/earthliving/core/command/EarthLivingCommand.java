@@ -149,6 +149,37 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("preview")) {
+            if (!(sender instanceof Player player)) {
+                notifications.send(sender, "&cOnly players can use placement previews.");
+                return true;
+            }
+            if (!sender.hasPermission("earthliving.admin")) {
+                notifications.send(sender, "&cYou do not have permission to use placement previews.");
+                return true;
+            }
+            if (args.length >= 2 && args[1].equalsIgnoreCase("clear")) {
+                plugin.placementPreviewService().clear(player);
+                return true;
+            }
+            if (args.length < 4) {
+                notifications.send(sender, "&eUsage: /" + label + " preview <width> <height> <depth> [yOffset] [seconds]");
+                notifications.send(sender, "&7Example: /" + label + " preview 25 18 25 -1 60");
+                return true;
+            }
+            try {
+                int width = Integer.parseInt(args[1]);
+                int height = Integer.parseInt(args[2]);
+                int depth = Integer.parseInt(args[3]);
+                int yOffset = args.length >= 5 ? Integer.parseInt(args[4]) : 0;
+                int seconds = args.length >= 6 ? Integer.parseInt(args[5]) : 45;
+                plugin.placementPreviewService().show(player, width, height, depth, yOffset, seconds);
+            } catch (NumberFormatException exception) {
+                notifications.send(sender, "&cWidth, height, depth, yOffset and seconds must be whole numbers.");
+            }
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("event")) {
             if (!sender.hasPermission("earthliving.admin")) {
                 notifications.send(sender, "&cYou do not have permission to announce events.");
@@ -203,7 +234,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|portal|passport|event|restart|earthos|reload>");
+        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|portal|passport|preview|event|restart|earthos|reload>");
         return true;
     }
 
@@ -214,6 +245,7 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             if (sender.hasPermission("earthliving.admin")) {
                 options.add("reports");
                 options.add("portal");
+                options.add("preview");
                 options.add("event");
                 options.add("restart");
                 options.add("reload");
@@ -244,6 +276,14 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
                     ? List.of("info", "setcitizenship", "addvisa", "reputation", "export")
                     : List.of("info");
             return options.stream()
+                    .filter(option -> option.startsWith(args[1].toLowerCase()))
+                    .toList();
+        }
+
+        if (sender.hasPermission("earthliving.admin")
+                && args[0].equalsIgnoreCase("preview")
+                && args.length == 2) {
+            return List.of("clear", "16", "24", "32", "48").stream()
                     .filter(option -> option.startsWith(args[1].toLowerCase()))
                     .toList();
         }

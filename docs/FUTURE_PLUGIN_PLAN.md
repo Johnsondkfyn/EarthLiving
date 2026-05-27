@@ -517,6 +517,17 @@ Use Citizens as the NPC foundation. Test Constructor on the hub only:
 
 If Constructor behaves poorly, replace it with a custom EarthLiving BuilderNPCModule later instead of depending on the old plugin.
 
+## Placement preview V1
+
+EarthLivingCore `0.7.3` adds a safe hub/test preview command:
+
+```text
+/el preview <width> <height> <depth> [yOffset] [seconds]
+/el preview clear
+```
+
+This draws a temporary particle wireframe from the player's current block position. Use it before Constructor or WorldEdit placement to verify footprint and vertical alignment. This is not a full schematic parser yet; future V2 should read `.schem` dimensions automatically and hand the chosen origin to Constructor or a custom BuilderNPCModule.
+
 ---
 
 # 41. ReportModule
