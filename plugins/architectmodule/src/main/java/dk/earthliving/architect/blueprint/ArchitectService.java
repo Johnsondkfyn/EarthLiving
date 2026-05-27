@@ -11,6 +11,8 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import dk.earthliving.architect.ArchitectModulePlugin;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -194,7 +196,7 @@ public final class ArchitectService {
             }
             try {
                 Location origin = pasteAtLook ? targetLocation(player) : player.getLocation();
-                pasteLoaded(player, job, clipboard, origin);
+                pasteLoaded(player, job, clipboard, origin, 0);
             } catch (Exception exception) {
                 plugin.tell(player, "&cPaste failed: &f" + exception.getMessage());
                 plugin.getLogger().warning("Paste failed for " + job.id() + ": " + exception.getMessage());
@@ -202,7 +204,7 @@ public final class ArchitectService {
         }));
     }
 
-    private Clipboard loadClipboard(BlueprintJob job) throws Exception {
+    Clipboard loadClipboard(BlueprintJob job) throws Exception {
         if (!"ready".equalsIgnoreCase(job.status())) {
             throw new IllegalStateException("Blueprint is not ready: " + job.status());
         }
@@ -225,21 +227,51 @@ public final class ArchitectService {
         return block.getLocation().add(0, 1, 0);
     }
 
-    private void pasteLoaded(Player player, BlueprintJob job, Clipboard clipboard, Location location) throws Exception {
+    public void pasteLoaded(Player player, BlueprintJob job, Clipboard clipboard, Location location) throws Exception {
+        pasteLoaded(player, job, clipboard, location, 0);
+    }
+
+    public void pasteLoaded(Player player, BlueprintJob job, Clipboard clipboard, Location location, int rotation) throws Exception {
         long blockCount = (long) job.width() * job.height() * job.depth();
         if (blockCount > pasteMaxBlocks) {
             throw new IllegalStateException("Blueprint is too large for paste limit: " + blockCount + "/" + pasteMaxBlocks);
         }
         BlockVector3 pasteAt = BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(player.getWorld()))) {
-            Operation operation = new ClipboardHolder(clipboard)
-                    .createPaste(editSession)
-                    .to(pasteAt)
-                    .ignoreAirBlocks(pasteIgnoreAir)
-                    .build();
-            Operations.complete(operation);
+            BlockVector3 min = clipboard.getMinimumPoint();
+            BlockVector3 max = clipboard.getMaximumPoint();
+            int width = max.x() - min.x() + 1;
+            int depth = max.z() - min.z() + 1;
+            int turns = Math.floorMod(rotation, 4);
+            for (int x = min.x(); x <= max.x(); x++) {
+                for (int y = min.y(); y <= max.y(); y++) {
+                    for (int z = min.z(); z <= max.z(); z++) {
+                        BlockState state = clipboard.getBlock(BlockVector3.at(x, y, z));
+                        if (pasteIgnoreAir && state.getBlockType() == BlockTypes.AIR) {
+                            continue;
+                        }
+                        int localX = x - min.x();
+                        int localY = y - min.y();
+                        int localZ = z - min.z();
+                        RotatedPoint rotated = rotate(localX, localZ, width, depth, turns);
+                        editSession.setBlock(pasteAt.add(rotated.x(), localY, rotated.z()), state);
+                    }
+                }
+            }
         }
         plugin.tell(player, "&aPasted &f" + job.id() + " &aat din position.");
+    }
+
+    private RotatedPoint rotate(int x, int z, int width, int depth, int turns) {
+        return switch (turns) {
+            case 1 -> new RotatedPoint(z, width - 1 - x);
+            case 2 -> new RotatedPoint(width - 1 - x, depth - 1 - z);
+            case 3 -> new RotatedPoint(depth - 1 - z, x);
+            default -> new RotatedPoint(x, z);
+        };
+    }
+
+    private record RotatedPoint(int x, int z) {
     }
 
     private void loadExistingJobs() {

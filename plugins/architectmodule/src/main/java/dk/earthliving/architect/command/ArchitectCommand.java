@@ -3,6 +3,7 @@ package dk.earthliving.architect.command;
 import dk.earthliving.architect.ArchitectModulePlugin;
 import dk.earthliving.architect.blueprint.ArchitectService;
 import dk.earthliving.architect.blueprint.BlueprintJob;
+import dk.earthliving.architect.blueprint.SchematicPreviewService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,14 +17,17 @@ import java.util.Locale;
 
 public final class ArchitectCommand implements CommandExecutor, TabCompleter {
     private static final String PERMISSION = "earthliving.architect.admin";
-    private static final List<String> SUBCOMMANDS = List.of("search", "generate", "preview", "paste", "list", "reload");
+    private static final List<String> SUBCOMMANDS = List.of("search", "generate", "preview", "paste", "cancel", "list", "reload");
 
     private final ArchitectModulePlugin plugin;
     private final ArchitectService architectService;
+    private final SchematicPreviewService previewService;
 
-    public ArchitectCommand(ArchitectModulePlugin plugin, ArchitectService architectService) {
+    public ArchitectCommand(ArchitectModulePlugin plugin, ArchitectService architectService,
+                            SchematicPreviewService previewService) {
         this.plugin = plugin;
         this.architectService = architectService;
+        this.previewService = previewService;
     }
 
     @Override
@@ -44,6 +48,7 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
             case "generate" -> generate(sender, remaining);
             case "preview" -> preview(sender, remaining);
             case "paste" -> paste(sender, remaining);
+            case "cancel" -> cancel(sender);
             case "list" -> list(sender);
             case "reload" -> reload(sender);
             default -> sendHelp(sender);
@@ -91,13 +96,21 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
     }
 
     private void preview(CommandSender sender, String[] args) {
-        if (args.length != 1) {
-            plugin.tell(sender, "&cBrug: &f/architect preview <id>");
+        if (args.length < 1 || args.length > 2) {
+            plugin.tell(sender, "&cBrug: &f/architect preview <id> [look]");
             return;
         }
         BlueprintJob job = architectService.find(args[0]).orElse(null);
         if (job == null) {
             plugin.tell(sender, "&cUkendt blueprint-id.");
+            return;
+        }
+        if (args.length == 2 && "look".equalsIgnoreCase(args[1])) {
+            if (!(sender instanceof Player player)) {
+                plugin.tell(sender, "&cVisuel preview skal startes in-game.");
+                return;
+            }
+            previewService.start(player, job);
             return;
         }
         plugin.tell(sender, "&b" + job.id() + " &7- &f" + job.query());
@@ -130,6 +143,14 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
         architectService.pasteAsync(player, job, pasteAtLook);
     }
 
+    private void cancel(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            plugin.tell(sender, "&cCancel skal kores in-game.");
+            return;
+        }
+        previewService.cancel(player, true);
+    }
+
     private void list(CommandSender sender) {
         List<BlueprintJob> jobs = architectService.jobs();
         if (jobs.isEmpty()) {
@@ -152,8 +173,9 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
         plugin.tell(sender, "&bArchitectModule &7admin commands:");
         plugin.tell(sender, "&f/architect search <building>");
         plugin.tell(sender, "&f/architect generate <building> [scale] [style]");
-        plugin.tell(sender, "&f/architect preview <id>");
+        plugin.tell(sender, "&f/architect preview <id> [look]");
         plugin.tell(sender, "&f/architect paste <id> [look]");
+        plugin.tell(sender, "&f/architect cancel");
         plugin.tell(sender, "&f/architect list");
     }
 

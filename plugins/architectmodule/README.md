@@ -47,7 +47,15 @@ WorldEdit or FAWE with WorldEdit API
    ```text
    /architect preview arch-abc123
    ```
-4. Stand at the target paste origin and paste:
+4. Start visual preview:
+   ```text
+   /architect preview arch-abc123 look
+   ```
+   While the visual preview is active, use the mouse wheel/hotbar scroll to rotate 90 degrees at a time. Left-click places the schematic. Cancel with:
+   ```text
+   /architect cancel
+   ```
+5. Or stand at the target paste origin and paste directly:
    ```text
    /architect paste arch-abc123
    ```

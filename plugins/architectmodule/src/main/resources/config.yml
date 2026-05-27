@@ -12,6 +12,12 @@ generation:
   paste-ignore-air: true
   paste-max-blocks: 200000
 
+preview:
+  range: 120
+  seconds: 90
+  update-ticks: 8
+  max-visual-blocks: 3500
+
 styles:
   modern:
     wall: "WHITE_CONCRETE"

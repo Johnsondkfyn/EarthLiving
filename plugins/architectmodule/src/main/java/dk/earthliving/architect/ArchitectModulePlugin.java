@@ -1,6 +1,7 @@
 package dk.earthliving.architect;
 
 import dk.earthliving.architect.blueprint.ArchitectService;
+import dk.earthliving.architect.blueprint.SchematicPreviewService;
 import dk.earthliving.architect.command.ArchitectCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -10,6 +11,7 @@ import java.util.Objects;
 
 public final class ArchitectModulePlugin extends JavaPlugin {
     private ArchitectService architectService;
+    private SchematicPreviewService previewService;
     private String prefix;
 
     @Override
@@ -17,11 +19,13 @@ public final class ArchitectModulePlugin extends JavaPlugin {
         saveDefaultConfig();
         reloadLocalConfig();
         architectService = new ArchitectService(this);
+        previewService = new SchematicPreviewService(this, architectService);
 
-        ArchitectCommand architectCommand = new ArchitectCommand(this, architectService);
+        ArchitectCommand architectCommand = new ArchitectCommand(this, architectService, previewService);
         PluginCommand command = Objects.requireNonNull(getCommand("architect"));
         command.setExecutor(architectCommand);
         command.setTabCompleter(architectCommand);
+        getServer().getPluginManager().registerEvents(previewService, this);
 
         getLogger().info("ArchitectModule enabled. Generated folder: " + architectService.generatedFolder().getAbsolutePath());
     }
@@ -31,6 +35,9 @@ public final class ArchitectModulePlugin extends JavaPlugin {
         if (architectService != null) {
             architectService.shutdown();
         }
+        if (previewService != null) {
+            previewService.shutdown();
+        }
     }
 
     public void reloadModule() {
@@ -38,6 +45,9 @@ public final class ArchitectModulePlugin extends JavaPlugin {
         reloadLocalConfig();
         if (architectService != null) {
             architectService.reload();
+        }
+        if (previewService != null) {
+            previewService.reload();
         }
     }
 
