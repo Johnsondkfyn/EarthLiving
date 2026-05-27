@@ -22,10 +22,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -144,7 +142,7 @@ public final class SchematicPreviewService implements Listener {
         int direction = delta <= 4 ? 1 : -1;
         session.rotate(direction);
         session.lastOrigin(null);
-        restore(event.getPlayer(), session);
+        clearPreview(event.getPlayer(), session);
         render(event.getPlayer(), session);
         plugin.tell(event.getPlayer(), "&7Rotation: &f" + (session.rotation() * 90) + " grader&7. Venstreklik placerer.");
     }
@@ -157,33 +155,47 @@ public final class SchematicPreviewService implements Listener {
     private void render(Player player, PreviewSession session) {
         Location origin = targetLocation(player);
         if (origin == null) {
-            restore(player, session);
+            clearPreview(player, session);
             return;
         }
         if (session.lastOrigin() != null && sameBlock(session.lastOrigin(), origin)) {
             return;
         }
-        restore(player, session);
         session.lastOrigin(origin.clone());
         World world = origin.getWorld();
-        Set<Location> sentLocations = new LinkedHashSet<>();
+        Map<Location, BlockData> nextBlocks = new HashMap<>();
         for (PreviewBlock block : session.loadedPreview().rotatedBlocks(session.rotation())) {
             Location location = new Location(world,
                     origin.getBlockX() + block.x(),
                     origin.getBlockY() + block.y(),
                     origin.getBlockZ() + block.z());
             player.sendBlockChange(location, block.blockData());
-            sentLocations.add(location);
+            nextBlocks.put(location, block.blockData());
         }
-        session.sentLocations(sentLocations);
+        restoreRemovedBlocks(player, session, nextBlocks);
+        session.sentBlocks(nextBlocks);
     }
 
     private void restore(Player player, PreviewSession session) {
-        for (Location location : session.sentLocations()) {
+        clearPreview(player, session);
+    }
+
+    private void clearPreview(Player player, PreviewSession session) {
+        for (Location location : session.sentBlocks().keySet()) {
             Block block = location.getBlock();
             player.sendBlockChange(location, block.getBlockData());
         }
-        session.sentLocations(Set.of());
+        session.sentBlocks(Map.of());
+    }
+
+    private void restoreRemovedBlocks(Player player, PreviewSession session, Map<Location, BlockData> nextBlocks) {
+        for (Location location : session.sentBlocks().keySet()) {
+            if (nextBlocks.containsKey(location)) {
+                continue;
+            }
+            Block block = location.getBlock();
+            player.sendBlockChange(location, block.getBlockData());
+        }
     }
 
     private Location targetLocation(Player player) {
@@ -265,7 +277,7 @@ public final class SchematicPreviewService implements Listener {
         private BukkitTask task;
         private BukkitTask timeoutTask;
         private Location lastOrigin;
-        private Set<Location> sentLocations = Set.of();
+        private Map<Location, BlockData> sentBlocks = Map.of();
         private int rotation;
 
         private PreviewSession(UUID playerId, BlueprintJob job, LoadedPreview loadedPreview) {
@@ -290,12 +302,12 @@ public final class SchematicPreviewService implements Listener {
             this.lastOrigin = lastOrigin;
         }
 
-        private Set<Location> sentLocations() {
-            return sentLocations;
+        private Map<Location, BlockData> sentBlocks() {
+            return sentBlocks;
         }
 
-        private void sentLocations(Set<Location> sentLocations) {
-            this.sentLocations = sentLocations;
+        private void sentBlocks(Map<Location, BlockData> sentBlocks) {
+            this.sentBlocks = sentBlocks;
         }
 
         private int rotation() {
