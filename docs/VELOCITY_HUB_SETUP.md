@@ -93,6 +93,7 @@ Updated 2026-05-26:
 - WorldGuard is installed for later spawn, portal and protected-area setup, but no final hub regions are defined yet.
 - Citizens loaded cleanly and is available for hub NPC tests.
 - Constructor loaded cleanly with Citizens and WorldEdit on the hub. Treat it as experimental because it is an older `api-version: 1.13` plugin; do not deploy it to Main until a real builder-NPC test has been completed on the hub.
+- Constructor update check on 2026-05-27 found `3.5` as the newest visible release/changelog entry, so the currently installed jar is already the newest version confirmed during this review.
 
 ## Player Test
 

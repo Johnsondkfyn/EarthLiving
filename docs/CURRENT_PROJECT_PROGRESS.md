@@ -67,6 +67,7 @@ Updated 2026-05-26:
 - The hub backend now runs the uploaded BreadBuilds "Modern Age lobby" world as the first visual hub test. The previous flat hub world is backed up, Paper completed the 1.18+ world migration successfully, Velocity status ping on `159.195.149.253:25567` still works, and player login confirmed the hub loads correctly in-game.
 - Hub build plugins are now installed and verified: EarthLivingCore `0.7.2`, LuckPerms, WorldEdit and WorldGuard. WorldEdit is available for cleanup/build work; WorldGuard is ready for later spawn and portal protection.
 - Citizens `2.0.42-SNAPSHOT build 4160` and Constructor `3.5` have been added to the hub test server. Citizens loaded cleanly. Constructor also loaded cleanly with Citizens and WorldEdit, but remains experimental because it is an older `api-version: 1.13` plugin.
+- Constructor update check found no newer confirmed release than `3.5`; keep it as a hub-only experimental builder-NPC test plugin until an in-game schematic build test passes.
 - Modern Age lobby spawn was set in-game to `405 44 -384` for the current hub test layout.
 - EarthPassportSystem V1 is implemented in EarthLivingCore `0.7.2`: EarthOS Passport profile view, citizenship/home country, visas, country reputation, staff commands and read-only passport JSON export.
 - Main Discord verification testing found that DiscordSRV sees `minecraft-chat` code messages, but the linking flow does not consume them yet; a temporary owner/dev bypass for `TheKing189` is active so live Passport and hub testing can continue.

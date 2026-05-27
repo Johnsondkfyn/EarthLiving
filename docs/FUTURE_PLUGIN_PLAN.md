@@ -488,6 +488,8 @@ Citizens is a good fit for hub guides, passport/verification staff NPCs, departu
 
 Constructor is useful only as an experimental builder-NPC prototype. It depends on Citizens and WorldEdit and loaded cleanly on the hub, but it is older (`api-version: 1.13`) and should not become a core production dependency until it has passed an in-game builder test on the current Paper version.
 
+Update check on 2026-05-27 found `Constructor 3.5` as the newest visible release/changelog entry. Do not spend time looking for a newer jar unless an official upstream source appears; test the current jar on the hub first.
+
 ---
 
 # 39. ArchitectPreviewModule
