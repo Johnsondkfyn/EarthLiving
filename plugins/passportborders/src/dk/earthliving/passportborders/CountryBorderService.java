@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 final class CountryBorderService {
@@ -33,6 +34,7 @@ final class CountryBorderService {
                 countries.add(new Country(id.toLowerCase(), name, permission, price, polygons));
             }
         }
+        countries.sort(Comparator.comparing(country -> country.name));
     }
 
     Country findBySlotIndex(int index) {
@@ -40,6 +42,16 @@ final class CountryBorderService {
             return null;
         }
         return countries.get(index);
+    }
+
+    Country findByIdOrName(String query) {
+        String normalized = normalize(query);
+        for (Country country : countries) {
+            if (country.id.equals(normalized) || normalize(country.name).equals(normalized)) {
+                return country;
+            }
+        }
+        return null;
     }
 
     Country findCountry(double latitude, double longitude) {
@@ -104,5 +116,9 @@ final class CountryBorderService {
             }
         }
         return null;
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.toLowerCase().replaceAll("[^a-z0-9]+", "_").replaceAll("^_+|_+$", "");
     }
 }

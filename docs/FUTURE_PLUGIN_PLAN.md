@@ -405,7 +405,14 @@ EarthLivingCore `0.7.2` now owns the first passport foundation:
 - staff admin commands
 - read-only JSON export for the future web profile
 
-The older `PassportBorders` plugin remains the polygon/border prototype. Future work should connect it to EarthLivingCore passport data instead of letting both systems own separate passport rules.
+PassportBorders `0.4.0` is now the live Main polygon/border prototype:
+
+- 220 Natural Earth countries in `countries.yml`
+- base prices derived from Natural Earth income group, GDP per capita and population
+- configurable visa multipliers for visitor, event, work, resident and citizenship
+- player commands: `/passport list [page]`, `/passport info [country]`, `/passport buy <country> [type]`
+
+Future work should connect PassportBorders to EarthLivingCore passport profile data instead of letting both systems own separate passport rules long-term.
 
 ---
 

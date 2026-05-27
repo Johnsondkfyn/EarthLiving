@@ -82,10 +82,13 @@ Opdatering 2026-05-24 eftermiddag: EarthLivingCore `0.7.0` er bygget og deployet
 
 ### PassportBorders
 
-- Det tidligere lavede plugin **PassportBorders 0.3.2** er fundet i chat-backup.
+- Det tidligere lavede plugin **PassportBorders 0.3.2** er fundet i chat-backup og videreført som **PassportBorders 0.4.0** på Main.
 - Plugin-koden er lagt ind i repoen under `plugins/passportborders/`.
-- Der er genereret ny `countries.yml` til PassportBorders med rigtige starter-Europe polygoner.
-- Pluginet er ikke aktiveret på live-serveren endnu, fordi pas/adgang først bør kobles på efter checkpoints og grænseposter.
+- Der er genereret ny global `countries.yml` til PassportBorders med 220 lande fra Natural Earth-data.
+- Landenes basepriser afspejler verden via Natural Earth `INCOME_GRP`, GDP pr. indbygger og befolkning, afrundet til spilvenlige priser.
+- `config.yml` har nu visa-typer og pris-multipliers: visitor, event, work, resident og citizenship.
+- Main-serveren loader `PassportBorders 0.4.0` og loggen bekræfter `Loaded 220 countries`.
+- Spillerflow V1: `/passport list [page]`, `/passport info [country]` og `/passport buy <country> [visitor|event|work|resident|citizenship]`.
 - Notion: https://www.notion.so/3649c23d643a815e8f4cc21a90834ca8
 
 ### GitHub/repo

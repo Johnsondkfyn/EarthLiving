@@ -2,30 +2,25 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import sys
 import urllib.request
 from pathlib import Path
 
 
 SOURCE_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson"
-COUNTRIES = {
-    "denmark": ("Danmark", 500),
-    "norway": ("Norge", 650),
-    "sweden": ("Sverige", 650),
-    "finland": ("Finland", 650),
-    "germany": ("Tyskland", 750),
-    "netherlands": ("Holland", 700),
-    "belgium": ("Belgien", 700),
-    "france": ("Frankrig", 850),
-    "united kingdom": ("Storbritannien", 850),
-    "ireland": ("Irland", 700),
-    "poland": ("Polen", 700),
-    "czechia": ("Tjekkiet", 650),
-    "austria": ("Ostrig", 650),
-    "switzerland": ("Schweiz", 900),
-    "italy": ("Italien", 850),
-    "spain": ("Spanien", 850),
-    "portugal": ("Portugal", 750),
+INCOME_BASE_PRICES = {
+    "1. High income: OECD": 1000,
+    "2. High income: nonOECD": 875,
+    "3. Upper middle income": 675,
+    "4. Lower middle income": 475,
+    "5. Low income": 325,
+}
+
+COUNTRY_NAME_OVERRIDES = {
+    "Czechia": "Czech Republic",
+    "United Kingdom": "United Kingdom",
+    "United States of America": "United States",
 }
 
 
@@ -73,7 +68,9 @@ def iter_rings(feature):
 
 
 def slug(value):
-    return value.lower().replace(" ", "_").replace("-", "_").replace("'", "")
+    text = value.lower().replace("&", "and")
+    text = re.sub(r"[^a-z0-9]+", "_", text)
+    return text.strip("_") or "country"
 
 
 def ring_to_polygon(ring):
@@ -90,17 +87,35 @@ def ring_to_polygon(ring):
     return polygon
 
 
-def is_starter_europe_polygon(polygon):
-    lats = [lat for lat, _ in polygon]
-    lons = [lon for _, lon in polygon]
-    center_lat = sum(lats) / len(lats)
-    center_lon = sum(lons) / len(lons)
-    return -25 <= center_lon <= 35 and 35 <= center_lat <= 72
+def price_for(feature):
+    props = feature["properties"]
+    income_group = props.get("INCOME_GRP", "")
+    base = INCOME_BASE_PRICES.get(income_group, 550)
+    population = float(props.get("POP_EST") or 0)
+    gdp_million = float(props.get("GDP_MD") or 0)
+    gdp_per_capita = (gdp_million * 1_000_000 / population) if population > 0 else 0
+
+    if gdp_per_capita >= 65000:
+        base += 250
+    elif gdp_per_capita >= 45000:
+        base += 150
+    elif gdp_per_capita >= 25000:
+        base += 75
+    elif 0 < gdp_per_capita < 2500:
+        base -= 75
+
+    if population >= 100_000_000:
+        base += 75
+    elif population <= 300_000:
+        base = max(250, base - 100)
+
+    return max(250, min(1500, int(round(base / 25) * 25)))
 
 
 def build_country(feature):
     country_name = feature["properties"].get("ADMIN") or ""
-    display_name, price = COUNTRIES[country_name.lower()]
+    display_name = COUNTRY_NAME_OVERRIDES.get(country_name, country_name)
+    price = price_for(feature)
     rings = iter_rings(feature)
     ranked = sorted(rings, key=lambda ring: abs(signed_area([(float(x), float(y)) for x, y in ring])), reverse=True)
     polygons = []
@@ -108,12 +123,10 @@ def build_country(feature):
         polygon = ring_to_polygon(ring)
         if len(polygon) < 3:
             continue
-        if not is_starter_europe_polygon(polygon):
-            continue
-        if abs(signed_area([(lon, lat) for lat, lon in polygon])) < 0.012:
+        if abs(signed_area([(lon, lat) for lat, lon in polygon])) < 0.006:
             continue
         polygons.append(polygon)
-        if len(polygons) >= 12:
+        if len(polygons) >= 18:
             break
     return display_name, price, polygons
 
@@ -139,8 +152,7 @@ def main():
     total = 0
     for feature in data["features"]:
         country_name = feature["properties"].get("ADMIN") or ""
-        key = country_name.lower()
-        if key not in COUNTRIES:
+        if not country_name or country_name.lower() == "antarctica":
             continue
         display_name, price, polygons = build_country(feature)
         if not polygons:

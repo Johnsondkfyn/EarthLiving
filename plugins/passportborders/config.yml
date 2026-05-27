@@ -2,6 +2,29 @@ scale: 5120
 tiles: 15
 check-worlds:
   - world
+visa:
+  default-type: visitor
+  types:
+    visitor:
+      display-name: "Visitor visa"
+      price-multiplier: 0.25
+      duration-days: 7
+    event:
+      display-name: "Event visa"
+      price-multiplier: 0.15
+      duration-days: 3
+    work:
+      display-name: "Work visa"
+      price-multiplier: 0.55
+      duration-days: 30
+    resident:
+      display-name: "Resident permit"
+      price-multiplier: 1.0
+      duration-days: 90
+    citizenship:
+      display-name: "Citizenship"
+      price-multiplier: 1.5
+      duration-days: 0
 messages:
   entered: "&aDu går ind i &f%country%&a."
   denied: "&cDu skal bruge pas/visum for at komme ind i &f%country%&c."

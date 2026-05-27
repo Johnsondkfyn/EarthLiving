@@ -26,6 +26,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -33,6 +34,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -173,6 +175,33 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
                 sender.sendMessage("Only players can use /passport.");
                 return true;
             }
+            if (args.length > 0 && args[0].equalsIgnoreCase("list")) {
+                int page = args.length >= 2 ? parsePage(args[1]) : 1;
+                sendCountryList(player, page);
+                return true;
+            }
+            if (args.length > 0 && args[0].equalsIgnoreCase("buy")) {
+                if (args.length < 2) {
+                    player.sendMessage(color("&eBrug: &f/passport buy <country> [visitor|event|work|resident|citizenship]"));
+                    return true;
+                }
+                Country country = borderService.findByIdOrName(args[1]);
+                if (country == null) {
+                    player.sendMessage(color("&cUkendt land. Brug &f/passport list &cfor at se lande."));
+                    return true;
+                }
+                buyVisa(player, country, args.length >= 3 ? args[2] : defaultVisaType());
+                return true;
+            }
+            if (args.length > 0 && args[0].equalsIgnoreCase("info")) {
+                Country country = args.length >= 2 ? borderService.findByIdOrName(args[1]) : countryAt(player.getLocation());
+                if (country == null) {
+                    player.sendMessage(color("&7Du står ikke i et registreret land, eller landet blev ikke fundet."));
+                    return true;
+                }
+                sendCountryInfo(player, country);
+                return true;
+            }
             openPassportMenu(player);
             return true;
         }
@@ -249,8 +278,9 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
             boolean owned = ownsPassport(player, country);
             Material material = owned ? Material.LIME_DYE : Material.PAPER;
             List<String> lore = new ArrayList<>();
-            lore.add(owned ? "&aEjet." : "&ePris: &f" + money(country.price));
-            lore.add(owned ? "&7Dette pas er registreret paa dig." : "&7Klik for at koebe pas.");
+            String defaultType = defaultVisaType();
+            lore.add(owned ? "&aEjet." : "&e" + visaDisplayName(defaultType) + ": &f" + money(visaPrice(country, defaultType)));
+            lore.add(owned ? "&7Dette visum/pas er registreret paa dig." : "&7Klik for at koebe standardvisum.");
             if (canEnter(player, country) && !owned) {
                 lore.add("&8Admin/bypass giver adgang, men passet er ikke koebt.");
             }
@@ -322,15 +352,20 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
         if (slot >= 10 && slot < 17) {
             Country country = borderService.findBySlotIndex(slot - 10);
             if (country != null) {
-                buyPassport(player, country);
+                buyVisa(player, country, defaultVisaType());
                 openPassportMenu(player);
             }
         }
     }
 
-    private void buyPassport(Player player, Country country) {
-        if (ownsPassport(player, country)) {
-            player.sendMessage(color("&aDu har allerede pas til &f" + country.name + "&a."));
+    private void buyVisa(Player player, Country country, String visaType) {
+        String normalizedVisaType = normalizeVisaType(visaType);
+        if (normalizedVisaType == null) {
+            player.sendMessage(color("&cUkendt visa-type. Brug: &f" + String.join(", ", visaTypes())));
+            return;
+        }
+        if (ownsVisa(player, country, normalizedVisaType)) {
+            player.sendMessage(color("&aDu har allerede &f" + visaDisplayName(normalizedVisaType) + " &atil &f" + country.name + "&a."));
             return;
         }
         if (economy == null) {
@@ -343,16 +378,19 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
         }
 
         OfflinePlayer offlinePlayer = player;
-        if (!economy.has(offlinePlayer, country.price)) {
-            player.sendMessage(color("&cDu mangler penge. &f" + country.name + " &ckoster &f" + money(country.price) + "&c."));
+        double price = visaPrice(country, normalizedVisaType);
+        if (!economy.has(offlinePlayer, price)) {
+            player.sendMessage(color("&cDu mangler penge. &f" + country.name + " " + visaDisplayName(normalizedVisaType)
+                    + " &ckoster &f" + money(price) + "&c."));
             return;
         }
 
-        economy.withdrawPlayer(offlinePlayer, country.price);
-        addPassport(player, country);
+        economy.withdrawPlayer(offlinePlayer, price);
+        addVisa(player, country, normalizedVisaType);
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                 "lp user " + player.getName() + " permission set " + country.permission + " true");
-        player.sendMessage(color("&aDu koebte pas til &f" + country.name + " &afor &f" + money(country.price) + "&a."));
+        player.sendMessage(color("&aDu koebte &f" + visaDisplayName(normalizedVisaType) + " &atil &f" + country.name
+                + " &afor &f" + money(price) + "&a."));
     }
 
     private void runPlayerCommand(Player player, String command) {
@@ -536,13 +574,24 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
     }
 
     private boolean ownsPassport(Player player, Country country) {
-        return ownedPassports.getOrDefault(player.getUniqueId(), List.of()).contains(country.id);
+        for (String record : ownedPassports.getOrDefault(player.getUniqueId(), List.of())) {
+            if (record.equals(country.id) || record.startsWith(country.id + ":")) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private void addPassport(Player player, Country country) {
+    private boolean ownsVisa(Player player, Country country, String visaType) {
+        List<String> records = ownedPassports.getOrDefault(player.getUniqueId(), List.of());
+        return records.contains(country.id) || records.contains(country.id + ":" + visaType);
+    }
+
+    private void addVisa(Player player, Country country, String visaType) {
         List<String> passports = new ArrayList<>(ownedPassports.getOrDefault(player.getUniqueId(), List.of()));
-        if (!passports.contains(country.id)) {
-            passports.add(country.id);
+        String record = country.id + ":" + visaType;
+        if (!passports.contains(record) && !passports.contains(country.id)) {
+            passports.add(record);
         }
         ownedPassports.put(player.getUniqueId(), passports);
         passportsConfig.set("players." + player.getUniqueId(), passports);
@@ -568,6 +617,69 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
         return player.hasPermission("passportborders.bypass")
                 || ownsPassport(player, country)
                 || player.hasPermission(country.permission);
+    }
+
+    private void sendCountryList(Player player, int page) {
+        List<Country> countries = borderService.countries();
+        int pageSize = 12;
+        int maxPage = Math.max(1, (int) Math.ceil(countries.size() / (double) pageSize));
+        int safePage = Math.max(1, Math.min(maxPage, page));
+        player.sendMessage(color("&ePassport countries &7(" + safePage + "/" + maxPage + "):"));
+        int start = (safePage - 1) * pageSize;
+        for (int index = start; index < Math.min(start + pageSize, countries.size()); index++) {
+            Country country = countries.get(index);
+            player.sendMessage(color("&7- &f" + country.id + " &8- &e" + country.name
+                    + " &7base &f" + money(country.price)));
+        }
+        player.sendMessage(color("&7Koeb: &f/passport buy <country> [visitor|event|work|resident|citizenship]"));
+    }
+
+    private void sendCountryInfo(Player player, Country country) {
+        player.sendMessage(color("&eLand: &f" + country.name + " &8(" + country.id + ")"));
+        player.sendMessage(color("&eAdgang: &f" + (canEnter(player, country) ? "ja" : "nej")));
+        for (String type : visaTypes()) {
+            player.sendMessage(color("&7- &f" + visaDisplayName(type) + "&7: &e" + money(visaPrice(country, type))
+                    + visaDurationText(type)));
+        }
+    }
+
+    private double visaPrice(Country country, String visaType) {
+        return Math.max(1.0, country.price * getConfig().getDouble("visa.types." + visaType + ".price-multiplier", 1.0));
+    }
+
+    private String visaDisplayName(String visaType) {
+        return getConfig().getString("visa.types." + visaType + ".display-name", visaType);
+    }
+
+    private String visaDurationText(String visaType) {
+        int days = getConfig().getInt("visa.types." + visaType + ".duration-days", 0);
+        return days <= 0 ? " &8(permanent)" : " &8(" + days + " days)";
+    }
+
+    private String defaultVisaType() {
+        String type = normalizeVisaType(getConfig().getString("visa.default-type", "visitor"));
+        return type == null ? "visitor" : type;
+    }
+
+    private String normalizeVisaType(String visaType) {
+        String normalized = visaType == null ? "" : visaType.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9_-]+", "");
+        return visaTypes().contains(normalized) ? normalized : null;
+    }
+
+    private List<String> visaTypes() {
+        ConfigurationSection section = getConfig().getConfigurationSection("visa.types");
+        if (section == null) {
+            return List.of("visitor", "event", "work", "resident", "citizenship");
+        }
+        return new ArrayList<>(section.getKeys(false));
+    }
+
+    private int parsePage(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException ignored) {
+            return 1;
+        }
     }
 
     private boolean isCheckedWorld(Location location) {

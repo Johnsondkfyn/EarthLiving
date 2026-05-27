@@ -1,5 +1,5 @@
 name: PassportBorders
-version: 0.3.2
+version: 0.4.0
 main: dk.earthliving.passportborders.PassportBordersPlugin
 api-version: '1.21'
 author: Codex
@@ -15,7 +15,7 @@ commands:
     usage: /menu
   passport:
     description: Opens the passport menu.
-    usage: /passport
+    usage: /passport <list|info|buy>
 permissions:
   passportborders.admin:
     description: Allows reloading PassportBorders.
