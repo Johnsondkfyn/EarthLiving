@@ -83,6 +83,26 @@ public final class PlacementPreviewService {
         return removed;
     }
 
+    public boolean lock(Player player) {
+        PreviewSession session = previews.get(player.getUniqueId());
+        if (session == null || !session.followLook()) {
+            return false;
+        }
+        Location origin = findLookOrigin(player, session.yOffset(), session.distance());
+        if (origin == null) {
+            origin = session.origin();
+        }
+        PreviewSession locked = new PreviewSession(origin, session.width(), session.height(), session.depth(),
+                session.expiresAt(), false, session.yOffset(), session.distance());
+        previews.put(player.getUniqueId(), locked);
+        draw(player, locked);
+
+        notifications.send(player, "&aPlacement preview locked.");
+        notifications.send(player, "&7Locked origin: &f" + origin.getBlockX() + " " + origin.getBlockY() + " " + origin.getBlockZ());
+        notifications.send(player, "&7Use /el preview look again to move it or /el preview clear to remove it.");
+        return true;
+    }
+
     public void stop() {
         previews.clear();
         if (task != null) {

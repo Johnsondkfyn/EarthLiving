@@ -12,6 +12,7 @@ import dk.earthliving.core.module.ModuleRegistry;
 import dk.earthliving.core.notification.DiscordNotificationService;
 import dk.earthliving.core.notification.NotificationService;
 import dk.earthliving.core.passport.PassportService;
+import dk.earthliving.core.preview.PlacementPreviewListener;
 import dk.earthliving.core.preview.PlacementPreviewService;
 import dk.earthliving.core.report.ReportService;
 import dk.earthliving.core.webportal.WebPortalService;
@@ -53,6 +54,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         registerModules();
         registerCommands();
         getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService, passportService), this);
+        getServer().getPluginManager().registerEvents(new PlacementPreviewListener(placementPreviewService), this);
         reportService.startPanelActionProcessor();
         webPortalService.startExporter();
         discordReportImportService.startLater();

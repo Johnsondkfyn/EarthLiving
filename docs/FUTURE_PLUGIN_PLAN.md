@@ -519,7 +519,7 @@ If Constructor behaves poorly, replace it with a custom EarthLiving BuilderNPCMo
 
 ## Placement preview V1
 
-EarthLivingCore `0.7.6` adds a safe hub/test preview command:
+EarthLivingCore `0.7.7` adds a safe hub/test preview command:
 
 ```text
 /el preview <width> <height> <depth> [yOffset] [seconds]
@@ -527,7 +527,7 @@ EarthLivingCore `0.7.6` adds a safe hub/test preview command:
 /el preview clear
 ```
 
-This draws a temporary dense particle wireframe from the player's current block position, with floor grid, stronger edges, corner markers and an origin marker. The `look` variant raycasts to the solid block the player is looking at and keeps following the player's aim until the timer expires or `/el preview clear` is used. Use it before Constructor or WorldEdit placement to verify footprint and vertical alignment. This is not a full schematic parser yet; future V2 should read `.schem` dimensions automatically and hand the chosen origin to Constructor or a custom BuilderNPCModule.
+This draws a temporary dense particle wireframe from the player's current block position, with floor grid, stronger edges, corner markers and an origin marker. The `look` variant raycasts to the solid block the player is looking at and keeps following the player's aim until the player left-clicks to lock the current placement, the timer expires, or `/el preview clear` is used. Use it before Constructor or WorldEdit placement to verify footprint and vertical alignment. This is not a full schematic parser yet; future V2 should read `.schem` dimensions automatically and hand the chosen origin to Constructor or a custom BuilderNPCModule.
 
 ---
 
