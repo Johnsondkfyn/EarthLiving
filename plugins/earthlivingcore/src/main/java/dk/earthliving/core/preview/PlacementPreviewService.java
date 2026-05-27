@@ -15,7 +15,8 @@ import java.util.UUID;
 public final class PlacementPreviewService {
     private static final int MAX_SIZE = 256;
     private static final int DEFAULT_SECONDS = 45;
-    private static final double STEP = 1.0D;
+    private static final double EDGE_STEP = 0.45D;
+    private static final double GRID_STEP = 2.0D;
 
     private final JavaPlugin plugin;
     private final NotificationService notifications;
@@ -98,10 +99,13 @@ public final class PlacementPreviewService {
         double maxY = minY + session.height();
         double maxZ = minZ + session.depth();
 
-        Particle.DustOptions edge = new Particle.DustOptions(Color.fromRGB(85, 199, 216), 1.2F);
-        Particle.DustOptions floor = new Particle.DustOptions(Color.fromRGB(143, 214, 111), 1.0F);
-        Particle.DustOptions originColor = new Particle.DustOptions(Color.fromRGB(255, 199, 89), 1.5F);
+        Particle.DustOptions edge = new Particle.DustOptions(Color.fromRGB(48, 230, 255), 1.9F);
+        Particle.DustOptions floor = new Particle.DustOptions(Color.fromRGB(143, 255, 96), 1.45F);
+        Particle.DustOptions mid = new Particle.DustOptions(Color.fromRGB(255, 221, 96), 1.35F);
+        Particle.DustOptions corner = new Particle.DustOptions(Color.fromRGB(255, 96, 64), 2.2F);
+        Particle.DustOptions originColor = new Particle.DustOptions(Color.fromRGB(255, 199, 89), 2.4F);
 
+        drawFloorGrid(player, minX, minY, minZ, maxX, maxZ, floor);
         drawBoxLine(player, minX, minY, minZ, maxX, minY, minZ, floor);
         drawBoxLine(player, minX, minY, maxZ, maxX, minY, maxZ, floor);
         drawBoxLine(player, minX, minY, minZ, minX, minY, maxZ, floor);
@@ -117,19 +121,60 @@ public final class PlacementPreviewService {
         drawBoxLine(player, minX, minY, maxZ, minX, maxY, maxZ, edge);
         drawBoxLine(player, maxX, minY, maxZ, maxX, maxY, maxZ, edge);
 
-        spawn(player, minX, minY, minZ, originColor);
-        spawn(player, minX, minY + 1, minZ, originColor);
+        double midY = minY + (session.height() / 2.0D);
+        drawBoxLine(player, minX, midY, minZ, maxX, midY, minZ, mid);
+        drawBoxLine(player, minX, midY, maxZ, maxX, midY, maxZ, mid);
+        drawBoxLine(player, minX, midY, minZ, minX, midY, maxZ, mid);
+        drawBoxLine(player, maxX, midY, minZ, maxX, midY, maxZ, mid);
+
+        drawCorner(player, minX, minY, minZ, corner);
+        drawCorner(player, maxX, minY, minZ, corner);
+        drawCorner(player, minX, minY, maxZ, corner);
+        drawCorner(player, maxX, minY, maxZ, corner);
+        drawCorner(player, minX, maxY, minZ, corner);
+        drawCorner(player, maxX, maxY, minZ, corner);
+        drawCorner(player, minX, maxY, maxZ, corner);
+        drawCorner(player, maxX, maxY, maxZ, corner);
+
+        drawOriginMarker(player, minX, minY, minZ, originColor);
     }
 
     private void drawBoxLine(Player player, double x1, double y1, double z1, double x2, double y2, double z2, Particle.DustOptions color) {
         double dx = x2 - x1;
         double dy = y2 - y1;
         double dz = z2 - z1;
-        int steps = Math.max(1, (int) Math.ceil(Math.max(Math.max(Math.abs(dx), Math.abs(dy)), Math.abs(dz)) / STEP));
+        int steps = Math.max(1, (int) Math.ceil(Math.max(Math.max(Math.abs(dx), Math.abs(dy)), Math.abs(dz)) / EDGE_STEP));
         for (int index = 0; index <= steps; index++) {
             double progress = (double) index / steps;
             spawn(player, x1 + dx * progress, y1 + dy * progress, z1 + dz * progress, color);
         }
+    }
+
+    private void drawFloorGrid(Player player, double minX, double minY, double minZ, double maxX, double maxZ, Particle.DustOptions color) {
+        for (double x = minX; x <= maxX + 0.001D; x += GRID_STEP) {
+            drawBoxLine(player, x, minY, minZ, x, minY, maxZ, color);
+        }
+        for (double z = minZ; z <= maxZ + 0.001D; z += GRID_STEP) {
+            drawBoxLine(player, minX, minY, z, maxX, minY, z, color);
+        }
+    }
+
+    private void drawCorner(Player player, double x, double y, double z, Particle.DustOptions color) {
+        spawn(player, x, y, z, color);
+        spawn(player, x, y + 0.25D, z, color);
+        spawn(player, x, y - 0.25D, z, color);
+        spawn(player, x + 0.25D, y, z, color);
+        spawn(player, x - 0.25D, y, z, color);
+        spawn(player, x, y, z + 0.25D, color);
+        spawn(player, x, y, z - 0.25D, color);
+    }
+
+    private void drawOriginMarker(Player player, double x, double y, double z, Particle.DustOptions color) {
+        for (double offset = 0; offset <= 2.5D; offset += 0.25D) {
+            spawn(player, x, y + offset, z, color);
+        }
+        drawBoxLine(player, x - 1.0D, y + 0.1D, z, x + 1.0D, y + 0.1D, z, color);
+        drawBoxLine(player, x, y + 0.1D, z - 1.0D, x, y + 0.1D, z + 1.0D, color);
     }
 
     private void spawn(Player player, double x, double y, double z, Particle.DustOptions color) {

@@ -83,7 +83,7 @@ Updated 2026-05-26:
 - Paper completed world storage migration and vanilla import for the uploaded 1.18+ world.
 - Player login test confirmed that the Modern Age lobby hub loads correctly in-game.
 - Hub build tools installed and verified:
-  - EarthLivingCore `0.7.3`
+  - EarthLivingCore `0.7.4`
   - LuckPerms `5.5.0`
   - WorldEdit `7.4.3`
   - WorldGuard `7.0.16`
@@ -94,10 +94,10 @@ Updated 2026-05-26:
 - Citizens loaded cleanly and is available for hub NPC tests.
 - Constructor loaded cleanly with Citizens and WorldEdit on the hub. Treat it as experimental because it is an older `api-version: 1.13` plugin; do not deploy it to Main until a real builder-NPC test has been completed on the hub.
 - Constructor update check on 2026-05-27 found `3.5` as the newest visible release/changelog entry, so the currently installed jar is already the newest version confirmed during this review.
-- EarthLivingCore `0.7.3` adds a hub/test placement preview command for schematic alignment:
+- EarthLivingCore `0.7.4` adds a clearer hub/test placement preview command for schematic alignment:
   - `/el preview <width> <height> <depth> [yOffset] [seconds]`
   - `/el preview clear`
-- The preview draws a temporary particle wireframe from the player's current block position. Use it before Constructor/WorldEdit placement to check height, floor level and footprint.
+- The preview draws a temporary dense particle wireframe from the player's current block position, with floor grid, stronger edges, corner markers and a vertical origin marker. Use it before Constructor/WorldEdit placement to check height, floor level and footprint.
 
 ## Player Test
 

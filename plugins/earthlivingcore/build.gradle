@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'dk.earthliving.core'
-version = '0.7.3'
+version = '0.7.4'
 
 base {
     archivesName = 'EarthLivingCore'
