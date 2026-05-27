@@ -1,0 +1,20 @@
+name: ArchitectModule
+version: 0.1.0
+main: dk.earthliving.architect.ArchitectModulePlugin
+api-version: '1.21'
+author: Codex
+description: Admin-only EarthLiving blueprint and schematic generator.
+depend:
+  - WorldEdit
+softdepend:
+  - FastAsyncWorldEdit
+  - Constructor
+commands:
+  architect:
+    description: Generate and manage EarthLiving blueprints.
+    usage: /architect <search|generate|preview|paste|list|reload>
+    permission: earthliving.architect.admin
+permissions:
+  earthliving.architect.admin:
+    description: Allows using ArchitectModule admin tools.
+    default: op

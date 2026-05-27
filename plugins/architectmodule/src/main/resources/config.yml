@@ -1,0 +1,36 @@
+generation:
+  max-scale: 4
+  default-scale: 1
+  default-style: "modern"
+  async: true
+  allow-web-lookup: false
+  web-provider: "disabled"
+  web-endpoint: ""
+  request-timeout-seconds: 12
+  max-jobs: 100
+  generated-folder: "generated"
+  paste-ignore-air: true
+  paste-max-blocks: 200000
+
+styles:
+  modern:
+    wall: "WHITE_CONCRETE"
+    trim: "LIGHT_GRAY_CONCRETE"
+    glass: "GLASS"
+    floor: "SMOOTH_STONE"
+    roof: "QUARTZ_SLAB"
+  historic:
+    wall: "STONE_BRICKS"
+    trim: "POLISHED_ANDESITE"
+    glass: "GLASS_PANE"
+    floor: "SMOOTH_STONE"
+    roof: "DEEPSLATE_BRICKS"
+  industrial:
+    wall: "POLISHED_DEEPSLATE"
+    trim: "IRON_BLOCK"
+    glass: "GRAY_STAINED_GLASS"
+    floor: "SMOOTH_STONE"
+    roof: "LIGHT_GRAY_CONCRETE"
+
+messages:
+  prefix: "&8[&bArchitect&8] &r"
