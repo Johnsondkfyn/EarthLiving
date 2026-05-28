@@ -103,6 +103,8 @@ building name
 
 This does not create exact replicas. It uses public metadata to choose a better structure type and proportions, then creates a blocky EarthLiving interpretation.
 
+V2.1 adds a dedicated lattice/spire tower template for Eiffel Tower-like landmarks, so those generate as open metal tower structures instead of closed block buildings.
+
 ## Generated Files
 
 Schematics are saved under:

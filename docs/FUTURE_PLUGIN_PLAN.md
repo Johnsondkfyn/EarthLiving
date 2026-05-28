@@ -530,6 +530,8 @@ generation:
 
 The generator now uses public metadata to infer type/proportions for stations, airports, ports, towers, palaces, castles, churches, cathedrals, museums and civic buildings. Output remains an EarthLiving interpretation, not an exact replica.
 
+After the first Eiffel Tower test on hub, tower/landmark generation was improved with a dedicated open lattice/spire template. Eiffel Tower-like metadata now generates legs, platforms, central lighting and a top spire instead of a closed block tower. Keep this on hub/test until the visual result is accepted, then copy to Main.
+
 ## Current plugin test
 
 Hub test server has Citizens and Constructor installed for evaluation:

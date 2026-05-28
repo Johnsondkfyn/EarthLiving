@@ -31,7 +31,7 @@ public final class BlueprintGenerator {
         BlockArrayClipboard clipboard = new BlockArrayClipboard(new CuboidRegion(min, max));
         clipboard.setOrigin(BlockVector3.ZERO);
 
-        drawBuilding(clipboard, shape, spec.style());
+        drawBuilding(clipboard, shape, spec.style(), spec);
 
         Files.createDirectories(schematicPath.getParent());
         ClipboardFormat format = ClipboardFormats.findByAlias("sponge");
@@ -65,7 +65,19 @@ public final class BlueprintGenerator {
         return new Result(shape.width(), shape.height(), shape.depth());
     }
 
-    private void drawBuilding(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style) {
+    private void drawBuilding(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style, GenerationSpec spec) {
+        if (shape.kind() == BuildingKind.TOWER && isLatticeTower(spec)) {
+            drawLatticeTower(clipboard, shape, style);
+            return;
+        }
+        if (shape.kind() == BuildingKind.LANDMARK && isSpireLandmark(spec)) {
+            drawLatticeTower(clipboard, shape, style);
+            return;
+        }
+        drawClosedBuilding(clipboard, shape, style);
+    }
+
+    private void drawClosedBuilding(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style) {
         BlockState wall = state(style.wall());
         BlockState trim = state(style.trim());
         BlockState glass = state(style.glass());
@@ -116,6 +128,104 @@ public final class BlueprintGenerator {
                 set(clipboard, cx, y, cz - 1, glass);
             }
         }
+    }
+
+    private void drawLatticeTower(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style) {
+        BlockState base = state(Material.SMOOTH_STONE);
+        BlockState metal = state(Material.IRON_BLOCK);
+        BlockState darkMetal = state(Material.GRAY_CONCRETE);
+        BlockState platform = state(Material.POLISHED_DEEPSLATE);
+        BlockState light = state(Material.SEA_LANTERN);
+
+        fill(clipboard, 0, 0, 0, shape.width() - 1, 0, shape.depth() - 1, base);
+
+        int cx = shape.width() / 2;
+        int cz = shape.depth() / 2;
+        int maxY = shape.height() - 1;
+        int baseInset = 1;
+        int topInset = Math.max(3, shape.width() / 2 - 1);
+
+        for (int y = 1; y <= maxY - 4; y++) {
+            double progress = y / (double) Math.max(1, maxY - 4);
+            int insetX = Math.min(topInset, baseInset + (int) Math.round(progress * (shape.width() / 2.6D)));
+            int insetZ = Math.min(topInset, baseInset + (int) Math.round(progress * (shape.depth() / 2.6D)));
+            int minX = Math.min(cx - 1, insetX);
+            int maxX = Math.max(cx + 1, shape.width() - 1 - insetX);
+            int minZ = Math.min(cz - 1, insetZ);
+            int maxZ = Math.max(cz + 1, shape.depth() - 1 - insetZ);
+
+            set(clipboard, minX, y, minZ, metal);
+            set(clipboard, maxX, y, minZ, metal);
+            set(clipboard, minX, y, maxZ, metal);
+            set(clipboard, maxX, y, maxZ, metal);
+
+            if (y % 2 == 0) {
+                lineX(clipboard, minX, maxX, y, minZ, darkMetal, 3);
+                lineX(clipboard, minX, maxX, y, maxZ, darkMetal, 3);
+                lineZ(clipboard, minX, y, minZ, maxZ, darkMetal, 3);
+                lineZ(clipboard, maxX, y, minZ, maxZ, darkMetal, 3);
+            }
+
+            if (y % 4 == 0) {
+                set(clipboard, cx, y, cz, light);
+                set(clipboard, cx - 1, y, cz, darkMetal);
+                set(clipboard, cx + 1, y, cz, darkMetal);
+                set(clipboard, cx, y, cz - 1, darkMetal);
+                set(clipboard, cx, y, cz + 1, darkMetal);
+            }
+        }
+
+        platform(clipboard, cx, cz, Math.max(5, maxY / 3), Math.max(3, shape.width() / 3), platform, metal);
+        platform(clipboard, cx, cz, Math.max(8, (maxY * 2) / 3), Math.max(2, shape.width() / 4), platform, metal);
+        platform(clipboard, cx, cz, maxY - 5, 2, platform, metal);
+
+        for (int y = maxY - 4; y <= maxY; y++) {
+            set(clipboard, cx, y, cz, metal);
+            if (y < maxY) {
+                set(clipboard, cx + 1, y, cz, darkMetal);
+                set(clipboard, cx - 1, y, cz, darkMetal);
+                set(clipboard, cx, y, cz + 1, darkMetal);
+                set(clipboard, cx, y, cz - 1, darkMetal);
+            }
+        }
+    }
+
+    private void platform(BlockArrayClipboard clipboard, int cx, int cz, int y, int radius, BlockState platform, BlockState edge) {
+        for (int x = cx - radius; x <= cx + radius; x++) {
+            for (int z = cz - radius; z <= cz + radius; z++) {
+                boolean border = x == cx - radius || x == cx + radius || z == cz - radius || z == cz + radius;
+                set(clipboard, x, y, z, border ? edge : platform);
+            }
+        }
+    }
+
+    private void lineX(BlockArrayClipboard clipboard, int minX, int maxX, int y, int z, BlockState state, int step) {
+        for (int x = minX; x <= maxX; x += step) {
+            set(clipboard, x, y, z, state);
+        }
+    }
+
+    private void lineZ(BlockArrayClipboard clipboard, int x, int y, int minZ, int maxZ, BlockState state, int step) {
+        for (int z = minZ; z <= maxZ; z += step) {
+            set(clipboard, x, y, z, state);
+        }
+    }
+
+    private boolean isLatticeTower(GenerationSpec spec) {
+        String lower = metadataText(spec);
+        return lower.contains("eiffel") || lower.contains("lattice tower") || lower.contains("iron tower")
+                || lower.contains("observation tower") || lower.contains("radio tower");
+    }
+
+    private boolean isSpireLandmark(GenerationSpec spec) {
+        String lower = metadataText(spec);
+        return lower.contains("spire") || lower.contains("monument") || lower.contains("obelisk");
+    }
+
+    private String metadataText(GenerationSpec spec) {
+        return spec.realWorldData()
+                .map(RealWorldBuildingData::combinedText)
+                .orElse(spec.query().toLowerCase(Locale.ROOT));
     }
 
     private void fill(BlockArrayClipboard clipboard, int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
@@ -178,7 +288,7 @@ public final class BlueprintGenerator {
                 case STATION -> new BuildingShape(kind, 18 + scale * 10, 8 + scale * 4, 10 + scale * 5);
                 case AIRPORT -> new BuildingShape(kind, 22 + scale * 12, 8 + scale * 4, 14 + scale * 6);
                 case PORT -> new BuildingShape(kind, 18 + scale * 9, 7 + scale * 3, 16 + scale * 7);
-                case TOWER -> new BuildingShape(kind, 10 + scale * 4, 18 + scale * 12, 10 + scale * 4);
+                case TOWER -> new BuildingShape(kind, 14 + scale * 5, 26 + scale * 14, 14 + scale * 5);
                 case LANDMARK -> new BuildingShape(kind, 14 + scale * 6, 16 + scale * 8, 14 + scale * 6);
                 case CIVIC -> new BuildingShape(kind, 14 + scale * 7, 9 + scale * 5, 12 + scale * 6);
             };
