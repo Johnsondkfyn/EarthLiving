@@ -4,7 +4,7 @@ Admin-only EarthLiving blueprint and schematic generator.
 
 ## Goal
 
-ArchitectModule helps admins create Minecraft-style interpretations of real-world buildings, landmarks, stations, ports and airports. V1 is intentionally simple and command-driven.
+ArchitectModule helps admins create Minecraft-style interpretations of real-world buildings, landmarks, stations, ports and airports. V1 is the safe local generator. V2 adds optional public real-world metadata lookup.
 
 Generated builds are not exact replicas. They are blocky Minecraft interpretations meant to speed up city-building and planning.
 
@@ -80,6 +80,29 @@ WorldEdit or FAWE with WorldEdit API
 - Supports direct paste and look paste.
 - Supports `/architect undo` through WorldEdit history for the last paste.
 
+## V2 Public Lookup
+
+ArchitectModule `0.2.0` can use public Wikipedia/MediaWiki data when enabled:
+
+```yaml
+generation:
+  allow-web-lookup: true
+  web-provider: "wikipedia"
+  web-endpoint: "https://en.wikipedia.org"
+```
+
+Lookup flow:
+
+```text
+building name
+-> Wikipedia search
+-> Wikipedia page summary
+-> title/description/extract
+-> Minecraft-style blueprint interpretation
+```
+
+This does not create exact replicas. It uses public metadata to choose a better structure type and proportions, then creates a blocky EarthLiving interpretation.
+
 ## Generated Files
 
 Schematics are saved under:
@@ -95,10 +118,11 @@ Each generated ID creates:
 <id>.yml
 ```
 
-## V1 Limitations
+## Current Limitations
 
-- Generates simple blocky structures locally.
-- Web/AI lookup is configurable but disabled by default.
+- Generates Minecraft interpretations, not exact real-world replicas.
+- Public lookup uses title, description and summary metadata only.
+- If lookup fails, generation falls back to the local generator.
 - Schematic generation is async.
 - Schematic file loading before paste is async.
 - Pasting is run through WorldEdit on the main thread because Bukkit world edits must be synchronous unless a safe FAWE integration is added later.

@@ -25,7 +25,7 @@ public final class BlueprintGenerator {
     }
 
     public Result generate(GenerationSpec spec, Path schematicPath, Path metadataPath, String id) throws Exception {
-        BuildingShape shape = BuildingShape.from(spec.query(), spec.scale());
+        BuildingShape shape = BuildingShape.from(spec);
         BlockVector3 min = BlockVector3.ZERO;
         BlockVector3 max = BlockVector3.at(shape.width() - 1, shape.height() - 1, shape.depth() - 1);
         BlockArrayClipboard clipboard = new BlockArrayClipboard(new CuboidRegion(min, max));
@@ -55,7 +55,9 @@ public final class BlueprintGenerator {
                 shape.height(),
                 shape.depth(),
                 "ready",
-                "Generated Minecraft interpretation",
+                spec.realWorldData()
+                        .map(data -> "Generated from " + data.source() + ": " + data.summaryLine())
+                        .orElse("Generated Minecraft interpretation"),
                 schematicPath,
                 metadataPath,
                 Instant.now()
@@ -152,8 +154,11 @@ public final class BlueprintGenerator {
     }
 
     private record BuildingShape(BuildingKind kind, int width, int height, int depth) {
-        private static BuildingShape from(String query, int scale) {
-            String lower = query.toLowerCase(Locale.ROOT);
+        private static BuildingShape from(GenerationSpec spec) {
+            int scale = spec.scale();
+            String lower = spec.realWorldData()
+                    .map(RealWorldBuildingData::combinedText)
+                    .orElse(spec.query().toLowerCase(Locale.ROOT));
             BuildingKind kind = BuildingKind.CIVIC;
             if (lower.contains("station") || lower.contains("terminal")) {
                 kind = BuildingKind.STATION;
@@ -163,11 +168,13 @@ public final class BlueprintGenerator {
                 kind = BuildingKind.PORT;
             } else if (lower.contains("tower") || lower.contains("skyscraper") || lower.contains("tarn")) {
                 kind = BuildingKind.TOWER;
-            } else if (lower.contains("landmark") || lower.contains("monument")) {
+            } else if (lower.contains("landmark") || lower.contains("monument") || lower.contains("palace")
+                    || lower.contains("castle") || lower.contains("cathedral") || lower.contains("church")
+                    || lower.contains("museum")) {
                 kind = BuildingKind.LANDMARK;
             }
 
-            return switch (kind) {
+            BuildingShape base = switch (kind) {
                 case STATION -> new BuildingShape(kind, 18 + scale * 10, 8 + scale * 4, 10 + scale * 5);
                 case AIRPORT -> new BuildingShape(kind, 22 + scale * 12, 8 + scale * 4, 14 + scale * 6);
                 case PORT -> new BuildingShape(kind, 18 + scale * 9, 7 + scale * 3, 16 + scale * 7);
@@ -175,6 +182,23 @@ public final class BlueprintGenerator {
                 case LANDMARK -> new BuildingShape(kind, 14 + scale * 6, 16 + scale * 8, 14 + scale * 6);
                 case CIVIC -> new BuildingShape(kind, 14 + scale * 7, 9 + scale * 5, 12 + scale * 6);
             };
+            if (spec.realWorldData().isEmpty()) {
+                return base;
+            }
+            int extraHeight = containsAny(lower, "skyscraper", "tallest", "spire", "clock tower", "bell tower") ? 6 : 0;
+            int extraWidth = containsAny(lower, "palace", "museum", "terminal", "station", "cathedral") ? 4 : 0;
+            int extraDepth = containsAny(lower, "palace", "museum", "terminal", "station", "cathedral") ? 3 : 0;
+            return new BuildingShape(base.kind(), base.width() + extraWidth, base.height() + extraHeight,
+                    base.depth() + extraDepth);
+        }
+
+        private static boolean containsAny(String text, String... values) {
+            for (String value : values) {
+                if (text.contains(value)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

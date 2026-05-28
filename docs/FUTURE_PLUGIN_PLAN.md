@@ -507,6 +507,29 @@ V1 is admin-only with `earthliving.architect.admin`, writes `.schem` files to `p
 
 Deployment status: deployed to hub/test on 2026-05-27 and Main on 2026-05-28. Both servers loaded ArchitectModule cleanly after restart. Main verification on 2026-05-28 confirmed `/architect generate test tower 1 modern`, `/architect preview <id> look` and `/architect undo` work live. Hub remains the place for risky large build tests; Main now has the admin-only V1 tool available.
 
+## V2 public real-world lookup
+
+ArchitectModule `0.2.0` adds optional public Wikipedia/MediaWiki lookup:
+
+```text
+building name
+-> Wikipedia search
+-> Wikipedia page summary
+-> title/description/extract
+-> Minecraft-style blueprint interpretation
+```
+
+This is enabled on hub/test and Main with no API keys or secrets:
+
+```yaml
+generation:
+  allow-web-lookup: true
+  web-provider: "wikipedia"
+  web-endpoint: "https://en.wikipedia.org"
+```
+
+The generator now uses public metadata to infer type/proportions for stations, airports, ports, towers, palaces, castles, churches, cathedrals, museums and civic buildings. Output remains an EarthLiving interpretation, not an exact replica.
+
 ## Current plugin test
 
 Hub test server has Citizens and Constructor installed for evaluation:

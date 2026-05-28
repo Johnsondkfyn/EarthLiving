@@ -3,9 +3,10 @@ generation:
   default-scale: 1
   default-style: "modern"
   async: true
-  allow-web-lookup: false
-  web-provider: "disabled"
-  web-endpoint: ""
+  allow-web-lookup: true
+  web-provider: "wikipedia"
+  web-endpoint: "https://en.wikipedia.org"
+  user-agent: "EarthLivingArchitect/0.2 (admin tool; no secrets)"
   request-timeout-seconds: 12
   max-jobs: 100
   generated-folder: "generated"

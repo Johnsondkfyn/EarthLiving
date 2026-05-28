@@ -38,6 +38,7 @@ import java.util.concurrent.Executors;
 public final class ArchitectService {
     private final ArchitectModulePlugin plugin;
     private final Map<String, BlueprintJob> jobs = new LinkedHashMap<>();
+    private final RealWorldLookupService realWorldLookupService;
     private ExecutorService executor;
     private File generatedFolder;
     private int maxScale;
@@ -50,6 +51,7 @@ public final class ArchitectService {
 
     public ArchitectService(ArchitectModulePlugin plugin) {
         this.plugin = plugin;
+        this.realWorldLookupService = new RealWorldLookupService(plugin);
         reload();
     }
 
@@ -66,6 +68,7 @@ public final class ArchitectService {
         defaultScale = clampScale(plugin.getConfig().getInt("generation.default-scale", 1));
         defaultStyle = plugin.getConfig().getString("generation.default-style", "modern");
         allowWebLookup = plugin.getConfig().getBoolean("generation.allow-web-lookup", false);
+        realWorldLookupService.reload();
         pasteIgnoreAir = plugin.getConfig().getBoolean("generation.paste-ignore-air", true);
         pasteMaxBlocks = Math.max(1000, plugin.getConfig().getInt("generation.paste-max-blocks", 200000));
         maxJobs = Math.max(10, plugin.getConfig().getInt("generation.max-jobs", 100));
@@ -138,18 +141,23 @@ public final class ArchitectService {
 
         return CompletableFuture.supplyAsync(() -> {
             BlueprintJob running = pending.withStatus("running", allowWebLookup
-                    ? "Web lookup is configured but V1 uses local generator only"
+                    ? "Looking up public real-world metadata"
                     : "Web lookup disabled; using local generator");
             jobs.put(id, running);
             try {
+                Optional<RealWorldBuildingData> realWorldData = allowWebLookup
+                        ? realWorldLookupService.lookup(query)
+                        : Optional.empty();
                 BlueprintGenerator.Result result = new BlueprintGenerator(plugin).generate(
-                        new GenerationSpec(query, pending.scale(), style(styleId)),
+                        new GenerationSpec(query, pending.scale(), style(styleId), realWorldData),
                         schematic,
                         metadata,
                         id
                 );
                 BlueprintJob done = running.withDimensions(result.width(), result.height(), result.depth())
-                        .withStatus("ready", "Generated Minecraft interpretation");
+                        .withStatus("ready", realWorldData
+                                .map(data -> "Generated from " + data.source() + ": " + data.summaryLine())
+                                .orElse("Generated local Minecraft interpretation"));
                 jobs.put(id, done);
                 return done;
             } catch (Exception exception) {
@@ -168,13 +176,24 @@ public final class ArchitectService {
     }
 
     public void search(CommandSender requester, String query) {
-        CompletableFuture.supplyAsync(() -> BuildingPlan.describe(query, allowWebLookup), executor)
+        CompletableFuture.supplyAsync(() -> {
+                    Optional<RealWorldBuildingData> data = allowWebLookup
+                            ? realWorldLookupService.lookup(query)
+                            : Optional.empty();
+                    return BuildingPlan.describe(query, allowWebLookup, data);
+                }, executor)
                 .whenComplete((plan, throwable) -> plugin.getServer().getScheduler().runTask(plugin, () -> {
                     if (throwable != null) {
                         plugin.tell(requester, "&cSearch failed: &f" + throwable.getCause().getMessage());
                         return;
                     }
                     plugin.tell(requester, "&bBlueprint plan: &f" + plan.kind());
+                    if (!plan.title().isBlank()) {
+                        plugin.tell(requester, "&7Real-world match: &f" + plan.title());
+                    }
+                    if (!plan.description().isBlank()) {
+                        plugin.tell(requester, "&7Description: &f" + plan.description());
+                    }
                     plugin.tell(requester, "&7Forslag: &f/architect generate " + query + " "
                             + defaultScale + " " + defaultStyle);
                     plugin.tell(requester, "&7Note: &f" + plan.note());
@@ -302,9 +321,9 @@ public final class ArchitectService {
         }
     }
 
-    private record BuildingPlan(String kind, String note) {
-        private static BuildingPlan describe(String query, boolean webLookup) {
-            String lower = query.toLowerCase(Locale.ROOT);
+    private record BuildingPlan(String kind, String note, String title, String description) {
+        private static BuildingPlan describe(String query, boolean webLookup, Optional<RealWorldBuildingData> data) {
+            String lower = data.map(RealWorldBuildingData::combinedText).orElse(query.toLowerCase(Locale.ROOT));
             String kind;
             if (lower.contains("station") || lower.contains("terminal")) {
                 kind = "transport station";
@@ -314,13 +333,20 @@ public final class ArchitectService {
                 kind = "port/harbor structure";
             } else if (lower.contains("tower") || lower.contains("skyscraper") || lower.contains("tarn")) {
                 kind = "tower/landmark";
+            } else if (lower.contains("palace") || lower.contains("castle") || lower.contains("cathedral")
+                    || lower.contains("church") || lower.contains("museum")) {
+                kind = "landmark/civic structure";
             } else {
                 kind = "civic building";
             }
-            String note = webLookup
-                    ? "Web lookup is configured, but V1 still uses the safe local generator."
-                    : "Web/AI lookup is disabled. V1 generates a local Minecraft interpretation.";
-            return new BuildingPlan(kind, note);
+            String note = data
+                    .map(value -> "Using public metadata from " + value.source() + ". Output is still a Minecraft interpretation, not an exact replica.")
+                    .orElse(webLookup
+                            ? "Public lookup enabled, but no match was found. Using safe local generator."
+                            : "Web/AI lookup is disabled. V1 generates a local Minecraft interpretation.");
+            return new BuildingPlan(kind, note,
+                    data.map(RealWorldBuildingData::summaryLine).orElse(""),
+                    data.flatMap(RealWorldBuildingData::shortDescription).orElse(""));
         }
     }
 }

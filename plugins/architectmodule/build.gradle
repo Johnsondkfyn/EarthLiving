@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'dk.earthliving.architect'
-version = '0.1.0'
+version = '0.2.0'
 
 base {
     archivesName = 'ArchitectModule'
@@ -24,6 +24,7 @@ repositories {
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
     compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.4.3'
+    compileOnly 'com.google.code.gson:gson:2.11.0'
 }
 
 java {

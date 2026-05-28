@@ -1,4 +1,6 @@
 package dk.earthliving.architect.blueprint;
 
-public record GenerationSpec(String query, int scale, BlueprintStyle style) {
+import java.util.Optional;
+
+public record GenerationSpec(String query, int scale, BlueprintStyle style, Optional<RealWorldBuildingData> realWorldData) {
 }
