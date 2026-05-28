@@ -82,7 +82,7 @@ WorldEdit or FAWE with WorldEdit API
 
 ## V2 Public Lookup
 
-ArchitectModule `0.2.1` can use public Wikipedia/MediaWiki data when enabled:
+ArchitectModule `0.2.2` can use public Wikipedia/MediaWiki data when enabled:
 
 ```yaml
 generation:
@@ -106,6 +106,14 @@ This does not create exact replicas. It uses public metadata to choose a better 
 V2.1 adds a dedicated lattice/spire tower template for Eiffel Tower-like landmarks, so those generate as open metal tower structures instead of closed block buildings.
 
 V2.1.1 also routes generic `tower`/`tårn`/`taarn` requests into the open tower generator unless the metadata clearly says `skyscraper` or `high-rise`. This avoids the old fallback where `/architect generate test tower 1 modern` produced a massive closed box.
+
+V2.2 adds the first specialist local templates:
+
+- Eiffel/iron/lattice tower
+- generic open tower
+- clock/bell tower
+- skyscraper/high-rise
+- obelisk
 
 ## Generated Files
 

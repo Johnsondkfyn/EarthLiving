@@ -509,7 +509,7 @@ Deployment status: deployed to hub/test on 2026-05-27 and Main on 2026-05-28. Bo
 
 ## V2 public real-world lookup
 
-ArchitectModule `0.2.1` adds optional public Wikipedia/MediaWiki lookup:
+ArchitectModule `0.2.2` adds optional public Wikipedia/MediaWiki lookup:
 
 ```text
 building name
@@ -530,7 +530,7 @@ generation:
 
 The generator now uses public metadata to infer type/proportions for stations, airports, ports, towers, palaces, castles, churches, cathedrals, museums and civic buildings. Output remains an EarthLiving interpretation, not an exact replica.
 
-After the first Eiffel Tower and generic tower tests, tower/landmark generation was improved with a dedicated open lattice/spire template. Eiffel Tower-like metadata and generic `tower`/`tårn`/`taarn` requests now generate legs, platforms, central lighting and a top spire instead of a closed block tower. `Skyscraper`/`high-rise` requests still use a building form. This fix is deployed to both hub/test and Main as `0.2.1`.
+After the first Eiffel Tower and generic tower tests, tower/landmark generation was improved with specialist local templates. Eiffel/iron/lattice towers now get a wider multi-platform tower, generic `tower`/`tårn`/`taarn` requests use an open tower, `skyscraper`/`high-rise` requests use a glass building form, `clock tower`/`bell tower` requests get clock faces, and `obelisk` requests get a narrow monument form. This is deployed to both hub/test and Main as `0.2.2`.
 
 ## Current plugin stack
 

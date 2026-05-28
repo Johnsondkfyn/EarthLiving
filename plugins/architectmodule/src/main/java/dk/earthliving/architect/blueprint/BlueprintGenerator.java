@@ -66,7 +66,23 @@ public final class BlueprintGenerator {
     }
 
     private void drawBuilding(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style, GenerationSpec spec) {
-        if (shape.kind() == BuildingKind.TOWER && !isSkyscraper(spec)) {
+        if (isClockTower(spec)) {
+            drawClockTower(clipboard, shape, style);
+            return;
+        }
+        if (isObelisk(spec)) {
+            drawObelisk(clipboard, shape);
+            return;
+        }
+        if (shape.kind() == BuildingKind.TOWER && isSkyscraper(spec)) {
+            drawSkyscraper(clipboard, shape, style);
+            return;
+        }
+        if (shape.kind() == BuildingKind.TOWER && isEiffelLike(spec)) {
+            drawEiffelTower(clipboard, shape);
+            return;
+        }
+        if (shape.kind() == BuildingKind.TOWER) {
             drawLatticeTower(clipboard, shape, style);
             return;
         }
@@ -126,6 +142,152 @@ public final class BlueprintGenerator {
                 set(clipboard, cx - 1, y, cz, glass);
                 set(clipboard, cx, y, cz + 1, glass);
                 set(clipboard, cx, y, cz - 1, glass);
+            }
+        }
+    }
+
+    private void drawSkyscraper(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style) {
+        BlockState frame = state(style.trim());
+        BlockState glass = state(style.glass());
+        BlockState floor = state(style.floor());
+        BlockState roof = state(Material.DEEPSLATE_TILES);
+        BlockState light = state(Material.SEA_LANTERN);
+        int maxY = shape.height() - 1;
+
+        fill(clipboard, 0, 0, 0, shape.width() - 1, 0, shape.depth() - 1, floor);
+        for (int y = 1; y <= maxY; y++) {
+            for (int x = 0; x < shape.width(); x++) {
+                for (int z = 0; z < shape.depth(); z++) {
+                    boolean edge = x == 0 || z == 0 || x == shape.width() - 1 || z == shape.depth() - 1;
+                    if (!edge) {
+                        continue;
+                    }
+                    boolean pillar = x == 0 || z == 0 || x == shape.width() - 1 || z == shape.depth() - 1
+                            || x % 5 == 0 || z % 5 == 0 || y % 7 == 0;
+                    set(clipboard, x, y, z, pillar ? frame : glass);
+                }
+            }
+            if (y % 8 == 4) {
+                set(clipboard, shape.width() / 2, y, 0, light);
+                set(clipboard, shape.width() / 2, y, shape.depth() - 1, light);
+            }
+        }
+        fill(clipboard, 1, maxY, 1, shape.width() - 2, maxY, shape.depth() - 2, roof);
+    }
+
+    private void drawClockTower(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style) {
+        BlockState stone = state(Material.SMOOTH_STONE);
+        BlockState trim = state(Material.POLISHED_ANDESITE);
+        BlockState dark = state(Material.BLACK_CONCRETE);
+        BlockState face = state(Material.WHITE_CONCRETE);
+        BlockState roof = state(Material.DEEPSLATE_TILES);
+        int cx = shape.width() / 2;
+        int cz = shape.depth() / 2;
+        int maxY = shape.height() - 1;
+        int radius = Math.max(3, Math.min(shape.width(), shape.depth()) / 5);
+
+        fill(clipboard, cx - radius - 1, 0, cz - radius - 1, cx + radius + 1, 0, cz + radius + 1, trim);
+        for (int y = 1; y <= maxY - 5; y++) {
+            for (int x = cx - radius; x <= cx + radius; x++) {
+                for (int z = cz - radius; z <= cz + radius; z++) {
+                    boolean wall = x == cx - radius || x == cx + radius || z == cz - radius || z == cz + radius;
+                    if (!wall) {
+                        continue;
+                    }
+                    boolean corner = (x == cx - radius || x == cx + radius) && (z == cz - radius || z == cz + radius);
+                    set(clipboard, x, y, z, corner || y % 6 == 0 ? trim : stone);
+                }
+            }
+        }
+        int clockY = maxY - 8;
+        drawClockFace(clipboard, cx, clockY, cz - radius, face, dark);
+        drawClockFace(clipboard, cx, clockY, cz + radius, face, dark);
+        drawClockFaceX(clipboard, cx - radius, clockY, cz, face, dark);
+        drawClockFaceX(clipboard, cx + radius, clockY, cz, face, dark);
+
+        fill(clipboard, cx - radius - 1, maxY - 5, cz - radius - 1, cx + radius + 1, maxY - 5, cz + radius + 1, trim);
+        for (int y = maxY - 4; y <= maxY; y++) {
+            int r = Math.max(0, maxY - y);
+            fill(clipboard, cx - r, y, cz - r, cx + r, y, cz + r, roof);
+        }
+    }
+
+    private void drawClockFace(BlockArrayClipboard clipboard, int cx, int y, int z, BlockState face, BlockState dark) {
+        fill(clipboard, cx - 2, y - 2, z, cx + 2, y + 2, z, face);
+        set(clipboard, cx, y, z, dark);
+        set(clipboard, cx, y + 1, z, dark);
+        set(clipboard, cx + 1, y, z, dark);
+    }
+
+    private void drawClockFaceX(BlockArrayClipboard clipboard, int x, int y, int cz, BlockState face, BlockState dark) {
+        fill(clipboard, x, y - 2, cz - 2, x, y + 2, cz + 2, face);
+        set(clipboard, x, y, cz, dark);
+        set(clipboard, x, y + 1, cz, dark);
+        set(clipboard, x, y, cz + 1, dark);
+    }
+
+    private void drawObelisk(BlockArrayClipboard clipboard, BuildingShape shape) {
+        BlockState stone = state(Material.SMOOTH_SANDSTONE);
+        BlockState trim = state(Material.CUT_SANDSTONE);
+        int cx = shape.width() / 2;
+        int cz = shape.depth() / 2;
+        int maxY = shape.height() - 1;
+        int base = Math.max(3, Math.min(shape.width(), shape.depth()) / 4);
+        fill(clipboard, cx - base - 1, 0, cz - base - 1, cx + base + 1, 0, cz + base + 1, trim);
+        for (int y = 1; y <= maxY; y++) {
+            double p = y / (double) Math.max(1, maxY);
+            int radius = Math.max(0, base - (int) Math.floor(p * base));
+            fill(clipboard, cx - radius, y, cz - radius, cx + radius, y, cz + radius, y > maxY - 4 ? trim : stone);
+        }
+    }
+
+    private void drawEiffelTower(BlockArrayClipboard clipboard, BuildingShape shape) {
+        BlockState base = state(Material.SMOOTH_STONE);
+        BlockState iron = state(Material.IRON_BLOCK);
+        BlockState dark = state(Material.GRAY_CONCRETE);
+        BlockState platform = state(Material.POLISHED_DEEPSLATE);
+        BlockState light = state(Material.SEA_LANTERN);
+        int cx = shape.width() / 2;
+        int cz = shape.depth() / 2;
+        int maxY = shape.height() - 1;
+        int floorOne = Math.max(6, maxY / 4);
+        int floorTwo = Math.max(floorOne + 6, maxY / 2);
+        int floorThree = Math.max(floorTwo + 5, (maxY * 3) / 4);
+
+        fill(clipboard, 0, 0, 0, shape.width() - 1, 0, shape.depth() - 1, base);
+        for (int y = 1; y <= maxY - 4; y++) {
+            double p = y / (double) Math.max(1, maxY - 4);
+            int spread = Math.max(1, (int) Math.round((shape.width() / 2.0D - 2) * (1.0D - p)));
+            int minX = cx - spread;
+            int maxX = cx + spread;
+            int minZ = cz - spread;
+            int maxZ = cz + spread;
+
+            set(clipboard, minX, y, minZ, iron);
+            set(clipboard, maxX, y, minZ, iron);
+            set(clipboard, minX, y, maxZ, iron);
+            set(clipboard, maxX, y, maxZ, iron);
+            if (y % 3 == 0) {
+                lineX(clipboard, minX, maxX, y, minZ, dark, 2);
+                lineX(clipboard, minX, maxX, y, maxZ, dark, 2);
+                lineZ(clipboard, minX, y, minZ, maxZ, dark, 2);
+                lineZ(clipboard, maxX, y, minZ, maxZ, dark, 2);
+            }
+            if (y % 5 == 0) {
+                set(clipboard, cx, y, cz, light);
+            }
+        }
+
+        platform(clipboard, cx, cz, floorOne, Math.max(4, shape.width() / 3), platform, iron);
+        platform(clipboard, cx, cz, floorTwo, Math.max(3, shape.width() / 4), platform, iron);
+        platform(clipboard, cx, cz, floorThree, Math.max(2, shape.width() / 6), platform, iron);
+        for (int y = floorThree + 1; y <= maxY; y++) {
+            set(clipboard, cx, y, cz, iron);
+            if (y < maxY) {
+                set(clipboard, cx + 1, y, cz, dark);
+                set(clipboard, cx - 1, y, cz, dark);
+                set(clipboard, cx, y, cz + 1, dark);
+                set(clipboard, cx, y, cz - 1, dark);
             }
         }
     }
@@ -211,10 +373,9 @@ public final class BlueprintGenerator {
         }
     }
 
-    private boolean isLatticeTower(GenerationSpec spec) {
+    private boolean isEiffelLike(GenerationSpec spec) {
         String lower = metadataText(spec);
-        return lower.contains("eiffel") || lower.contains("lattice tower") || lower.contains("iron tower")
-                || lower.contains("observation tower") || lower.contains("radio tower");
+        return lower.contains("eiffel") || lower.contains("lattice tower") || lower.contains("iron tower");
     }
 
     private boolean isSpireLandmark(GenerationSpec spec) {
@@ -225,6 +386,16 @@ public final class BlueprintGenerator {
     private boolean isSkyscraper(GenerationSpec spec) {
         String lower = metadataText(spec);
         return lower.contains("skyscraper") || lower.contains("high-rise") || lower.contains("high rise");
+    }
+
+    private boolean isClockTower(GenerationSpec spec) {
+        String lower = metadataText(spec);
+        return lower.contains("clock tower") || lower.contains("bell tower") || lower.contains("big ben");
+    }
+
+    private boolean isObelisk(GenerationSpec spec) {
+        String lower = metadataText(spec);
+        return lower.contains("obelisk");
     }
 
     private String metadataText(GenerationSpec spec) {
