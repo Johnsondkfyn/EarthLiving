@@ -505,7 +505,7 @@ Commands:
 
 V1 is admin-only with `earthliving.architect.admin`, writes `.schem` files to `plugins/ArchitectModule/generated/`, uses WorldEdit's schematic writer/paste API, and keeps web/AI lookup disabled by default. The first generator is a safe local Minecraft interpretation generator for civic buildings, stations, airports, ports, towers and landmarks. Generation and schematic file loading run async; actual world paste remains on the server thread through WorldEdit because Bukkit world edits must be synchronous unless a safe FAWE-specific paste path is added later. `/architect preview <id> look` shows a client-side visual schematic preview that follows the block the admin is looking at. Mouse wheel/hotbar scroll rotates the preview 90 degrees at a time, and left-click places the schematic with the selected rotation. `/architect paste <id> look` remains available for direct paste onto the block the admin is looking at. `/architect undo` uses WorldEdit history for the last paste.
 
-Deployment status: deployed to hub/test on 2026-05-27 and Main on 2026-05-28. Both servers loaded ArchitectModule cleanly after restart. Hub remains the place for risky large build tests; Main now has the admin-only V1 tool available.
+Deployment status: deployed to hub/test on 2026-05-27 and Main on 2026-05-28. Both servers loaded ArchitectModule cleanly after restart. Main verification on 2026-05-28 confirmed `/architect generate test tower 1 modern`, `/architect preview <id> look` and `/architect undo` work live. Hub remains the place for risky large build tests; Main now has the admin-only V1 tool available.
 
 ## Current plugin test
 
