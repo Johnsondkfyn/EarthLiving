@@ -509,7 +509,7 @@ Deployment status: deployed to hub/test on 2026-05-27 and Main on 2026-05-28. Bo
 
 ## V2 public real-world lookup
 
-ArchitectModule `0.2.0` adds optional public Wikipedia/MediaWiki lookup:
+ArchitectModule `0.2.1` adds optional public Wikipedia/MediaWiki lookup:
 
 ```text
 building name
@@ -530,20 +530,27 @@ generation:
 
 The generator now uses public metadata to infer type/proportions for stations, airports, ports, towers, palaces, castles, churches, cathedrals, museums and civic buildings. Output remains an EarthLiving interpretation, not an exact replica.
 
-After the first Eiffel Tower test on hub, tower/landmark generation was improved with a dedicated open lattice/spire template. Eiffel Tower-like metadata now generates legs, platforms, central lighting and a top spire instead of a closed block tower. Keep this on hub/test until the visual result is accepted, then copy to Main.
+After the first Eiffel Tower and generic tower tests, tower/landmark generation was improved with a dedicated open lattice/spire template. Eiffel Tower-like metadata and generic `tower`/`tårn`/`taarn` requests now generate legs, platforms, central lighting and a top spire instead of a closed block tower. `Skyscraper`/`high-rise` requests still use a building form. This fix is deployed to both hub/test and Main as `0.2.1`.
 
-## Current plugin test
+## Current plugin stack
 
-Hub test server has Citizens and Constructor installed for evaluation:
+Hub/test and Main now have the builder NPC plugin chain installed:
 
 - Citizens `2.0.42-SNAPSHOT build 4160`
 - Constructor `3.5`
+- Denizen `1.3.2-SNAPSHOT build 7282-DEV`
 
 Citizens is a good fit for hub guides, passport/verification staff NPCs, departure hall NPCs and later city ambience.
 
-Constructor is useful only as an experimental builder-NPC prototype. It depends on Citizens and WorldEdit and loaded cleanly on the hub, but it is older (`api-version: 1.13`) and should not become a core production dependency until it has passed an in-game builder test on the current Paper version.
+Constructor is useful as an experimental builder-NPC prototype. It depends on Citizens and WorldEdit, and can optionally register with Denizen for scriptable workflows. Constructor is older (`api-version: 1.13`), so it should remain admin-controlled and wrapped by EarthLivingCore before it becomes part of normal gameplay.
 
-Update check on 2026-05-27 found `Constructor 3.5` as the newest visible release/changelog entry. Do not spend time looking for a newer jar unless an official upstream source appears; test the current jar on the hub first.
+Update check on 2026-05-27 found `Constructor 3.5` as the newest visible release/changelog entry. Denizen `build 7282-DEV` was pulled from the official Citizens/Denizen Jenkins on 2026-05-28 because the old release line was not suitable for modern Paper. Test flow on 2026-05-28:
+
+- Hub/test loaded Denizen on Java 25.
+- Constructor registered successfully with Denizen on hub/test.
+- The same verified Denizen jar was copied to Main.
+- Main loaded Citizens, Denizen, Constructor, WorldEdit and ArchitectModule and reached `Done`.
+- Denizen logged one non-fatal `Null named player` warning from legacy/unknown player data; keep an eye on it, but it did not block startup or Constructor registration.
 
 ---
 
@@ -561,7 +568,15 @@ Allow NPCs to build schematics slowly block-by-block.
 
 ## Current test direction
 
-Use Citizens as the NPC foundation. Test Constructor on the hub only:
+Use EarthLivingCore as the orchestration brain, with Citizens/Constructor/Denizen as the implementation layer:
+
+- ArchitectModule generates or imports `.schem` files.
+- EarthLivingCore owns approval, permissions, build queue state and player-facing EarthOS screens.
+- Citizens provides visible builder NPCs.
+- Constructor performs slow block-by-block construction where it remains stable.
+- Denizen can provide scriptable glue for NPC dialogue, build states and admin workflows.
+
+Immediate test workflow:
 
 - create one builder NPC
 - load one small schematic
@@ -570,7 +585,7 @@ Use Citizens as the NPC foundation. Test Constructor on the hub only:
 - cancel and clean up safely
 - confirm no console errors, stuck NPC loops or chunk issues
 
-If Constructor behaves poorly, replace it with a custom EarthLiving BuilderNPCModule later instead of depending on the old plugin.
+If Constructor behaves poorly, replace it with a custom EarthLiving BuilderNPCModule later instead of depending on the old plugin. Keep direct Constructor/Denizen commands admin-only; players should later interact through EarthOS.
 
 ## Placement preview V1
 

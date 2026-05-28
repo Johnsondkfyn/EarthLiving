@@ -82,7 +82,7 @@ WorldEdit or FAWE with WorldEdit API
 
 ## V2 Public Lookup
 
-ArchitectModule `0.2.0` can use public Wikipedia/MediaWiki data when enabled:
+ArchitectModule `0.2.1` can use public Wikipedia/MediaWiki data when enabled:
 
 ```yaml
 generation:
@@ -104,6 +104,8 @@ building name
 This does not create exact replicas. It uses public metadata to choose a better structure type and proportions, then creates a blocky EarthLiving interpretation.
 
 V2.1 adds a dedicated lattice/spire tower template for Eiffel Tower-like landmarks, so those generate as open metal tower structures instead of closed block buildings.
+
+V2.1.1 also routes generic `tower`/`tårn`/`taarn` requests into the open tower generator unless the metadata clearly says `skyscraper` or `high-rise`. This avoids the old fallback where `/architect generate test tower 1 modern` produced a massive closed box.
 
 ## Generated Files
 
@@ -128,7 +130,8 @@ Each generated ID creates:
 - Schematic generation is async.
 - Schematic file loading before paste is async.
 - Pasting is run through WorldEdit on the main thread because Bukkit world edits must be synchronous unless a safe FAWE integration is added later.
-- Constructor integration is planned after one builder-NPC workflow has been validated.
+- Citizens, Constructor and Denizen are installed on hub/test and Main for builder-NPC experiments.
+- EarthLivingCore should own the long-term build approval/queue workflow; ArchitectModule should continue to generate `.schem` files and provide visual placement tools.
 
 ## Safety
 

@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-05-26",
+  "updatedAt": "2026-05-28",
   "source": "Notion Earth Living Roadmap",
   "completed": 27,
   "inProgress": 4,
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "Core 0.7.2 adds the first EarthPassport foundation while the Velocity hub is ready as a flat private build world.",
-    "da": "Core 0.7.2 tilføjer det første EarthPassport-fundament, mens Velocity-hubben er klar som flad privat bygge-verden."
+    "en": "ArchitectModule 0.2.1 is live with fixed tower generation, and the Citizens/Constructor/Denizen builder chain is installed for admin-controlled slow-build testing.",
+    "da": "ArchitectModule 0.2.1 er live med rettet tower-generering, og Citizens/Constructor/Denizen-byggekæden er installeret til admin-styret slow-build test."
   }
 }

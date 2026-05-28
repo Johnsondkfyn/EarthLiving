@@ -66,7 +66,7 @@ public final class BlueprintGenerator {
     }
 
     private void drawBuilding(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style, GenerationSpec spec) {
-        if (shape.kind() == BuildingKind.TOWER && isLatticeTower(spec)) {
+        if (shape.kind() == BuildingKind.TOWER && !isSkyscraper(spec)) {
             drawLatticeTower(clipboard, shape, style);
             return;
         }
@@ -222,6 +222,11 @@ public final class BlueprintGenerator {
         return lower.contains("spire") || lower.contains("monument") || lower.contains("obelisk");
     }
 
+    private boolean isSkyscraper(GenerationSpec spec) {
+        String lower = metadataText(spec);
+        return lower.contains("skyscraper") || lower.contains("high-rise") || lower.contains("high rise");
+    }
+
     private String metadataText(GenerationSpec spec) {
         return spec.realWorldData()
                 .map(RealWorldBuildingData::combinedText)
@@ -276,7 +281,8 @@ public final class BlueprintGenerator {
                 kind = BuildingKind.AIRPORT;
             } else if (lower.contains("port") || lower.contains("harbor") || lower.contains("havn")) {
                 kind = BuildingKind.PORT;
-            } else if (lower.contains("tower") || lower.contains("skyscraper") || lower.contains("tarn")) {
+            } else if (lower.contains("tower") || lower.contains("skyscraper") || lower.contains("tarn")
+                    || lower.contains("taarn") || lower.contains("tårn")) {
                 kind = BuildingKind.TOWER;
             } else if (lower.contains("landmark") || lower.contains("monument") || lower.contains("palace")
                     || lower.contains("castle") || lower.contains("cathedral") || lower.contains("church")

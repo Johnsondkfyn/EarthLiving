@@ -41,6 +41,10 @@ EarthLivingCore is the backend/hub layer behind:
   - One-time website profile link codes.
   - Read-only JSON exports for server status, linked player profiles and player report summaries.
   - Read-only player activity stats: playtime, blocks broken/placed, deaths, mob kills and walked distance.
+- Future builder brain direction:
+  - ArchitectModule generates `.schem` files.
+  - EarthLivingCore owns approval, build queue state, permissions and EarthOS screens.
+  - Citizens, Constructor and Denizen can perform the visible slow builder-NPC workflow where stable.
 
 ## Build
 
