@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public final class ArchitectCommand implements CommandExecutor, TabCompleter {
     private static final String PERMISSION = "earthliving.architect.admin";
-    private static final List<String> SUBCOMMANDS = List.of("search", "generate", "preview", "paste", "cancel", "list", "reload");
+    private static final List<String> SUBCOMMANDS = List.of("search", "generate", "preview", "paste", "undo", "cancel", "list", "reload");
 
     private final ArchitectModulePlugin plugin;
     private final ArchitectService architectService;
@@ -48,6 +48,7 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
             case "generate" -> generate(sender, remaining);
             case "preview" -> preview(sender, remaining);
             case "paste" -> paste(sender, remaining);
+            case "undo" -> undo(sender);
             case "cancel" -> cancel(sender);
             case "list" -> list(sender);
             case "reload" -> reload(sender);
@@ -143,6 +144,18 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
         architectService.pasteAsync(player, job, pasteAtLook);
     }
 
+    private void undo(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            plugin.tell(sender, "&cUndo skal kores in-game.");
+            return;
+        }
+        try {
+            architectService.undoLastPaste(player);
+        } catch (Exception exception) {
+            plugin.tell(player, "&cUndo failed: &f" + exception.getMessage());
+        }
+    }
+
     private void cancel(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             plugin.tell(sender, "&cCancel skal kores in-game.");
@@ -175,6 +188,7 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
         plugin.tell(sender, "&f/architect generate <building> [scale] [style]");
         plugin.tell(sender, "&f/architect preview <id> [look]");
         plugin.tell(sender, "&f/architect paste <id> [look]");
+        plugin.tell(sender, "&f/architect undo");
         plugin.tell(sender, "&f/architect cancel");
         plugin.tell(sender, "&f/architect list");
     }

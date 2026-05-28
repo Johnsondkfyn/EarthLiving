@@ -15,6 +15,7 @@ Generated builds are not exact replicas. They are blocky Minecraft interpretatio
 /architect generate <building> [scale] [style]
 /architect preview <id>
 /architect paste <id>
+/architect undo
 /architect list
 /architect reload
 ```
@@ -63,6 +64,21 @@ WorldEdit or FAWE with WorldEdit API
    ```text
    /architect paste arch-abc123 look
    ```
+6. If the last paste was wrong, undo it:
+   ```text
+   /architect undo
+   ```
+
+## V1 Complete Criteria
+
+- Runs on Paper 26.1.2 / Java 25.
+- Loads with WorldEdit on hub/test and Main.
+- Generates local `.schem` files without web or AI secrets.
+- Supports visual client-side preview with look placement.
+- Supports mouse wheel/hotbar rotation during preview.
+- Supports left-click placement from preview.
+- Supports direct paste and look paste.
+- Supports `/architect undo` through WorldEdit history for the last paste.
 
 ## Generated Files
 

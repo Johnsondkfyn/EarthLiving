@@ -1,16 +1,15 @@
 package dk.earthliving.architect.blueprint;
 
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.function.operation.Operation;
-import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import dk.earthliving.architect.ArchitectModulePlugin;
@@ -258,8 +257,19 @@ public final class ArchitectService {
                     }
                 }
             }
+            WorldEdit.getInstance().getSessionManager().get(BukkitAdapter.adapt(player)).remember(editSession);
         }
         plugin.tell(player, "&aPasted &f" + job.id() + " &aat din position.");
+    }
+
+    public void undoLastPaste(Player player) throws Exception {
+        Actor actor = BukkitAdapter.adapt(player);
+        LocalSession session = WorldEdit.getInstance().getSessionManager().get(actor);
+        EditSession undoSession = session.undo(null, actor);
+        if (undoSession != null) {
+            undoSession.close();
+        }
+        plugin.tell(player, "&aSidste Architect/WorldEdit handling er rullet tilbage.");
     }
 
     private RotatedPoint rotate(int x, int z, int width, int depth, int turns) {
