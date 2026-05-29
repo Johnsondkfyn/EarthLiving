@@ -44,6 +44,15 @@ visual-border:
   wall-height: 3.5
   wall-step: 0.5
   y-offset: 1.0
+builder-visual:
+  enabled: true
+  particle: END_ROD
+  interval-ticks: 20
+  radius: 96
+  sample-step: 4
+  height: 4
+  height-step: 1
+  max-particles: 900
 status-export:
   enabled: true
   file: "../EarthLivingCore/border-status.yml"

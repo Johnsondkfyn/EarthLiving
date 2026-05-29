@@ -6,7 +6,7 @@
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "EarthLivingCore 0.9.3 is live with the VS3.5 TAB Slice: PlaceholderAPI placeholders expose current country, border access, required visa, passport status, Discord verification status and current server for TAB.",
-    "da": "EarthLivingCore 0.9.3 er live med VS3.5 TAB Slice: PlaceholderAPI-placeholders viser current country, border access, required visa, passport status, Discord verification status og current server til TAB."
+    "en": "PassportBorders 0.5.2 is live with an admin-only border build visualizer for planning border-control buildings. EarthLivingCore 0.9.3 and the VS3.5 TAB placeholders remain live.",
+    "da": "PassportBorders 0.5.2 er live med en admin-only border build visualizer til planlægning af border-control bygninger. EarthLivingCore 0.9.3 og VS3.5 TAB placeholders er stadig live."
   }
 }

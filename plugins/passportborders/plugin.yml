@@ -1,5 +1,5 @@
 name: PassportBorders
-version: 0.5.1
+version: 0.5.2
 main: dk.earthliving.passportborders.PassportBordersPlugin
 api-version: '1.21'
 author: Codex
@@ -9,7 +9,7 @@ softdepend:
 commands:
   border:
     description: Shows country border information.
-    usage: /border <info|list|reload>
+    usage: /border <info|list|reload|visual>
   menu:
     description: Opens the server menu.
     usage: /menu

@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -38,10 +40,12 @@ import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public final class PassportBordersPlugin extends JavaPlugin implements Listener {
@@ -52,8 +56,10 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
     private final Map<UUID, String> currentCountry = new HashMap<>();
     private final Map<UUID, Long> deniedMessageCooldown = new HashMap<>();
     private final Map<UUID, List<String>> ownedPassports = new HashMap<>();
+    private final Set<UUID> builderVisualPlayers = new HashSet<>();
     private NamespacedKey menuItemKey;
     private Economy economy;
+    private BukkitTask builderVisualTask;
     private File passportsFile;
     private YamlConfiguration passportsConfig;
     private File borderStatusFile;
@@ -70,6 +76,16 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
         loadPassports();
         reloadPlugin();
         getServer().getPluginManager().registerEvents(this, this);
+        startBuilderVisualTask();
+    }
+
+    @Override
+    public void onDisable() {
+        if (builderVisualTask != null) {
+            builderVisualTask.cancel();
+            builderVisualTask = null;
+        }
+        builderVisualPlayers.clear();
     }
 
     @EventHandler
@@ -127,6 +143,11 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
             Country country = countryAt(player.getLocation());
             exportBorderStatus(player, country, country == null || canEnter(player, country), player.getLocation());
         }, 40L);
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        builderVisualPlayers.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -242,6 +263,19 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
             }
             reloadPlugin();
             sender.sendMessage(color("&aPassportBorders er genindlæst."));
+            return true;
+        }
+
+        if (args.length > 0 && args[0].equalsIgnoreCase("visual")) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Only players can toggle border visuals.");
+                return true;
+            }
+            if (!player.hasPermission("passportborders.admin")) {
+                player.sendMessage(color("&cDu har ikke adgang til den kommando."));
+                return true;
+            }
+            toggleBuilderVisual(player, args.length >= 2 ? args[1] : "");
             return true;
         }
 
@@ -579,6 +613,44 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
         getLogger().info("Loaded " + borderService.countries().size() + " countries.");
     }
 
+    private void startBuilderVisualTask() {
+        if (builderVisualTask != null) {
+            builderVisualTask.cancel();
+        }
+        long interval = Math.max(5L, getConfig().getLong("builder-visual.interval-ticks", 20L));
+        builderVisualTask = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (!getConfig().getBoolean("builder-visual.enabled", true) || builderVisualPlayers.isEmpty()) {
+                return;
+            }
+            for (UUID uuid : new HashSet<>(builderVisualPlayers)) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player == null || !player.isOnline()) {
+                    builderVisualPlayers.remove(uuid);
+                    continue;
+                }
+                showNearbyBorders(player);
+            }
+        }, interval, interval);
+    }
+
+    private void toggleBuilderVisual(Player player, String mode) {
+        boolean enable = switch (mode.toLowerCase(Locale.ROOT)) {
+            case "on", "true", "start" -> true;
+            case "off", "false", "stop" -> false;
+            default -> !builderVisualPlayers.contains(player.getUniqueId());
+        };
+
+        if (enable) {
+            builderVisualPlayers.add(player.getUniqueId());
+            player.sendMessage(color("&aBorder build-visual er slået til. Brug &f/border visual off &afor at stoppe."));
+            showNearbyBorders(player);
+            return;
+        }
+
+        builderVisualPlayers.remove(player.getUniqueId());
+        player.sendMessage(color("&7Border build-visual er slået fra."));
+    }
+
     private void setupEconomy() {
         RegisteredServiceProvider<Economy> registration = getServer().getServicesManager().getRegistration(Economy.class);
         if (registration != null) {
@@ -781,6 +853,100 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
                 player.spawnParticle(particle, point, 1, 0.0, 0.02, 0.0, 0.0);
             }
         }
+    }
+
+    private void showNearbyBorders(Player player) {
+        Location location = player.getLocation();
+        if (!isCheckedWorld(location)) {
+            return;
+        }
+
+        Particle particle = builderVisualParticle();
+        double radius = Math.max(16.0D, getConfig().getDouble("builder-visual.radius", 96.0D));
+        double radiusSquared = radius * radius;
+        double sampleStep = Math.max(1.0D, getConfig().getDouble("builder-visual.sample-step", 4.0D));
+        double height = Math.max(1.0D, getConfig().getDouble("builder-visual.height", 4.0D));
+        double heightStep = Math.max(0.5D, getConfig().getDouble("builder-visual.height-step", 1.0D));
+        int maxParticles = Math.max(100, getConfig().getInt("builder-visual.max-particles", 900));
+        int spawned = 0;
+
+        double px = location.getX();
+        double pz = location.getZ();
+        double y = location.getY() + 0.25D;
+
+        for (Country country : borderService.countries()) {
+            for (List<GeoPoint> polygon : country.polygons) {
+                for (int index = 0; index < polygon.size(); index++) {
+                    GeoPoint first = polygon.get(index);
+                    GeoPoint second = polygon.get((index + 1) % polygon.size());
+                    double x1 = worldX(first);
+                    double z1 = worldZ(first);
+                    double x2 = worldX(second);
+                    double z2 = worldZ(second);
+                    if (distanceSquaredToSegment(px, pz, x1, z1, x2, z2) > radiusSquared) {
+                        continue;
+                    }
+
+                    double dx = x2 - x1;
+                    double dz = z2 - z1;
+                    double length = Math.max(1.0D, Math.sqrt(dx * dx + dz * dz));
+                    int steps = Math.max(1, (int) Math.ceil(length / sampleStep));
+                    for (int step = 0; step <= steps; step++) {
+                        double progress = step / (double) steps;
+                        double x = x1 + dx * progress;
+                        double z = z1 + dz * progress;
+                        double distanceSquared = (x - px) * (x - px) + (z - pz) * (z - pz);
+                        if (distanceSquared > radiusSquared) {
+                            continue;
+                        }
+                        for (double offset = 0.0D; offset <= height; offset += heightStep) {
+                            player.spawnParticle(particle, x, y + offset, z, 1, 0.0, 0.02, 0.0, 0.0);
+                            spawned++;
+                            if (spawned >= maxParticles) {
+                                player.sendActionBar(Component.text("Border visual: " + country.name));
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        player.sendActionBar(Component.text("Border visual: nearby borders"));
+    }
+
+    private Particle builderVisualParticle() {
+        try {
+            return Particle.valueOf(getConfig().getString("builder-visual.particle", "END_ROD"));
+        } catch (IllegalArgumentException exception) {
+            return Particle.END_ROD;
+        }
+    }
+
+    private double worldX(GeoPoint point) {
+        return point.longitude / tiles * scale;
+    }
+
+    private double worldZ(GeoPoint point) {
+        return -point.latitude / tiles * scale;
+    }
+
+    private double distanceSquaredToSegment(double px, double pz, double x1, double z1, double x2, double z2) {
+        double dx = x2 - x1;
+        double dz = z2 - z1;
+        double lengthSquared = dx * dx + dz * dz;
+        if (lengthSquared <= 0.0001D) {
+            double pointDx = px - x1;
+            double pointDz = pz - z1;
+            return pointDx * pointDx + pointDz * pointDz;
+        }
+        double progress = ((px - x1) * dx + (pz - z1) * dz) / lengthSquared;
+        progress = Math.max(0.0D, Math.min(1.0D, progress));
+        double closestX = x1 + progress * dx;
+        double closestZ = z1 + progress * dz;
+        double closestDx = px - closestX;
+        double closestDz = pz - closestZ;
+        return closestDx * closestDx + closestDz * closestDz;
     }
 
     private void loadBorderStatusExport() {
