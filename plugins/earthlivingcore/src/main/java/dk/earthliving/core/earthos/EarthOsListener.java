@@ -4,6 +4,9 @@ import dk.earthliving.core.passport.PassportService;
 import dk.earthliving.core.report.ReportService;
 import dk.earthliving.core.verification.VerificationService;
 import dk.earthliving.core.webportal.WebPortalService;
+import dk.earthliving.core.wallet.WalletService;
+import dk.earthliving.core.jobs.JobsService;
+import dk.earthliving.core.guide.GuideService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,20 +24,27 @@ public final class EarthOsListener implements Listener {
     private final WebPortalService webPortalService;
     private final PassportService passportService;
     private final VerificationService verificationService;
+    private final WalletService walletService;
+    private final JobsService jobsService;
+    private final GuideService guideService;
 
-    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService, WebPortalService webPortalService, PassportService passportService, VerificationService verificationService) {
+    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService, WebPortalService webPortalService, PassportService passportService, VerificationService verificationService, WalletService walletService, JobsService jobsService, GuideService guideService) {
         this.plugin = plugin;
         this.earthOsService = earthOsService;
         this.reportService = reportService;
         this.webPortalService = webPortalService;
         this.passportService = passportService;
         this.verificationService = verificationService;
+        this.walletService = walletService;
+        this.jobsService = jobsService;
+        this.guideService = guideService;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         webPortalService.recordJoin(event.getPlayer());
         passportService.recordJoin(event.getPlayer());
+        walletService.recordJoin(event.getPlayer());
         if (earthOsService.shouldGiveOnJoin()) {
             earthOsService.giveDevice(event.getPlayer());
         }
@@ -65,7 +75,10 @@ public final class EarthOsListener implements Listener {
                 && !ReportService.ADMIN_REPORTS_TITLE.equals(title)
                 && !PassportService.MENU_TITLE.equals(title)
                 && !VerificationService.MENU_TITLE.equals(title)
-                && !EarthOsService.SERVER_MENU_TITLE.equals(title)) {
+                && !EarthOsService.SERVER_MENU_TITLE.equals(title)
+                && !WalletService.MENU_TITLE.equals(title)
+                && !JobsService.MENU_TITLE.equals(title)
+                && !GuideService.MENU_TITLE.equals(title)) {
             return;
         }
 
@@ -85,6 +98,12 @@ public final class EarthOsListener implements Listener {
                 verificationService.handleClick(player, event.getRawSlot(), earthOsService);
             } else if (EarthOsService.SERVER_MENU_TITLE.equals(title)) {
                 earthOsService.handleServerClick(player, event.getRawSlot());
+            } else if (WalletService.MENU_TITLE.equals(title)) {
+                walletService.handleClick(player, event.getRawSlot());
+            } else if (JobsService.MENU_TITLE.equals(title)) {
+                jobsService.handleClick(player, event.getRawSlot());
+            } else if (GuideService.MENU_TITLE.equals(title)) {
+                guideService.handleClick(player, event.getRawSlot());
             }
             player.updateInventory();
         }

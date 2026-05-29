@@ -7,6 +7,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -149,6 +151,47 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("wallet")) {
+            if (args.length == 1 || args[1].equalsIgnoreCase("balance")) {
+                if (args.length >= 3) {
+                    if (!sender.hasPermission("earthliving.admin")) {
+                        notifications.send(sender, "&cYou do not have permission to view other wallets.");
+                        return true;
+                    }
+                    OfflinePlayer target = Bukkit.getOfflinePlayer(args[2]);
+                    notifications.send(sender, "&aWallet for &f" + args[2] + "&a: &f"
+                            + plugin.walletService().format(plugin.walletService().balance(target.getUniqueId())));
+                    return true;
+                }
+                if (sender instanceof Player player) {
+                    notifications.send(sender, "&aYour wallet: &f"
+                            + plugin.walletService().format(plugin.walletService().balance(player.getUniqueId())));
+                } else {
+                    notifications.send(sender, "&eUsage: /" + label + " wallet balance <player>");
+                }
+                return true;
+            }
+            if (!sender.hasPermission("earthliving.admin")) {
+                notifications.send(sender, "&cYou do not have permission to manage wallets.");
+                return true;
+            }
+            if (args.length < 4 || (!args[1].equalsIgnoreCase("add") && !args[1].equalsIgnoreCase("set"))) {
+                notifications.send(sender, "&eUsage: /" + label + " wallet <balance|add|set> <player> [amount]");
+                return true;
+            }
+            try {
+                OfflinePlayer target = Bukkit.getOfflinePlayer(args[2]);
+                double amount = Double.parseDouble(args[3]);
+                double next = args[1].equalsIgnoreCase("add")
+                        ? plugin.walletService().add(target.getUniqueId(), args[2], amount, "admin-test")
+                        : plugin.walletService().set(target.getUniqueId(), args[2], amount);
+                notifications.send(sender, "&aWallet updated for &f" + args[2] + "&a: &f" + plugin.walletService().format(next));
+            } catch (NumberFormatException exception) {
+                notifications.send(sender, "&cAmount must be a number.");
+            }
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("preview")) {
             if (!(sender instanceof Player player)) {
                 notifications.send(sender, "&cOnly players can use placement previews.");
@@ -255,14 +298,14 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|portal|passport|preview|event|restart|earthos|reload>");
+        notifications.send(sender, "&eUsage: /" + label + " <status|modules|reports|portal|passport|wallet|preview|event|restart|earthos|reload>");
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            List<String> options = new ArrayList<>(List.of("status", "modules", "earthos", "passport"));
+            List<String> options = new ArrayList<>(List.of("status", "modules", "earthos", "passport", "wallet"));
             if (sender.hasPermission("earthliving.admin")) {
                 options.add("reports");
                 options.add("portal");
@@ -296,6 +339,15 @@ public final class EarthLivingCommand implements CommandExecutor, TabCompleter {
             List<String> options = sender.hasPermission("earthliving.admin")
                     ? List.of("info", "setcitizenship", "addvisa", "reputation", "export")
                     : List.of("info");
+            return options.stream()
+                    .filter(option -> option.startsWith(args[1].toLowerCase()))
+                    .toList();
+        }
+
+        if (args[0].equalsIgnoreCase("wallet") && args.length == 2) {
+            List<String> options = sender.hasPermission("earthliving.admin")
+                    ? List.of("balance", "add", "set")
+                    : List.of("balance");
             return options.stream()
                     .filter(option -> option.startsWith(args[1].toLowerCase()))
                     .toList();

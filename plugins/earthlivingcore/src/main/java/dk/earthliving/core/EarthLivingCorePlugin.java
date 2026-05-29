@@ -7,6 +7,8 @@ import dk.earthliving.core.command.EarthOsCommand;
 import dk.earthliving.core.earthos.EarthOsListener;
 import dk.earthliving.core.earthos.EarthOsService;
 import dk.earthliving.core.event.EarthLivingEventService;
+import dk.earthliving.core.guide.GuideService;
+import dk.earthliving.core.jobs.JobsService;
 import dk.earthliving.core.module.CoreModule;
 import dk.earthliving.core.module.ModuleRegistry;
 import dk.earthliving.core.notification.DiscordNotificationService;
@@ -16,6 +18,7 @@ import dk.earthliving.core.preview.PlacementPreviewListener;
 import dk.earthliving.core.preview.PlacementPreviewService;
 import dk.earthliving.core.report.ReportService;
 import dk.earthliving.core.verification.VerificationService;
+import dk.earthliving.core.wallet.WalletService;
 import dk.earthliving.core.webportal.WebPortalService;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,6 +39,9 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private PassportService passportService;
     private PlacementPreviewService placementPreviewService;
     private VerificationService verificationService;
+    private WalletService walletService;
+    private JobsService jobsService;
+    private GuideService guideService;
 
     @Override
     public void onEnable() {
@@ -49,15 +55,19 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         reportService = new ReportService(this, notificationService, discordNotificationService);
         passportService = new PassportService(this, notificationService);
         verificationService = new VerificationService(this, notificationService);
+        walletService = new WalletService(this, notificationService);
+        jobsService = new JobsService(this, notificationService, walletService);
+        guideService = new GuideService(this, notificationService);
         placementPreviewService = new PlacementPreviewService(this, notificationService);
         webPortalService = new WebPortalService(this, notificationService, reportService);
         discordReportImportService = new DiscordReportImportService(this, notificationService, reportService);
-        earthOsService = new EarthOsService(this, notificationService, reportService, webPortalService, passportService, verificationService);
+        earthOsService = new EarthOsService(this, notificationService, reportService, webPortalService, passportService, verificationService, walletService, jobsService, guideService);
 
         registerModules();
         registerCommands();
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService, passportService, verificationService), this);
+        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService, passportService, verificationService, walletService, jobsService, guideService), this);
+        getServer().getPluginManager().registerEvents(jobsService, this);
         getServer().getPluginManager().registerEvents(new PlacementPreviewListener(placementPreviewService), this);
         reportService.startPanelActionProcessor();
         webPortalService.startExporter();
@@ -128,6 +138,18 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         return verificationService;
     }
 
+    public WalletService walletService() {
+        return walletService;
+    }
+
+    public JobsService jobsService() {
+        return jobsService;
+    }
+
+    public GuideService guideService() {
+        return guideService;
+    }
+
     private void registerModules() {
         List<CoreModule> modules = List.of(
                 new CoreModule("earthos", "EarthOS menu/device"),
@@ -137,6 +159,9 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
                 new CoreModule("reports", "Support/report workflow foundation"),
                 new CoreModule("passports", "Country/passport integration foundation"),
                 new CoreModule("verification", "Discord verification entrypoint"),
+                new CoreModule("wallet", "Simple VS2 player balance"),
+                new CoreModule("jobs", "Simple VS2 action rewards"),
+                new CoreModule("guide", "Simple VS2 onboarding guide"),
                 new CoreModule("preview", "Schematic placement preview foundation"),
                 new CoreModule("discord", "Discord integration foundation")
         );

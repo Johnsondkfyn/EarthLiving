@@ -1,5 +1,5 @@
 name: EarthLivingCore
-version: 0.8.0
+version: 0.9.0
 main: dk.earthliving.core.EarthLivingCorePlugin
 api-version: '1.21'
 author: Codex
@@ -8,7 +8,7 @@ description: Core foundation plugin for Earth Living systems.
 commands:
   earthliving:
     description: Earth Living core command.
-    usage: /earthliving <status|modules|reports|portal|passport|preview|event|restart|reload|earthos>
+    usage: /earthliving <status|modules|reports|portal|passport|wallet|preview|event|restart|reload|earthos>
     aliases:
       - el
     permission: earthliving.command
@@ -32,4 +32,7 @@ permissions:
     default: true
   earthliving.serverselect:
     description: Allows using EarthOS server selection.
+    default: true
+  earthliving.jobs:
+    description: Allows earning simple VS2 job rewards.
     default: true

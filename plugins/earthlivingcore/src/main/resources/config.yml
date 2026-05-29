@@ -36,6 +36,9 @@ earthos:
     passport-name: "&6Passport"
     verify-name: "&aDiscord Verification"
     servers-name: "&bServers"
+    wallet-name: "&aWallet"
+    jobs-name: "&eJobs"
+    guide-name: "&6Guide"
   verification:
     start-command: "discord link"
     info-name: "&bHow verification works"
@@ -76,7 +79,56 @@ modules:
   reports: true
   passports: true
   verification: true
+  wallet: true
+  jobs: true
+  guide: true
   discord: true
+
+wallet:
+  start-balance: 0.0
+  currency-name: "EarthCoins"
+  currency-symbol: "EC "
+
+jobs:
+  enabled: true
+  show-reward-message: true
+  cooldowns:
+    mining: 3
+    farming: 3
+    fishing: 5
+  messages:
+    reward: "&a+{amount} from {job}. Balance: {balance}"
+  rewards:
+    mining:
+      blocks:
+        STONE: 0.10
+        COAL_ORE: 0.75
+        IRON_ORE: 1.25
+        COPPER_ORE: 0.80
+        GOLD_ORE: 2.00
+        DIAMOND_ORE: 5.00
+        DEEPSLATE_COAL_ORE: 0.75
+        DEEPSLATE_IRON_ORE: 1.25
+        DEEPSLATE_COPPER_ORE: 0.80
+        DEEPSLATE_GOLD_ORE: 2.00
+        DEEPSLATE_DIAMOND_ORE: 5.00
+    farming:
+      blocks:
+        WHEAT: 0.35
+        CARROTS: 0.35
+        POTATOES: 0.35
+        BEETROOTS: 0.35
+    fishing:
+      default: 1.00
+
+guide:
+  steps:
+    - "&61. Verify Discord &7from EarthOS -> Discord Verification."
+    - "&62. Check Passport &7so your identity record exists."
+    - "&63. Use Servers &7to move between Hub and Main."
+    - "&64. Earn first coins &7by mining, farming or fishing."
+    - "&65. Open Wallet &7to see your current balance."
+    - "&8TODO VS3: deeper tutorial, quests, shops and transport."
 
 webportal:
   enabled: true

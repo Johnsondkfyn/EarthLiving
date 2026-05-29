@@ -5,6 +5,9 @@ import dk.earthliving.core.passport.PassportService;
 import dk.earthliving.core.report.ReportService;
 import dk.earthliving.core.verification.VerificationService;
 import dk.earthliving.core.webportal.WebPortalService;
+import dk.earthliving.core.wallet.WalletService;
+import dk.earthliving.core.jobs.JobsService;
+import dk.earthliving.core.guide.GuideService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -32,11 +35,14 @@ public final class EarthOsService {
     public static final int SLOT_PASSPORT = 11;
     public static final int SLOT_VERIFY = 13;
     public static final int SLOT_SERVERS = 15;
-    public static final int SLOT_MAP = 20;
-    public static final int SLOT_REPORTS = 22;
-    public static final int SLOT_STATUS = 24;
-    public static final int SLOT_SETTINGS = 31;
-    public static final int SLOT_PROFILE = 33;
+    public static final int SLOT_WALLET = 20;
+    public static final int SLOT_JOBS = 22;
+    public static final int SLOT_GUIDE = 24;
+    public static final int SLOT_MAP = 29;
+    public static final int SLOT_REPORTS = 31;
+    public static final int SLOT_STATUS = 33;
+    public static final int SLOT_SETTINGS = 36;
+    public static final int SLOT_PROFILE = 38;
     private static final int SLOT_HUB = 11;
     private static final int SLOT_MAIN = 15;
     private static final int SLOT_SERVER_BACK = 22;
@@ -47,15 +53,21 @@ public final class EarthOsService {
     private final WebPortalService webPortalService;
     private final PassportService passportService;
     private final VerificationService verificationService;
+    private final WalletService walletService;
+    private final JobsService jobsService;
+    private final GuideService guideService;
     private final NamespacedKey itemKey;
 
-    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService, WebPortalService webPortalService, PassportService passportService, VerificationService verificationService) {
+    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService, WebPortalService webPortalService, PassportService passportService, VerificationService verificationService, WalletService walletService, JobsService jobsService, GuideService guideService) {
         this.plugin = plugin;
         this.notifications = notifications;
         this.reportService = reportService;
         this.webPortalService = webPortalService;
         this.passportService = passportService;
         this.verificationService = verificationService;
+        this.walletService = walletService;
+        this.jobsService = jobsService;
+        this.guideService = guideService;
         this.itemKey = new NamespacedKey(plugin, "earthos_device");
     }
 
@@ -116,11 +128,23 @@ public final class EarthOsService {
                 "&7Choose Hub or Main",
                 "&7Works through Velocity"
         )));
+        inventory.setItem(SLOT_WALLET, menuItem(Material.EMERALD, configText("earthos.menu.wallet-name", "&aWallet"), List.of(
+                "&7Balance: &f" + walletService.format(walletService.balance(player.getUniqueId())),
+                "&8VS2: simple balance only"
+        )));
+        inventory.setItem(SLOT_JOBS, menuItem(Material.IRON_PICKAXE, configText("earthos.menu.jobs-name", "&eJobs"), List.of(
+                "&7Mining, farming and fishing rewards",
+                "&8No levels or professions yet"
+        )));
+        inventory.setItem(SLOT_GUIDE, menuItem(Material.BOOK, configText("earthos.menu.guide-name", "&6Guide"), List.of(
+                "&7New player steps",
+                "&7Verify, choose server, earn coins"
+        )));
         inventory.setItem(SLOT_MAP, menuItem(Material.MAP, "&bWorld Map", List.of("&7Open BlueMap in chat")));
-        // TODO later: jobs, economy, transport, nations, quests and web profile should become separate EarthOS apps after VS1.
+        // TODO VS3: banking, shops, nations, transport and quest systems should become separate EarthOS apps later.
         inventory.setItem(SLOT_REPORTS, menuItem(Material.WRITABLE_BOOK, "&dReports", List.of(
                 "&7Open reports: &f" + reportService.openReportCount(),
-                "&8TODO VS2: polish report flow"
+                "&8TODO VS3: polish report flow"
         )));
         inventory.setItem(SLOT_STATUS, menuItem(Material.REDSTONE_TORCH, "&cServer Status", List.of("&7Status, maintenance and updates")));
         inventory.setItem(SLOT_SETTINGS, menuItem(Material.COMPARATOR, "&fSettings", List.of("&7Refresh EarthOS device")));
@@ -144,6 +168,9 @@ public final class EarthOsService {
             case SLOT_PASSPORT -> passportService.open(player);
             case SLOT_VERIFY -> verificationService.open(player);
             case SLOT_SERVERS -> openServerMenu(player);
+            case SLOT_WALLET -> walletService.open(player);
+            case SLOT_JOBS -> jobsService.open(player);
+            case SLOT_GUIDE -> guideService.open(player);
             case SLOT_REPORTS -> reportService.open(player);
             case SLOT_STATUS -> sendConfiguredLines(player, "earthos.server-status");
             case SLOT_SETTINGS -> {
