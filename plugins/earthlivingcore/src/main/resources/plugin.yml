@@ -1,5 +1,5 @@
 name: EarthLivingCore
-version: 0.9.3
+version: 0.9.4
 main: dk.earthliving.core.EarthLivingCorePlugin
 api-version: '1.21'
 author: Codex
@@ -18,6 +18,10 @@ commands:
     description: Opens the EarthOS menu.
     usage: /earthos
     permission: earthliving.earthos
+  elbuild:
+    description: Developer build generators for Earth Living structures.
+    usage: /elbuild <bordercontrol> [confirm]
+    permission: earthliving.build.bordercontrol
 
 permissions:
   earthliving.command:
@@ -41,3 +45,6 @@ permissions:
   earthliving.verified:
     description: Marks a player as verified for EarthLiving placeholders when DiscordSRV is not available.
     default: false
+  earthliving.build.bordercontrol:
+    description: Allows generating the developer Border Control building.
+    default: op

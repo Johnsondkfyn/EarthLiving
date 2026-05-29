@@ -6,7 +6,7 @@
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "PassportBorders 0.5.2 is live with an admin-only border build visualizer for planning border-control buildings. EarthLivingCore 0.9.3 and the VS3.5 TAB placeholders remain live.",
-    "da": "PassportBorders 0.5.2 er live med en admin-only border build visualizer til planlægning af border-control bygninger. EarthLivingCore 0.9.3 og VS3.5 TAB placeholders er stadig live."
+    "en": "EarthLivingCore 0.9.4 is live with a developer-only Border Control build generator for compact neutral border facilities. PassportBorders 0.5.2 and the VS3.5 TAB placeholders remain live.",
+    "da": "EarthLivingCore 0.9.4 er live med en developer-only Border Control build generator til kompakte neutrale grænsefaciliteter. PassportBorders 0.5.2 og VS3.5 TAB placeholders er stadig live."
   }
 }

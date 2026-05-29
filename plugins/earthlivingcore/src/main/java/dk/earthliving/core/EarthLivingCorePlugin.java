@@ -1,6 +1,8 @@
 package dk.earthliving.core;
 
 import dk.earthliving.core.command.EarthLivingCommand;
+import dk.earthliving.core.command.EarthLivingBuildCommand;
+import dk.earthliving.core.build.BorderControlBuildGenerator;
 import dk.earthliving.core.discord.DiscordBridgeService;
 import dk.earthliving.core.discord.DiscordReportImportService;
 import dk.earthliving.core.command.EarthOsCommand;
@@ -44,6 +46,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private JobsService jobsService;
     private GuideService guideService;
     private EarthLivingPlaceholderExpansion placeholderExpansion;
+    private BorderControlBuildGenerator borderControlBuildGenerator;
 
     @Override
     public void onEnable() {
@@ -60,6 +63,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         walletService = new WalletService(this, notificationService);
         jobsService = new JobsService(this, notificationService, walletService);
         guideService = new GuideService(this, notificationService);
+        borderControlBuildGenerator = new BorderControlBuildGenerator(notificationService);
         placementPreviewService = new PlacementPreviewService(this, notificationService);
         webPortalService = new WebPortalService(this, notificationService, reportService);
         discordReportImportService = new DiscordReportImportService(this, notificationService, reportService);
@@ -188,6 +192,11 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         PluginCommand earthOsCommand = Objects.requireNonNull(getCommand("earthos"));
         EarthOsCommand earthOsExecutor = new EarthOsCommand(this);
         earthOsCommand.setExecutor(earthOsExecutor);
+
+        PluginCommand earthLivingBuildCommand = Objects.requireNonNull(getCommand("elbuild"));
+        EarthLivingBuildCommand buildExecutor = new EarthLivingBuildCommand(notificationService, borderControlBuildGenerator);
+        earthLivingBuildCommand.setExecutor(buildExecutor);
+        earthLivingBuildCommand.setTabCompleter(buildExecutor);
     }
 
     private void registerPlaceholders() {
