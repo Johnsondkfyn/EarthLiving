@@ -71,43 +71,45 @@ bossbar:
 
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Scoreboard
 scoreboard:
-  enabled: false
+  enabled: true
   toggle-command: /sb
   remember-toggle-choice: false
   hidden-by-default: false
   delay-on-join-milliseconds: 0
   scoreboards:
     scoreboard-1.20.3+:
-      title: "<#E0B11E>MyServer</#FF0000>"
+      title: "<#8FE388>Earth</#49D5FF><#49D5FF>Living</#8FE388>"
       display-condition: "%player-version-id%>=765;%bedrock%=false" # Only display it to players using 1.20.3+ AND NOT bedrock edition
       lines:
-        - "&7%date%"
-        - "%animation:MyAnimation1%"
-        - "&6Online:"
-        - "* &eOnline&7:||%online%"
-        - "* &eCurrent World&7:||%worldonline%"
-        - "* &eStaff&7:||%staffonline%"
+        - "&8%date%"
+        - "&7Server: &f%earthliving_current_server%"
+        - "&7Online: &f%online%"
         - ""
-        - "&6Personal Info:"
-        - "* &bRank&7:||%group%"
-        - "* &bPing&7:||%ping%&8ms"
-        - "* &bWorld&7:||%world%"
-        - "%animation:MyAnimation1%"
+        - "&aIdentity"
+        - "&7Rank: &f%luckperms-primary-group%"
+        - "&7Discord: &f%earthliving_verified_status%"
+        - "&7Passport: &f%earthliving_passport_status%"
+        - ""
+        - "&bBorder"
+        - "&7Country: &f%earthliving_current_country%"
+        - "&7Access: &f%earthliving_border_access%"
+        - "&7Visa: &f%earthliving_required_visa%"
     scoreboard:
-      title: "<#E0B11E>MyServer</#FF0000>"
+      title: "<#8FE388>Earth</#49D5FF><#49D5FF>Living</#8FE388>"
       lines:
-        - "&7%date%"
-        - "%animation:MyAnimation1%"
-        - "&6Online:"
-        - "* &eOnline&7: &f%online%"
-        - "* &eCurrent World&7: &f%worldonline%"
-        - "* &eStaff&7: &f%staffonline%"
+        - "&8%date%"
+        - "&7Server: &f%earthliving_current_server%"
+        - "&7Online: &f%online%"
         - ""
-        - "&6Personal Info:"
-        - "* &bRank&7: &f%group%"
-        - "* &bPing&7: &f%ping%&8ms"
-        - "* &bWorld&7: &f%world%"
-        - "%animation:MyAnimation1%"
+        - "&aIdentity"
+        - "&7Rank: &f%luckperms-primary-group%"
+        - "&7Discord: &f%earthliving_verified_status%"
+        - "&7Passport: &f%earthliving_passport_status%"
+        - ""
+        - "&bBorder"
+        - "&7Country: &f%earthliving_current_country%"
+        - "&7Access: &f%earthliving_border_access%"
+        - "&7Visa: &f%earthliving_required_visa%"
 
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Layout
 layout:
