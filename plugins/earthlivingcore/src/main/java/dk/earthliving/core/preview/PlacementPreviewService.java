@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 
 public final class PlacementPreviewService {
     private static final int MAX_SIZE = 256;
@@ -24,6 +25,7 @@ public final class PlacementPreviewService {
     private final JavaPlugin plugin;
     private final NotificationService notifications;
     private final Map<UUID, PreviewSession> previews = new HashMap<>();
+    private final Map<UUID, BiConsumer<Player, Location>> lockActions = new HashMap<>();
     private BukkitTask task;
 
     public PlacementPreviewService(JavaPlugin plugin, NotificationService notifications) {
@@ -44,6 +46,16 @@ public final class PlacementPreviewService {
             return false;
         }
         return showAt(player, origin, width, height, depth, seconds, true, yOffset, safeDistance);
+    }
+
+    public boolean showLook(Player player, int width, int height, int depth, int yOffset, int seconds, int distance,
+                            BiConsumer<Player, Location> lockAction) {
+        boolean shown = showLook(player, width, height, depth, yOffset, seconds, distance);
+        if (shown) {
+            lockActions.put(player.getUniqueId(), lockAction);
+            notifications.send(player, "&7Left-click to place this build at the preview origin.");
+        }
+        return shown;
     }
 
     private boolean showAt(Player player, Location origin, int width, int height, int depth, int seconds, boolean followLook, int yOffset, int distance) {
@@ -75,6 +87,7 @@ public final class PlacementPreviewService {
 
     public boolean clear(Player player) {
         boolean removed = previews.remove(player.getUniqueId()) != null;
+        lockActions.remove(player.getUniqueId());
         if (removed) {
             notifications.send(player, "&aPlacement preview cleared.");
         } else {
@@ -111,6 +124,13 @@ public final class PlacementPreviewService {
         previews.put(player.getUniqueId(), locked);
         draw(player, locked);
 
+        BiConsumer<Player, Location> lockAction = lockActions.remove(player.getUniqueId());
+        if (lockAction != null) {
+            previews.remove(player.getUniqueId());
+            lockAction.accept(player, origin);
+            return true;
+        }
+
         notifications.send(player, "&aPlacement preview locked.");
         notifications.send(player, "&7Locked origin: &f" + origin.getBlockX() + " " + origin.getBlockY() + " " + origin.getBlockZ());
         notifications.send(player, "&7Use /el preview look again to move it or /el preview clear to remove it.");
@@ -146,6 +166,7 @@ public final class PlacementPreviewService {
 
     public void stop() {
         previews.clear();
+        lockActions.clear();
         if (task != null) {
             task.cancel();
             task = null;

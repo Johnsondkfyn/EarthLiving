@@ -194,7 +194,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         earthOsCommand.setExecutor(earthOsExecutor);
 
         PluginCommand earthLivingBuildCommand = Objects.requireNonNull(getCommand("elbuild"));
-        EarthLivingBuildCommand buildExecutor = new EarthLivingBuildCommand(notificationService, borderControlBuildGenerator);
+        EarthLivingBuildCommand buildExecutor = new EarthLivingBuildCommand(notificationService, borderControlBuildGenerator, placementPreviewService);
         earthLivingBuildCommand.setExecutor(buildExecutor);
         earthLivingBuildCommand.setTabCompleter(buildExecutor);
     }

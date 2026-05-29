@@ -8,6 +8,14 @@ Developer utility for generating the first compact Border Control building.
 /elbuild bordercontrol
 ```
 
+Preview the building first:
+
+```text
+/elbuild bordercontrol preview
+```
+
+In preview mode the outline follows the block you are looking at. Left-click places the building at the preview origin.
+
 If the build area contains existing blocks above the floor, the command asks for confirmation:
 
 ```text

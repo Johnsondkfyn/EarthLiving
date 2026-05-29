@@ -20,6 +20,11 @@ public final class BorderControlBuildGenerator {
 
     public void generate(Player player, boolean confirmed) {
         Location origin = player.getLocation().toBlockLocation();
+        generateAt(player, origin, confirmed);
+    }
+
+    public void generateAt(Player player, Location origin, boolean confirmed) {
+        origin = origin.toBlockLocation();
         if (!confirmed && hasBlockingBuildSpace(origin)) {
             notifications.send(player, "&eThis will place a 21x21 Border Control building at your feet.");
             notifications.send(player, "&eRun &f/elbuild bordercontrol confirm &eto confirm and overwrite the compact build area.");
