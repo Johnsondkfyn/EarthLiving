@@ -13,6 +13,10 @@ dependencyResolutionManagement {
             name = 'papermc'
             url = 'https://repo.papermc.io/repository/maven-public/'
         }
+        maven {
+            name = 'placeholderapi'
+            url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+        }
     }
 }
 

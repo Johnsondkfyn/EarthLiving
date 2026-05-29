@@ -1,9 +1,11 @@
 name: EarthLivingCore
-version: 0.9.2
+version: 0.9.3
 main: dk.earthliving.core.EarthLivingCorePlugin
 api-version: '1.21'
 author: Codex
 description: Core foundation plugin for Earth Living systems.
+softdepend:
+  - PlaceholderAPI
 
 commands:
   earthliving:
@@ -36,3 +38,6 @@ permissions:
   earthliving.jobs:
     description: Allows earning simple VS2 job rewards.
     default: true
+  earthliving.verified:
+    description: Marks a player as verified for EarthLiving placeholders when DiscordSRV is not available.
+    default: false

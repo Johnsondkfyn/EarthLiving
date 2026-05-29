@@ -139,6 +139,9 @@ webportal:
   max-players: 20
   map-status: "foundation-live"
 
+tab:
+  current-server-name: "Main"
+
 discord:
   discordsrv:
     enabled: true

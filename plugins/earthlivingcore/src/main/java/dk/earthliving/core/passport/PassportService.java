@@ -35,6 +35,8 @@ public final class PassportService {
     private final File exportFile;
     private final File borderStatusFile;
     private FileConfiguration data;
+    private YamlConfiguration borderStatusData;
+    private long borderStatusLastModified;
 
     public PassportService(JavaPlugin plugin, NotificationService notifications) {
         this.plugin = plugin;
@@ -171,6 +173,41 @@ public final class PassportService {
         );
     }
 
+    public String passportStatus(UUID uuid, String fallbackName) {
+        PassportProfile profile = profile(uuid, fallbackName);
+        if (!profile.citizenshipCountry().isBlank()) {
+            return "Citizen: " + profile.citizenshipCountry();
+        }
+        for (PassportProfile.VisaEntry visa : profile.visas().values()) {
+            if ("active".equalsIgnoreCase(visa.status())) {
+                return "Visa: " + visa.type();
+            }
+        }
+        return "No passport data";
+    }
+
+    public BorderStatus borderStatus(UUID uuid) {
+        YamlConfiguration status = borderStatusData();
+        if (status == null) {
+            return BorderStatus.unknown();
+        }
+
+        String path = "players." + uuid;
+        if (!status.isConfigurationSection(path)) {
+            return BorderStatus.unknown();
+        }
+
+        String country = status.getString(path + ".country-name", "");
+        boolean allowed = status.getBoolean(path + ".allowed", false);
+        String requiredVisa = status.getString(path + ".required-visa", "");
+        String updatedAt = status.getString(path + ".updated-at", "");
+
+        String countryLabel = country == null || country.isBlank() ? "Unknown country" : country;
+        String accessLabel = allowed ? "Allowed" : "Denied";
+        String visaLabel = requiredVisa == null || requiredVisa.isBlank() ? "No visa required" : requiredVisa;
+        return new BorderStatus(countryLabel, accessLabel, visaLabel, shortDate(updatedAt));
+    }
+
     public void exportAll() {
         try {
             exportFile.getParentFile().mkdirs();
@@ -273,26 +310,33 @@ public final class PassportService {
     }
 
     private List<String> borderStatusLore(Player player) {
-        if (!borderStatusFile.exists()) {
+        BorderStatus borderStatus = borderStatus(player.getUniqueId());
+        if (borderStatus.isUnknown()) {
             return List.of(
                     "&7Current country: &fUnknown",
                     "&7Access: &fUnknown",
                     "&8PassportBorders has not exported status yet."
             );
         }
-        YamlConfiguration borderStatus = YamlConfiguration.loadConfiguration(borderStatusFile);
-        String path = "players." + player.getUniqueId();
-        String country = borderStatus.getString(path + ".country-name", "");
-        boolean allowed = borderStatus.getBoolean(path + ".allowed", true);
-        String requiredVisa = borderStatus.getString(path + ".required-visa", "");
-        String updatedAt = shortDate(borderStatus.getString(path + ".updated-at", ""));
         List<String> lore = new ArrayList<>();
-        lore.add("&7Current country: &f" + emptyLabel(country, "Wilderness / unknown"));
-        lore.add(allowed ? "&7Access: &aAllowed" : "&7Access: &cDenied");
-        lore.add("&7Required visa: &f" + emptyLabel(requiredVisa, "-"));
-        lore.add("&7Updated: &f" + emptyLabel(updatedAt, "-"));
+        lore.add("&7Current country: &f" + borderStatus.country());
+        lore.add("Allowed".equals(borderStatus.access()) ? "&7Access: &aAllowed" : "&7Access: &cDenied");
+        lore.add("&7Required visa: &f" + borderStatus.requiredVisa());
+        lore.add("&7Updated: &f" + emptyLabel(borderStatus.updatedAt(), "-"));
         lore.add("&8Live border status from PassportBorders.");
         return lore;
+    }
+
+    private YamlConfiguration borderStatusData() {
+        if (!borderStatusFile.exists()) {
+            return null;
+        }
+        long lastModified = borderStatusFile.lastModified();
+        if (borderStatusData == null || lastModified != borderStatusLastModified) {
+            borderStatusData = YamlConfiguration.loadConfiguration(borderStatusFile);
+            borderStatusLastModified = lastModified;
+        }
+        return borderStatusData;
     }
 
     private void ensureProfile(UUID uuid, String playerName) {
@@ -392,5 +436,15 @@ public final class PassportService {
             }
         }
         return escaped.toString();
+    }
+
+    public record BorderStatus(String country, String access, String requiredVisa, String updatedAt) {
+        public static BorderStatus unknown() {
+            return new BorderStatus("Unknown country", "Access unknown", "No visa required", "");
+        }
+
+        public boolean isUnknown() {
+            return "Access unknown".equals(access);
+        }
     }
 }

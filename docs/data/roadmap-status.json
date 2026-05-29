@@ -6,7 +6,7 @@
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "PassportBorders 0.5.1 and EarthLivingCore 0.9.2 are live. Border transitions now show clearer particle walls, admin bypass is easier to spot during testing, and EarthOS menu right-clicks avoid ground-click side effects.",
-    "da": "PassportBorders 0.5.1 og EarthLivingCore 0.9.2 er live. Border-overgange viser nu tydeligere partikelvægge, admin-bypass er lettere at se under test, og EarthOS-menuens højreklik undgår ground-click side effects."
+    "en": "EarthLivingCore 0.9.3 is live with the VS3.5 TAB Slice: PlaceholderAPI placeholders expose current country, border access, required visa, passport status, Discord verification status and current server for TAB.",
+    "da": "EarthLivingCore 0.9.3 er live med VS3.5 TAB Slice: PlaceholderAPI-placeholders viser current country, border access, required visa, passport status, Discord verification status og current server til TAB."
   }
 }

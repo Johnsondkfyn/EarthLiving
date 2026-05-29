@@ -6,10 +6,12 @@ header-footer:
       header:
         - "<#8FE388>&m                                                </#49D5FF>"
         - "<#8FE388>&lEarth</#49D5FF><#49D5FF>&lLiving</#8FE388>"
-        - "&7earthliving.earth &8| &f%online%&7 online &8| &f%server_tps_1_colored% &7TPS"
+        - "&7%earthliving_current_server% &8| &f%online%&7 online &8| &f%server_tps_1_colored% &7TPS"
+        - "&7Country: &f%earthliving_current_country% &8| &7Access: &f%earthliving_border_access%"
         - ""
       footer:
-        - "&7Rank: &f%luckperms-primary-group% &8| &7Ping: &f%ping%ms"
+        - "&7Passport: &f%earthliving_passport_status% &8| &7Visa: &f%earthliving_required_visa%"
+        - "&7Discord: &f%earthliving_verified_status% &8| &7Rank: &f%luckperms-primary-group% &8| &7Ping: &f%ping%ms"
         - "&7Map, passport, reports and server status live in EarthOS"
         - "<#8FE388>&m                                                </#49D5FF>"
 
@@ -26,6 +28,7 @@ scoreboard-teams:
   # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Sorting-players-in-tablist
   sorting-types:
     - "GROUPS:owner,developer,admin,moderator,staff,builder,supporter,citizen,default"
+    - "PLACEHOLDER_A_TO_Z:%earthliving_current_country%"
     - "PLACEHOLDER_A_TO_Z:%player%"
   case-sensitive-sorting: true
   can-see-friendly-invisibles: false
@@ -197,6 +200,12 @@ placeholder-refresh-intervals:
   "%player_ping%": 1000
   "%vault_prefix%": 1000
   "%rel_factionsuuid_relation_color%": 1000
+  "%earthliving_current_country%": 1000
+  "%earthliving_border_access%": 1000
+  "%earthliving_required_visa%": 1000
+  "%earthliving_passport_status%": 5000
+  "%earthliving_verified_status%": 5000
+  "%earthliving_current_server%": 10000
 
 # assigning groups by permission nodes instead of taking them from permission plugin
 assign-groups-by-permissions: false

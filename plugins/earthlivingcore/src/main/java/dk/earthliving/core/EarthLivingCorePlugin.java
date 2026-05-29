@@ -14,6 +14,7 @@ import dk.earthliving.core.module.ModuleRegistry;
 import dk.earthliving.core.notification.DiscordNotificationService;
 import dk.earthliving.core.notification.NotificationService;
 import dk.earthliving.core.passport.PassportService;
+import dk.earthliving.core.placeholder.EarthLivingPlaceholderExpansion;
 import dk.earthliving.core.preview.PlacementPreviewListener;
 import dk.earthliving.core.preview.PlacementPreviewService;
 import dk.earthliving.core.report.ReportService;
@@ -42,6 +43,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private WalletService walletService;
     private JobsService jobsService;
     private GuideService guideService;
+    private EarthLivingPlaceholderExpansion placeholderExpansion;
 
     @Override
     public void onEnable() {
@@ -69,6 +71,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService, passportService, verificationService, walletService, jobsService, guideService), this);
         getServer().getPluginManager().registerEvents(jobsService, this);
         getServer().getPluginManager().registerEvents(new PlacementPreviewListener(placementPreviewService), this);
+        registerPlaceholders();
         reportService.startPanelActionProcessor();
         webPortalService.startExporter();
         discordReportImportService.startLater();
@@ -89,6 +92,9 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         }
         if (placementPreviewService != null) {
             placementPreviewService.stop();
+        }
+        if (placeholderExpansion != null) {
+            placeholderExpansion.unregister();
         }
         if (notificationService != null) {
             notificationService.console("EarthLivingCore disabled.");
@@ -163,6 +169,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
                 new CoreModule("jobs", "Simple VS2 action rewards"),
                 new CoreModule("guide", "Simple VS2 onboarding guide"),
                 new CoreModule("preview", "Schematic placement preview foundation"),
+                new CoreModule("tab-placeholders", "TAB and PlaceholderAPI identity placeholders"),
                 new CoreModule("discord", "Discord integration foundation")
         );
 
@@ -181,5 +188,18 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         PluginCommand earthOsCommand = Objects.requireNonNull(getCommand("earthos"));
         EarthOsCommand earthOsExecutor = new EarthOsCommand(this);
         earthOsCommand.setExecutor(earthOsExecutor);
+    }
+
+    private void registerPlaceholders() {
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            notificationService.console("PlaceholderAPI not found; EarthLiving TAB placeholders are disabled.");
+            return;
+        }
+        placeholderExpansion = new EarthLivingPlaceholderExpansion(this, passportService);
+        if (placeholderExpansion.register()) {
+            notificationService.console("Registered PlaceholderAPI expansion: %earthliving_*%.");
+        } else {
+            notificationService.console("Could not register PlaceholderAPI expansion: %earthliving_*%.");
+        }
     }
 }

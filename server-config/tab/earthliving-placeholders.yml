@@ -1,0 +1,72 @@
+# EarthLiving VS3.5 TAB Slice examples.
+# Requires PlaceholderAPI + EarthLivingCore 0.9.3 or newer.
+#
+# Available placeholders:
+# - %earthliving_current_country%
+# - %earthliving_border_access%
+# - %earthliving_required_visa%
+# - %earthliving_passport_status%
+# - %earthliving_verified_status%
+# - %earthliving_current_server%
+
+header-footer:
+  enabled: true
+  designs:
+    default:
+      header:
+        - "<#8FE388>&m                                                </#49D5FF>"
+        - "<#8FE388>&lEarth</#49D5FF><#49D5FF>&lLiving</#8FE388>"
+        - "&7%earthliving_current_server% &8| &f%online%&7 online &8| &f%server_tps_1_colored% &7TPS"
+        - "&7Country: &f%earthliving_current_country% &8| &7Access: &f%earthliving_border_access%"
+        - ""
+      footer:
+        - "&7Passport: &f%earthliving_passport_status% &8| &7Visa: &f%earthliving_required_visa%"
+        - "&7Discord: &f%earthliving_verified_status% &8| &7Rank: &f%luckperms-primary-group%"
+        - "&7Open EarthOS for Passport, verification, reports and server selection"
+        - "<#8FE388>&m                                                </#49D5FF>"
+
+groups:
+  owner:
+    tabprefix: "%luckperms-prefix%"
+    tagprefix: "%luckperms-prefix%"
+    customtabname: "%player%"
+    tabsuffix: " &8| &f%earthliving_current_country% &8| &a%earthliving_verified_status%"
+    tagsuffix: " &8[%earthliving_border_access%]"
+  developer:
+    tabprefix: "%luckperms-prefix%"
+    tagprefix: "%luckperms-prefix%"
+    customtabname: "%player%"
+    tabsuffix: " &8| &f%earthliving_current_country% &8| &a%earthliving_verified_status%"
+    tagsuffix: " &8[%earthliving_border_access%]"
+  admin:
+    tabprefix: "%luckperms-prefix%"
+    tagprefix: "%luckperms-prefix%"
+    customtabname: "%player%"
+    tabsuffix: " &8| &f%earthliving_current_country% &8| &a%earthliving_verified_status%"
+    tagsuffix: " &8[%earthliving_border_access%]"
+  staff:
+    tabprefix: "%luckperms-prefix%"
+    tagprefix: "%luckperms-prefix%"
+    customtabname: "%player%"
+    tabsuffix: " &8| &f%earthliving_current_country%"
+    tagsuffix: " &8[%earthliving_border_access%]"
+  default:
+    tabprefix: "%luckperms-prefix%"
+    tagprefix: "%luckperms-prefix%"
+    customtabname: "%player%"
+    tabsuffix: " &8| &7%earthliving_current_country%"
+    tagsuffix: ""
+
+scoreboard-teams:
+  sorting-types:
+    - "GROUPS:owner,developer,admin,moderator,staff,builder,supporter,citizen,default"
+    - "PLACEHOLDER_A_TO_Z:%earthliving_current_country%"
+    - "PLACEHOLDER_A_TO_Z:%player%"
+
+placeholder-refresh-intervals:
+  "%earthliving_current_country%": 1000
+  "%earthliving_border_access%": 1000
+  "%earthliving_required_visa%": 1000
+  "%earthliving_passport_status%": 5000
+  "%earthliving_verified_status%": 5000
+  "%earthliving_current_server%": 10000

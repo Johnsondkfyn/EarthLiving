@@ -1,6 +1,6 @@
 # EarthLiving Ranks and TAB
 
-Updated: 2026-05-27
+Updated: 2026-05-29
 
 ## Main server status
 
@@ -70,3 +70,70 @@ server-config/tab/groups.yml
 - TAB sorting follows the LuckPerms rank ladder.
 - DiscordSRV detects LuckPerms after restart.
 - Before public launch, decide which ranks should sync to Discord roles.
+
+## EarthLiving VS3.5 placeholders
+
+EarthLivingCore `0.9.3` registers a PlaceholderAPI expansion when PlaceholderAPI is installed.
+
+Use these in TAB as normal PlaceholderAPI placeholders:
+
+```text
+%earthliving_current_country%
+%earthliving_border_access%
+%earthliving_required_visa%
+%earthliving_passport_status%
+%earthliving_verified_status%
+%earthliving_current_server%
+```
+
+Safe fallback values:
+
+```text
+Unknown country
+Access unknown
+No visa required
+No passport data
+Unverified
+Main
+```
+
+Recommended TAB examples are stored in:
+
+```text
+server-config/tab/earthliving-placeholders.yml
+```
+
+Recommended header:
+
+```yaml
+header:
+  - "<#8FE388>&m                                                </#49D5FF>"
+  - "<#8FE388>&lEarth</#49D5FF><#49D5FF>&lLiving</#8FE388>"
+  - "&7%earthliving_current_server% &8| &f%online%&7 online &8| &f%server_tps_1_colored% &7TPS"
+  - "&7Country: &f%earthliving_current_country% &8| &7Access: &f%earthliving_border_access%"
+```
+
+Recommended footer:
+
+```yaml
+footer:
+  - "&7Passport: &f%earthliving_passport_status% &8| &7Visa: &f%earthliving_required_visa%"
+  - "&7Discord: &f%earthliving_verified_status% &8| &7Rank: &f%luckperms-primary-group%"
+```
+
+Recommended player format:
+
+```yaml
+customtabname: "%player%"
+tabsuffix: " &8| &f%earthliving_current_country% &8| &a%earthliving_verified_status%"
+tagsuffix: " &8[%earthliving_border_access%]"
+```
+
+Recommended group/rank layout remains LuckPerms-first:
+
+```yaml
+sorting-types:
+  - "GROUPS:owner,developer,admin,moderator,staff,builder,supporter,citizen,default"
+  - "PLACEHOLDER_A_TO_Z:%earthliving_current_country%"
+  - "PLACEHOLDER_A_TO_Z:%player%"
+```
