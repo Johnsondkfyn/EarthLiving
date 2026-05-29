@@ -2,7 +2,6 @@ package dk.earthliving.core.command;
 
 import dk.earthliving.core.build.BorderControlBuildGenerator;
 import dk.earthliving.core.notification.NotificationService;
-import dk.earthliving.core.preview.PlacementPreviewService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,12 +13,10 @@ import java.util.List;
 public final class EarthLivingBuildCommand implements CommandExecutor, TabCompleter {
     private final NotificationService notifications;
     private final BorderControlBuildGenerator borderControlGenerator;
-    private final PlacementPreviewService placementPreviewService;
 
-    public EarthLivingBuildCommand(NotificationService notifications, BorderControlBuildGenerator borderControlGenerator, PlacementPreviewService placementPreviewService) {
+    public EarthLivingBuildCommand(NotificationService notifications, BorderControlBuildGenerator borderControlGenerator) {
         this.notifications = notifications;
         this.borderControlGenerator = borderControlGenerator;
-        this.placementPreviewService = placementPreviewService;
     }
 
     @Override
@@ -35,14 +32,23 @@ public final class EarthLivingBuildCommand implements CommandExecutor, TabComple
         }
 
         if (args.length == 0 || !args[0].equalsIgnoreCase("bordercontrol")) {
-            notifications.send(sender, "&eUsage: /" + label + " bordercontrol <preview|confirm>");
+            notifications.send(sender, "&eUsage: /" + label + " bordercontrol <preview|confirm|cancel|undo>");
             return true;
         }
 
         if (args.length >= 2 && args[1].equalsIgnoreCase("preview")) {
-            placementPreviewService.showLook(player, 21, 8, 21, 0, 90, 80,
-                    (target, origin) -> borderControlGenerator.generateAt(target, origin, true));
-            notifications.send(sender, "&7Preview is 21x8x21. Country A is north/negative Z, Country B is south/positive Z.");
+            borderControlGenerator.startPreview(player);
+            notifications.send(sender, "&7Ghost preview follows the block you look at. Left-click places it.");
+            return true;
+        }
+
+        if (args.length >= 2 && args[1].equalsIgnoreCase("cancel")) {
+            borderControlGenerator.cancelPreview(player, true);
+            return true;
+        }
+
+        if (args.length >= 2 && args[1].equalsIgnoreCase("undo")) {
+            borderControlGenerator.undo(player);
             return true;
         }
 
@@ -62,7 +68,7 @@ public final class EarthLivingBuildCommand implements CommandExecutor, TabComple
                     .toList();
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("bordercontrol")) {
-            return List.of("preview", "confirm").stream()
+            return List.of("preview", "confirm", "cancel", "undo").stream()
                     .filter(option -> option.startsWith(args[1].toLowerCase()))
                     .toList();
         }

@@ -6,7 +6,7 @@
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "EarthLivingCore 0.9.4 is live with a hub-style preview flow for the developer-only Border Control build generator. Preview follows the looked-at block, and left-click places the compact neutral border facility.",
-    "da": "EarthLivingCore 0.9.4 er live med hub-style preview-flow til developer-only Border Control build generator. Preview følger blokken man kigger på, og venstreklik placerer den kompakte neutrale grænsebygning."
+    "en": "EarthLivingCore 0.9.4 is live with a client-side ghost preview and undo for the developer-only Border Control build generator. Left-click places the visible ghost building.",
+    "da": "EarthLivingCore 0.9.4 er live med client-side ghost preview og undo til developer-only Border Control build generator. Venstreklik placerer den synlige ghost-bygning."
   }
 }

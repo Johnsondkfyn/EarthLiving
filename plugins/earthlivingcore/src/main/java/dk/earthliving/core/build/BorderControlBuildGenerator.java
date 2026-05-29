@@ -7,14 +7,29 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class BorderControlBuildGenerator {
     private static final int MIN = -10;
     private static final int MAX = 10;
 
+    private final JavaPlugin plugin;
     private final NotificationService notifications;
+    private final Map<UUID, PreviewSession> previews = new HashMap<>();
+    private final Map<UUID, List<SavedBlock>> undoHistory = new HashMap<>();
+    private List<GeneratedBlock> capture;
+    private BukkitTask previewTask;
 
-    public BorderControlBuildGenerator(NotificationService notifications) {
+    public BorderControlBuildGenerator(JavaPlugin plugin, NotificationService notifications) {
+        this.plugin = plugin;
         this.notifications = notifications;
     }
 
@@ -31,6 +46,7 @@ public final class BorderControlBuildGenerator {
             return;
         }
 
+        saveUndo(player, origin);
         buildFoundation(origin);
         buildRoads(origin);
         buildWalls(origin);
@@ -46,6 +62,176 @@ public final class BorderControlBuildGenerator {
         notifications.send(player, "&aEarth Living Border Control generated.");
         notifications.send(player, "&7Center/neutral hall: &f" + origin.getBlockX() + " " + origin.getBlockY() + " " + origin.getBlockZ());
         notifications.send(player, "&7Country A side: &fnorth/negative Z&7. Country B side: &fsouth/positive Z&7.");
+    }
+
+    public void startPreview(Player player) {
+        cancelPreview(player, false);
+        List<GeneratedBlock> blocks = generatedBlocks();
+        PreviewSession session = new PreviewSession(blocks, Map.of(), null, System.currentTimeMillis() + 90_000L);
+        previews.put(player.getUniqueId(), session);
+        ensurePreviewTask();
+        renderPreview(player, session);
+        notifications.send(player, "&aBorder Control ghost preview started.");
+        notifications.send(player, "&7Look at the placement block. Left-click places it. Use &f/elbuild bordercontrol cancel &7to stop.");
+    }
+
+    public boolean placePreview(Player player) {
+        PreviewSession session = previews.remove(player.getUniqueId());
+        if (session == null) {
+            return false;
+        }
+        restorePreview(player, session);
+        Location origin = targetOrigin(player);
+        if (origin == null) {
+            notifications.send(player, "&cLook at a solid block before placing the build.");
+            return true;
+        }
+        generateAt(player, origin, true);
+        return true;
+    }
+
+    public boolean cancelPreview(Player player, boolean notify) {
+        PreviewSession session = previews.remove(player.getUniqueId());
+        if (session == null) {
+            if (notify) {
+                notifications.send(player, "&7No active Border Control preview.");
+            }
+            return false;
+        }
+        restorePreview(player, session);
+        if (notify) {
+            notifications.send(player, "&7Border Control preview cancelled.");
+        }
+        return true;
+    }
+
+    public boolean undo(Player player) {
+        List<SavedBlock> savedBlocks = undoHistory.remove(player.getUniqueId());
+        if (savedBlocks == null || savedBlocks.isEmpty()) {
+            notifications.send(player, "&7No Border Control build to undo.");
+            return false;
+        }
+        for (SavedBlock savedBlock : savedBlocks) {
+            savedBlock.location().getBlock().setBlockData(savedBlock.blockData(), false);
+        }
+        notifications.send(player, "&aLast Border Control build restored.");
+        return true;
+    }
+
+    public void stop() {
+        for (UUID uuid : List.copyOf(previews.keySet())) {
+            Player player = plugin.getServer().getPlayer(uuid);
+            PreviewSession session = previews.remove(uuid);
+            if (player != null && session != null) {
+                restorePreview(player, session);
+            }
+        }
+        if (previewTask != null) {
+            previewTask.cancel();
+            previewTask = null;
+        }
+    }
+
+    private void saveUndo(Player player, Location origin) {
+        List<SavedBlock> savedBlocks = new ArrayList<>();
+        World world = origin.getWorld();
+        for (int x = MIN - 4; x <= MAX + 4; x++) {
+            for (int y = -1; y <= 8; y++) {
+                for (int z = MIN - 4; z <= MAX + 4; z++) {
+                    Location location = new Location(world, origin.getBlockX() + x, origin.getBlockY() + y, origin.getBlockZ() + z);
+                    savedBlocks.add(new SavedBlock(location, location.getBlock().getBlockData()));
+                }
+            }
+        }
+        undoHistory.put(player.getUniqueId(), savedBlocks);
+    }
+
+    private List<GeneratedBlock> generatedBlocks() {
+        capture = new ArrayList<>();
+        try {
+            buildFoundation(null);
+            buildRoads(null);
+            buildWalls(null);
+            buildGlass(null);
+            buildRooms(null);
+            buildRoof(null);
+            buildGates(null);
+            buildLighting(null);
+            buildInterior(null);
+            buildPlanters(null);
+            buildSigns(null);
+            return List.copyOf(capture);
+        } finally {
+            capture = null;
+        }
+    }
+
+    private void ensurePreviewTask() {
+        if (previewTask != null) {
+            return;
+        }
+        previewTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            long now = System.currentTimeMillis();
+            for (UUID uuid : List.copyOf(previews.keySet())) {
+                Player player = plugin.getServer().getPlayer(uuid);
+                PreviewSession session = previews.get(uuid);
+                if (player == null || session == null || session.expiresAt() <= now) {
+                    if (player != null && session != null) {
+                        restorePreview(player, session);
+                    }
+                    previews.remove(uuid);
+                    continue;
+                }
+                renderPreview(player, session);
+            }
+            if (previews.isEmpty() && previewTask != null) {
+                previewTask.cancel();
+                previewTask = null;
+            }
+        }, 0L, 8L);
+    }
+
+    private void renderPreview(Player player, PreviewSession session) {
+        Location origin = targetOrigin(player);
+        if (origin == null) {
+            restorePreview(player, session);
+            return;
+        }
+        if (session.lastOrigin() != null && sameBlock(origin, session.lastOrigin())) {
+            return;
+        }
+        restorePreview(player, session);
+        World world = origin.getWorld();
+        Map<Location, BlockData> sent = new HashMap<>();
+        for (GeneratedBlock block : session.blocks()) {
+            Location location = new Location(world, origin.getBlockX() + block.x(), origin.getBlockY() + block.y(), origin.getBlockZ() + block.z());
+            player.sendBlockChange(location, block.material().createBlockData());
+            sent.put(location, block.material().createBlockData());
+        }
+        session.sentBlocks(sent);
+        session.lastOrigin(origin.clone());
+    }
+
+    private void restorePreview(Player player, PreviewSession session) {
+        for (Location location : session.sentBlocks().keySet()) {
+            player.sendBlockChange(location, location.getBlock().getBlockData());
+        }
+        session.sentBlocks(Map.of());
+    }
+
+    private Location targetOrigin(Player player) {
+        Block block = player.getTargetBlockExact(90);
+        if (block == null) {
+            return null;
+        }
+        return block.getLocation().add(0, 1, 0);
+    }
+
+    private boolean sameBlock(Location first, Location second) {
+        return first.getWorld() == second.getWorld()
+                && first.getBlockX() == second.getBlockX()
+                && first.getBlockY() == second.getBlockY()
+                && first.getBlockZ() == second.getBlockZ();
     }
 
     private boolean hasBlockingBuildSpace(Location origin) {
@@ -197,6 +383,9 @@ public final class BorderControlBuildGenerator {
 
     private void placeSign(Location origin, int x, int y, int z, String line1, String line2, String line3) {
         set(origin, x, y, z, Material.OAK_SIGN);
+        if (capture != null) {
+            return;
+        }
         Block block = block(origin, x, y, z);
         if (block.getState() instanceof Sign sign) {
             sign.setLine(0, line1);
@@ -240,11 +429,61 @@ public final class BorderControlBuildGenerator {
     }
 
     private void set(Location origin, int x, int y, int z, Material material) {
+        if (capture != null) {
+            if (material != Material.AIR) {
+                capture.add(new GeneratedBlock(x, y, z, material));
+            }
+            return;
+        }
         block(origin, x, y, z).setType(material, false);
     }
 
     private Block block(Location origin, int x, int y, int z) {
         World world = origin.getWorld();
         return world.getBlockAt(origin.getBlockX() + x, origin.getBlockY() + y, origin.getBlockZ() + z);
+    }
+
+    private record GeneratedBlock(int x, int y, int z, Material material) {
+    }
+
+    private record SavedBlock(Location location, BlockData blockData) {
+    }
+
+    private static final class PreviewSession {
+        private final List<GeneratedBlock> blocks;
+        private Map<Location, BlockData> sentBlocks;
+        private Location lastOrigin;
+        private final long expiresAt;
+
+        private PreviewSession(List<GeneratedBlock> blocks, Map<Location, BlockData> sentBlocks, Location lastOrigin, long expiresAt) {
+            this.blocks = blocks;
+            this.sentBlocks = sentBlocks;
+            this.lastOrigin = lastOrigin;
+            this.expiresAt = expiresAt;
+        }
+
+        private List<GeneratedBlock> blocks() {
+            return blocks;
+        }
+
+        private Map<Location, BlockData> sentBlocks() {
+            return sentBlocks;
+        }
+
+        private void sentBlocks(Map<Location, BlockData> sentBlocks) {
+            this.sentBlocks = sentBlocks;
+        }
+
+        private Location lastOrigin() {
+            return lastOrigin;
+        }
+
+        private void lastOrigin(Location lastOrigin) {
+            this.lastOrigin = lastOrigin;
+        }
+
+        private long expiresAt() {
+            return expiresAt;
+        }
     }
 }

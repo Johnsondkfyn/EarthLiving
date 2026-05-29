@@ -63,7 +63,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         walletService = new WalletService(this, notificationService);
         jobsService = new JobsService(this, notificationService, walletService);
         guideService = new GuideService(this, notificationService);
-        borderControlBuildGenerator = new BorderControlBuildGenerator(notificationService);
+        borderControlBuildGenerator = new BorderControlBuildGenerator(this, notificationService);
         placementPreviewService = new PlacementPreviewService(this, notificationService);
         webPortalService = new WebPortalService(this, notificationService, reportService);
         discordReportImportService = new DiscordReportImportService(this, notificationService, reportService);
@@ -74,7 +74,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService, passportService, verificationService, walletService, jobsService, guideService), this);
         getServer().getPluginManager().registerEvents(jobsService, this);
-        getServer().getPluginManager().registerEvents(new PlacementPreviewListener(placementPreviewService), this);
+        getServer().getPluginManager().registerEvents(new PlacementPreviewListener(placementPreviewService, borderControlBuildGenerator), this);
         registerPlaceholders();
         reportService.startPanelActionProcessor();
         webPortalService.startExporter();
@@ -96,6 +96,9 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         }
         if (placementPreviewService != null) {
             placementPreviewService.stop();
+        }
+        if (borderControlBuildGenerator != null) {
+            borderControlBuildGenerator.stop();
         }
         if (placeholderExpansion != null) {
             placeholderExpansion.unregister();
@@ -194,7 +197,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         earthOsCommand.setExecutor(earthOsExecutor);
 
         PluginCommand earthLivingBuildCommand = Objects.requireNonNull(getCommand("elbuild"));
-        EarthLivingBuildCommand buildExecutor = new EarthLivingBuildCommand(notificationService, borderControlBuildGenerator, placementPreviewService);
+        EarthLivingBuildCommand buildExecutor = new EarthLivingBuildCommand(notificationService, borderControlBuildGenerator);
         earthLivingBuildCommand.setExecutor(buildExecutor);
         earthLivingBuildCommand.setTabCompleter(buildExecutor);
     }

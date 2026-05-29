@@ -20,7 +20,7 @@ commands:
     permission: earthliving.earthos
   elbuild:
     description: Developer build generators for Earth Living structures.
-    usage: /elbuild <bordercontrol> <preview|confirm>
+    usage: /elbuild <bordercontrol> <preview|confirm|cancel|undo>
     permission: earthliving.build.bordercontrol
 
 permissions:

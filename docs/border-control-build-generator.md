@@ -14,7 +14,21 @@ Preview the building first:
 /elbuild bordercontrol preview
 ```
 
-In preview mode the outline follows the block you are looking at. Left-click places the building at the preview origin.
+In preview mode a client-side ghost of the building follows the block you are looking at. Left-click places the building at the preview origin.
+
+Use `/elbuild bordercontrol preview` for the actual building preview. The older `/el preview ...` command only shows a generic particle footprint and is still kept for measuring custom areas.
+
+Cancel the preview:
+
+```text
+/elbuild bordercontrol cancel
+```
+
+Undo the last generated Border Control building for your player:
+
+```text
+/elbuild bordercontrol undo
+```
 
 If the build area contains existing blocks above the floor, the command asks for confirmation:
 
