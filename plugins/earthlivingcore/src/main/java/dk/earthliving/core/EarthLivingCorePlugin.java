@@ -15,6 +15,7 @@ import dk.earthliving.core.passport.PassportService;
 import dk.earthliving.core.preview.PlacementPreviewListener;
 import dk.earthliving.core.preview.PlacementPreviewService;
 import dk.earthliving.core.report.ReportService;
+import dk.earthliving.core.verification.VerificationService;
 import dk.earthliving.core.webportal.WebPortalService;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,6 +35,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
     private WebPortalService webPortalService;
     private PassportService passportService;
     private PlacementPreviewService placementPreviewService;
+    private VerificationService verificationService;
 
     @Override
     public void onEnable() {
@@ -46,14 +48,16 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         moduleRegistry = new ModuleRegistry();
         reportService = new ReportService(this, notificationService, discordNotificationService);
         passportService = new PassportService(this, notificationService);
+        verificationService = new VerificationService(this, notificationService);
         placementPreviewService = new PlacementPreviewService(this, notificationService);
         webPortalService = new WebPortalService(this, notificationService, reportService);
         discordReportImportService = new DiscordReportImportService(this, notificationService, reportService);
-        earthOsService = new EarthOsService(this, notificationService, reportService, webPortalService, passportService);
+        earthOsService = new EarthOsService(this, notificationService, reportService, webPortalService, passportService, verificationService);
 
         registerModules();
         registerCommands();
-        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService, passportService), this);
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        getServer().getPluginManager().registerEvents(new EarthOsListener(this, earthOsService, reportService, webPortalService, passportService, verificationService), this);
         getServer().getPluginManager().registerEvents(new PlacementPreviewListener(placementPreviewService), this);
         reportService.startPanelActionProcessor();
         webPortalService.startExporter();
@@ -120,6 +124,10 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
         return placementPreviewService;
     }
 
+    public VerificationService verificationService() {
+        return verificationService;
+    }
+
     private void registerModules() {
         List<CoreModule> modules = List.of(
                 new CoreModule("earthos", "EarthOS menu/device"),
@@ -128,6 +136,7 @@ public final class EarthLivingCorePlugin extends JavaPlugin {
                 new CoreModule("events", "Server event feed foundation"),
                 new CoreModule("reports", "Support/report workflow foundation"),
                 new CoreModule("passports", "Country/passport integration foundation"),
+                new CoreModule("verification", "Discord verification entrypoint"),
                 new CoreModule("preview", "Schematic placement preview foundation"),
                 new CoreModule("discord", "Discord integration foundation")
         );

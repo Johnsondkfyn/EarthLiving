@@ -32,6 +32,41 @@ earthos:
   settings:
     - "&fSettings are planned."
     - "&7Your EarthOS device has been refreshed."
+  menu:
+    passport-name: "&6Passport"
+    verify-name: "&aDiscord Verification"
+    servers-name: "&bServers"
+  verification:
+    start-command: "discord link"
+    info-name: "&bHow verification works"
+    info-lore:
+      - "&7Start the Discord link flow."
+      - "&7Follow the code instructions in chat."
+      - "&7Rejoin after your account is linked."
+    start-name: "&aStart Discord verification"
+    start-lore:
+      - "&7Runs the configured DiscordSRV link command."
+      - "&7No passwords are handled by EarthLivingCore."
+    before-start:
+      - "&7Starting Discord verification..."
+      - "&7Follow the instructions DiscordSRV gives you."
+    after-start:
+      - "&aIf a code appears, send it to the configured Discord bot."
+      - "&7After linking, rejoin through Velocity."
+    instructions:
+      - "&6EarthLiving verification"
+      - "&71. Click Start Discord verification."
+      - "&72. Follow the DiscordSRV code instructions."
+      - "&73. Rejoin through Velocity when linked."
+      - "&8No Microsoft, Minecraft, Discord or panel passwords are handled here."
+  servers:
+    hub-name: "&bHub"
+    hub-server: "hub"
+    main-name: "&aMain"
+    main-server: "main"
+    connecting-message: "&aConnecting to &f{server}&a."
+
+# VS1 only. Later economy/jobs/web/nations/quests should become separate EarthOS apps after the vertical slice is stable.
 
 modules:
   earthos: true
@@ -40,6 +75,7 @@ modules:
   events: true
   reports: true
   passports: true
+  verification: true
   discord: true
 
 webportal:
@@ -90,3 +126,5 @@ discord:
 
 messages:
   prefix: "&8[&6Earth Living&8] &r"
+  no-verify-permission: "&cYou do not have permission to start verification."
+  no-serverselect-permission: "&cYou do not have permission to switch servers."

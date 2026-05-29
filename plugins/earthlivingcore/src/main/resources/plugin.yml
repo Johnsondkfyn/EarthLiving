@@ -1,5 +1,5 @@
 name: EarthLivingCore
-version: 0.7.8
+version: 0.8.0
 main: dk.earthliving.core.EarthLivingCorePlugin
 api-version: '1.21'
 author: Codex
@@ -26,4 +26,10 @@ permissions:
     default: op
   earthliving.earthos:
     description: Allows opening EarthOS.
+    default: true
+  earthliving.verify:
+    description: Allows starting the VS1 Discord verification flow.
+    default: true
+  earthliving.serverselect:
+    description: Allows using EarthOS server selection.
     default: true

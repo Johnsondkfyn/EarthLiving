@@ -2,6 +2,7 @@ package dk.earthliving.core.earthos;
 
 import dk.earthliving.core.passport.PassportService;
 import dk.earthliving.core.report.ReportService;
+import dk.earthliving.core.verification.VerificationService;
 import dk.earthliving.core.webportal.WebPortalService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,13 +20,15 @@ public final class EarthOsListener implements Listener {
     private final ReportService reportService;
     private final WebPortalService webPortalService;
     private final PassportService passportService;
+    private final VerificationService verificationService;
 
-    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService, WebPortalService webPortalService, PassportService passportService) {
+    public EarthOsListener(Plugin plugin, EarthOsService earthOsService, ReportService reportService, WebPortalService webPortalService, PassportService passportService, VerificationService verificationService) {
         this.plugin = plugin;
         this.earthOsService = earthOsService;
         this.reportService = reportService;
         this.webPortalService = webPortalService;
         this.passportService = passportService;
+        this.verificationService = verificationService;
     }
 
     @EventHandler
@@ -60,7 +63,9 @@ public final class EarthOsListener implements Listener {
                 && !ReportService.CREATE_MENU_TITLE.equals(title)
                 && !ReportService.MY_REPORTS_TITLE.equals(title)
                 && !ReportService.ADMIN_REPORTS_TITLE.equals(title)
-                && !PassportService.MENU_TITLE.equals(title)) {
+                && !PassportService.MENU_TITLE.equals(title)
+                && !VerificationService.MENU_TITLE.equals(title)
+                && !EarthOsService.SERVER_MENU_TITLE.equals(title)) {
             return;
         }
 
@@ -76,6 +81,10 @@ public final class EarthOsListener implements Listener {
                 reportService.handleReportListClick(player, event.getRawSlot());
             } else if (PassportService.MENU_TITLE.equals(title)) {
                 passportService.handleClick(player, event.getRawSlot());
+            } else if (VerificationService.MENU_TITLE.equals(title)) {
+                verificationService.handleClick(player, event.getRawSlot(), earthOsService);
+            } else if (EarthOsService.SERVER_MENU_TITLE.equals(title)) {
+                earthOsService.handleServerClick(player, event.getRawSlot());
             }
             player.updateInventory();
         }

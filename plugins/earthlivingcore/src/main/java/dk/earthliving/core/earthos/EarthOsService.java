@@ -3,6 +3,7 @@ package dk.earthliving.core.earthos;
 import dk.earthliving.core.notification.NotificationService;
 import dk.earthliving.core.passport.PassportService;
 import dk.earthliving.core.report.ReportService;
+import dk.earthliving.core.verification.VerificationService;
 import dk.earthliving.core.webportal.WebPortalService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -19,33 +20,42 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class EarthOsService {
     public static final String MENU_TITLE = "EarthOS";
-    public static final int SLOT_MAP = 10;
-    public static final int SLOT_EVENTS = 11;
-    public static final int SLOT_PASSPORT = 12;
-    public static final int SLOT_WALLET = 13;
-    public static final int SLOT_REPORTS = 14;
-    public static final int SLOT_STATUS = 15;
-    public static final int SLOT_SETTINGS = 16;
-    public static final int SLOT_PROFILE = 22;
+    public static final String SERVER_MENU_TITLE = "EarthOS Servers";
+    public static final int SLOT_PASSPORT = 11;
+    public static final int SLOT_VERIFY = 13;
+    public static final int SLOT_SERVERS = 15;
+    public static final int SLOT_MAP = 20;
+    public static final int SLOT_REPORTS = 22;
+    public static final int SLOT_STATUS = 24;
+    public static final int SLOT_SETTINGS = 31;
+    public static final int SLOT_PROFILE = 33;
+    private static final int SLOT_HUB = 11;
+    private static final int SLOT_MAIN = 15;
+    private static final int SLOT_SERVER_BACK = 22;
 
     private final JavaPlugin plugin;
     private final NotificationService notifications;
     private final ReportService reportService;
     private final WebPortalService webPortalService;
     private final PassportService passportService;
+    private final VerificationService verificationService;
     private final NamespacedKey itemKey;
 
-    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService, WebPortalService webPortalService, PassportService passportService) {
+    public EarthOsService(JavaPlugin plugin, NotificationService notifications, ReportService reportService, WebPortalService webPortalService, PassportService passportService, VerificationService verificationService) {
         this.plugin = plugin;
         this.notifications = notifications;
         this.reportService = reportService;
         this.webPortalService = webPortalService;
         this.passportService = passportService;
+        this.verificationService = verificationService;
         this.itemKey = new NamespacedKey(plugin, "earthos_device");
     }
 
@@ -90,23 +100,34 @@ public final class EarthOsService {
             return;
         }
 
-        Inventory inventory = Bukkit.createInventory(player, 27, MENU_TITLE);
-        inventory.setItem(SLOT_MAP, menuItem(Material.MAP, "&bWorld Map", List.of("&7Open BlueMap in chat")));
-        inventory.setItem(SLOT_EVENTS, menuItem(Material.CLOCK, "&eServer Events", List.of("&7Random events and competitions")));
-        inventory.setItem(SLOT_PASSPORT, menuItem(Material.PAPER, "&6Passport", List.of(
-                "&7Citizenship, visas and travel",
-                "&7Home country: &f" + passportCountryLabel(player)
+        Inventory inventory = Bukkit.createInventory(player, 45, MENU_TITLE);
+        inventory.setItem(SLOT_PASSPORT, menuItem(Material.PAPER, configText("earthos.menu.passport-name", "&6Passport"), List.of(
+                "&7Your EarthLiving identity",
+                "&7Player: &f" + player.getName(),
+                "&7Home country: &f" + passportCountryLabel(player),
+                "&8VS1: read-only player data"
         )));
-        inventory.setItem(SLOT_WALLET, menuItem(Material.EMERALD, "&aWallet", List.of("&7Economy placeholder")));
+        inventory.setItem(SLOT_VERIFY, menuItem(Material.LIME_DYE, configText("earthos.menu.verify-name", "&aDiscord Verification"), List.of(
+                "&7Start account linking safely",
+                "&7Uses DiscordSRV link flow",
+                "&8No passwords handled here"
+        )));
+        inventory.setItem(SLOT_SERVERS, menuItem(Material.COMPASS, configText("earthos.menu.servers-name", "&bServers"), List.of(
+                "&7Choose Hub or Main",
+                "&7Works through Velocity"
+        )));
+        inventory.setItem(SLOT_MAP, menuItem(Material.MAP, "&bWorld Map", List.of("&7Open BlueMap in chat")));
+        // TODO later: jobs, economy, transport, nations, quests and web profile should become separate EarthOS apps after VS1.
         inventory.setItem(SLOT_REPORTS, menuItem(Material.WRITABLE_BOOK, "&dReports", List.of(
-                "&7Create a quick report",
-                "&7Open reports: &f" + reportService.openReportCount()
+                "&7Open reports: &f" + reportService.openReportCount(),
+                "&8TODO VS2: polish report flow"
         )));
         inventory.setItem(SLOT_STATUS, menuItem(Material.REDSTONE_TORCH, "&cServer Status", List.of("&7Status, maintenance and updates")));
-        inventory.setItem(SLOT_SETTINGS, menuItem(Material.COMPARATOR, "&fSettings", List.of("&7Player preferences")));
+        inventory.setItem(SLOT_SETTINGS, menuItem(Material.COMPARATOR, "&fSettings", List.of("&7Refresh EarthOS device")));
         inventory.setItem(SLOT_PROFILE, menuItem(Material.PLAYER_HEAD, "&bMy EarthLiving", List.of(
-                "&7Link your website profile",
-                "&7Linked profile: &f" + linkedProfileLabel(player)
+                "&7Web profile is planned later",
+                "&7Linked profile: &f" + linkedProfileLabel(player),
+                "&8TODO later: web portal profile"
         )));
         player.openInventory(inventory);
     }
@@ -120,9 +141,9 @@ public final class EarthOsService {
                     "BlueMap",
                     plugin.getConfig().getString("earthos.bluemap-url", "http://159.195.149.253:8100/")
             );
-            case SLOT_EVENTS -> sendConfiguredLines(player, "earthos.events");
             case SLOT_PASSPORT -> passportService.open(player);
-            case SLOT_WALLET -> sendConfiguredLines(player, "earthos.wallet");
+            case SLOT_VERIFY -> verificationService.open(player);
+            case SLOT_SERVERS -> openServerMenu(player);
             case SLOT_REPORTS -> reportService.open(player);
             case SLOT_STATUS -> sendConfiguredLines(player, "earthos.server-status");
             case SLOT_SETTINGS -> {
@@ -130,11 +151,58 @@ public final class EarthOsService {
                 sendConfiguredLines(player, "earthos.settings");
             }
             case SLOT_PROFILE -> {
+                // TODO VS2/Web: connect this to the future website profile once VS1 verification is stable.
                 sendConfiguredLines(player, "earthos.profile");
-                webPortalService.beginLinkInput(player);
             }
             default -> {
             }
+        }
+    }
+
+    public void openServerMenu(Player player) {
+        Inventory inventory = Bukkit.createInventory(player, 27, SERVER_MENU_TITLE);
+        inventory.setItem(SLOT_HUB, menuItem(Material.BEACON, configText("earthos.servers.hub-name", "&bHub"), List.of(
+                "&7Spawn, EarthOS and onboarding",
+                "&7Server: &f" + configText("earthos.servers.hub-server", "hub")
+        )));
+        inventory.setItem(SLOT_MAIN, menuItem(Material.GRASS_BLOCK, configText("earthos.servers.main-name", "&aMain"), List.of(
+                "&7EarthLiving survival world",
+                "&7Server: &f" + configText("earthos.servers.main-server", "main")
+        )));
+        inventory.setItem(SLOT_SERVER_BACK, menuItem(Material.ARROW, "&fBack to EarthOS", List.of("&7Return to the main menu.")));
+        player.openInventory(inventory);
+    }
+
+    public void handleServerClick(Player player, int slot) {
+        if (slot == SLOT_SERVER_BACK) {
+            open(player);
+            return;
+        }
+        if (!player.hasPermission("earthliving.serverselect")) {
+            notifications.send(player, configText("messages.no-serverselect-permission", "&cYou do not have permission to switch servers."));
+            return;
+        }
+        if (slot == SLOT_HUB) {
+            connect(player, configText("earthos.servers.hub-server", "hub"));
+        } else if (slot == SLOT_MAIN) {
+            connect(player, configText("earthos.servers.main-server", "main"));
+        }
+    }
+
+    private void connect(Player player, String server) {
+        if (server == null || server.isBlank()) {
+            notifications.send(player, "&cThat server is not configured yet.");
+            return;
+        }
+        try {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            DataOutputStream output = new DataOutputStream(bytes);
+            output.writeUTF("Connect");
+            output.writeUTF(server);
+            player.sendPluginMessage(plugin, "BungeeCord", bytes.toByteArray());
+            notifications.send(player, configText("earthos.servers.connecting-message", "&aConnecting to &f{server}&a.").replace("{server}", server));
+        } catch (IOException exception) {
+            notifications.send(player, "&cCould not send you to that server.");
         }
     }
 
@@ -146,6 +214,10 @@ public final class EarthOsService {
     private String passportCountryLabel(Player player) {
         String country = passportService.profile(player.getUniqueId(), player.getName()).citizenshipCountry();
         return country.isBlank() ? "Not selected" : country;
+    }
+
+    private String configText(String path, String fallback) {
+        return plugin.getConfig().getString(path, fallback);
     }
 
     private void sendConfiguredLines(Player player, String path) {

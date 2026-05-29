@@ -54,10 +54,12 @@ public final class PassportService {
     public void open(Player player) {
         ensureProfile(player.getUniqueId(), player.getName());
         PassportProfile profile = profile(player.getUniqueId(), player.getName());
-        Inventory inventory = Bukkit.createInventory(player, 27, MENU_TITLE);
+        Inventory inventory = Bukkit.createInventory(player, 45, MENU_TITLE);
         inventory.setItem(10, item(Material.WRITABLE_BOOK, "&6Passport profile", List.of(
                 "&7Player: &f" + profile.playerName(),
-                "&7Passport issued: &f" + shortDate(profile.issuedAt())
+                "&7UUID: &f" + shortUuid(profile.uuid()),
+                "&7Passport issued: &f" + shortDate(profile.issuedAt()),
+                "&8VS1 identity record"
         )));
         inventory.setItem(12, item(Material.GLOBE_BANNER_PATTERN, "&bCitizenship", List.of(
                 "&7Home country: &f" + emptyLabel(profile.citizenshipCountry(), "Not selected"),
@@ -66,12 +68,17 @@ public final class PassportService {
         )));
         inventory.setItem(14, item(Material.MAP, "&eVisas", visaLore(profile)));
         inventory.setItem(16, item(Material.EMERALD, "&aCountry reputation", reputationLore(profile)));
-        inventory.setItem(22, item(Material.BARRIER, "&cClose", List.of("&7Passport V1 is read-only for players.")));
+        inventory.setItem(30, item(Material.NAME_TAG, "&fVerification status", List.of(
+                "&7Discord verification is handled",
+                "&7from EarthOS -> Discord Verification.",
+                "&8TODO VS1: mirror linked state when final source is stable."
+        )));
+        inventory.setItem(32, item(Material.BARRIER, "&cClose", List.of("&7Passport VS1 is read-only for players.")));
         player.openInventory(inventory);
     }
 
     public void handleClick(Player player, int slot) {
-        if (slot == 22) {
+        if (slot == 32) {
             player.closeInventory();
             return;
         }
@@ -324,6 +331,10 @@ public final class PassportService {
             return "";
         }
         return value.length() >= 10 ? value.substring(0, 10) : value;
+    }
+
+    private String shortUuid(String value) {
+        return value == null || value.length() < 8 ? "" : value.substring(0, 8) + "...";
     }
 
     private String emptyLabel(String value, String fallback) {
