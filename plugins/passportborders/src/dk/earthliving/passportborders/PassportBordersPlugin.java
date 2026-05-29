@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -91,7 +92,7 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
             event.setCancelled(true);
             event.setTo(from);
             exportBorderStatus(player, targetCountry, false, to);
-            showBorderParticles(player, to);
+            showBorderParticles(player, from, to);
             sendDenied(player, targetCountry);
             return;
         }
@@ -99,14 +100,23 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
         if (targetCountry == null) {
             currentCountry.remove(player.getUniqueId());
             exportBorderStatus(player, null, true, to);
+            if (getConfig().getBoolean("visual-border.show-on-leave", true)) {
+                showBorderParticles(player, from, to);
+                player.sendActionBar(Component.text(stripColor(getConfig().getString("messages.wilderness-actionbar", "Leaving country border"))));
+            }
             send(player, getConfig().getString("messages.wilderness", "&7Du forlader et land."));
             return;
         }
 
         currentCountry.put(player.getUniqueId(), targetCountry.id);
         exportBorderStatus(player, targetCountry, true, to);
-        send(player, getConfig().getString("messages.entered", "&aDu går ind i &f%country%&a.")
-                .replace("%country%", targetCountry.name));
+        if (getConfig().getBoolean("visual-border.show-on-enter", true)) {
+            showBorderParticles(player, from, to);
+        }
+        String message = hasBorderBypass(player)
+                ? getConfig().getString("messages.entered-bypass", "&eDu går ind i &f%country%&e med border bypass.")
+                : getConfig().getString("messages.entered", "&aDu går ind i &f%country%&a.");
+        send(player, message.replace("%country%", targetCountry.name));
     }
 
     @EventHandler
@@ -129,7 +139,9 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
             return;
         }
         event.setCancelled(true);
-        openMainMenu(event.getPlayer());
+        event.setUseInteractedBlock(Event.Result.DENY);
+        event.setUseItemInHand(Event.Result.DENY);
+        Bukkit.getScheduler().runTask(this, () -> openMainMenu(event.getPlayer()));
     }
 
     @EventHandler
@@ -632,10 +644,14 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
     }
 
     private boolean canEnter(Player player, Country country) {
-        return player.hasPermission("passportborders.bypass")
-                || player.hasPermission("earthliving.border.bypass")
+        return hasBorderBypass(player)
                 || ownsPassport(player, country)
                 || player.hasPermission(country.permission);
+    }
+
+    private boolean hasBorderBypass(Player player) {
+        return player.hasPermission("passportborders.bypass")
+                || player.hasPermission("earthliving.border.bypass");
     }
 
     private void sendCountryList(Player player, int page) {
@@ -734,7 +750,7 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
                 .replace("%country%", country.name));
     }
 
-    private void showBorderParticles(Player player, Location center) {
+    private void showBorderParticles(Player player, Location from, Location to) {
         if (!getConfig().getBoolean("visual-border.enabled", true)) {
             return;
         }
@@ -744,14 +760,26 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
         } catch (IllegalArgumentException exception) {
             particle = Particle.END_ROD;
         }
-        int count = Math.max(4, getConfig().getInt("visual-border.count", 18));
-        double radius = Math.max(0.4, getConfig().getDouble("visual-border.radius", 1.6));
+        int widthSteps = Math.max(4, getConfig().getInt("visual-border.count", 18));
+        double halfWidth = Math.max(1.5, getConfig().getDouble("visual-border.radius", 1.6) * 2.5D);
+        double height = Math.max(1.5, getConfig().getDouble("visual-border.wall-height", 3.5D));
+        double heightStep = Math.max(0.35, getConfig().getDouble("visual-border.wall-step", 0.5D));
         double yOffset = getConfig().getDouble("visual-border.y-offset", 1.0);
-        Location base = center.clone().add(0.0, yOffset, 0.0);
-        for (int index = 0; index < count; index++) {
-            double angle = (Math.PI * 2.0D * index) / count;
-            Location point = base.clone().add(Math.cos(angle) * radius, 0.0, Math.sin(angle) * radius);
-            player.spawnParticle(particle, point, 1, 0.0, 0.05, 0.0, 0.0);
+        Location base = to.clone().add(0.0, yOffset, 0.0);
+
+        double moveX = to.getX() - from.getX();
+        double moveZ = to.getZ() - from.getZ();
+        double length = Math.sqrt(moveX * moveX + moveZ * moveZ);
+        double sideX = length < 0.001D ? 1.0D : -moveZ / length;
+        double sideZ = length < 0.001D ? 0.0D : moveX / length;
+
+        for (int widthIndex = 0; widthIndex <= widthSteps; widthIndex++) {
+            double progress = widthIndex / (double) widthSteps;
+            double sideOffset = (progress - 0.5D) * halfWidth * 2.0D;
+            for (double y = 0.0D; y <= height; y += heightStep) {
+                Location point = base.clone().add(sideX * sideOffset, y, sideZ * sideOffset);
+                player.spawnParticle(particle, point, 1, 0.0, 0.02, 0.0, 0.0);
+            }
         }
     }
 

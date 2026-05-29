@@ -27,16 +27,22 @@ visa:
       duration-days: 0
 messages:
   entered: "&aDu går ind i &f%country%&a."
+  entered-bypass: "&eDu går ind i &f%country%&e med border bypass."
   denied: "&cDu skal bruge pas/visum for at komme ind i &f%country%&c."
   wilderness: "&7Du forlader et land."
+  wilderness-actionbar: "Leaving country border"
   denied-actionbar: "Visa required for %country%"
   denied-title: "Border closed"
   denied-subtitle: "Visa required: %visa%"
 visual-border:
   enabled: true
+  show-on-enter: true
+  show-on-leave: true
   particle: END_ROD
   count: 18
   radius: 1.6
+  wall-height: 3.5
+  wall-step: 0.5
   y-offset: 1.0
 status-export:
   enabled: true

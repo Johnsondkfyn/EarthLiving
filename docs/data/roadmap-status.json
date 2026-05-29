@@ -6,7 +6,7 @@
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "PassportBorders 0.5.0 and EarthLivingCore 0.9.1 are live with the first visual border enforcement slice: access check, denial feedback, particles and EarthOS Passport border status.",
-    "da": "PassportBorders 0.5.0 og EarthLivingCore 0.9.1 er live med første visuelle border enforcement-slice: adgangstjek, denial-feedback, particles og EarthOS Passport border-status."
+    "en": "PassportBorders 0.5.1 and EarthLivingCore 0.9.2 are live. Border transitions now show clearer particle walls, admin bypass is easier to spot during testing, and EarthOS menu right-clicks avoid ground-click side effects.",
+    "da": "PassportBorders 0.5.1 og EarthLivingCore 0.9.2 er live. Border-overgange viser nu tydeligere partikelvægge, admin-bypass er lettere at se under test, og EarthOS-menuens højreklik undgår ground-click side effects."
   }
 }

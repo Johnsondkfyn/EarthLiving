@@ -8,6 +8,7 @@ import dk.earthliving.core.wallet.WalletService;
 import dk.earthliving.core.jobs.JobsService;
 import dk.earthliving.core.guide.GuideService;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -62,7 +63,12 @@ public final class EarthOsListener implements Listener {
         }
 
         event.setCancelled(true);
-        earthOsService.open(event.getPlayer());
+        event.setUseInteractedBlock(Event.Result.DENY);
+        event.setUseItemInHand(Event.Result.DENY);
+        event.getPlayer().getServer().getScheduler().runTask(
+                plugin,
+                () -> earthOsService.open(event.getPlayer())
+        );
     }
 
     @EventHandler

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'dk.earthliving.passportborders'
-version = '0.5.0'
+version = '0.5.1'
 
 base {
     archivesName = 'PassportBorders'
