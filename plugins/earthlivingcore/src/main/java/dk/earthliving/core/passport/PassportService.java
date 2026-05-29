@@ -33,6 +33,7 @@ public final class PassportService {
     private final NotificationService notifications;
     private final File dataFile;
     private final File exportFile;
+    private final File borderStatusFile;
     private FileConfiguration data;
 
     public PassportService(JavaPlugin plugin, NotificationService notifications) {
@@ -40,6 +41,7 @@ public final class PassportService {
         this.notifications = notifications;
         this.dataFile = new File(plugin.getDataFolder(), "passports.yml");
         this.exportFile = new File(plugin.getDataFolder(), "web-exports/player-passports.json");
+        this.borderStatusFile = new File(plugin.getDataFolder(), "border-status.yml");
         load();
         exportAll();
     }
@@ -73,6 +75,7 @@ public final class PassportService {
                 "&7from EarthOS -> Discord Verification.",
                 "&8TODO VS1: mirror linked state when final source is stable."
         )));
+        inventory.setItem(34, item(Material.BARRIER, "&cBorder access", borderStatusLore(player)));
         inventory.setItem(32, item(Material.BARRIER, "&cClose", List.of("&7Passport VS1 is read-only for players.")));
         player.openInventory(inventory);
     }
@@ -266,6 +269,29 @@ public final class PassportService {
         for (Map.Entry<String, Integer> entry : profile.reputation().entrySet()) {
             lore.add("&f" + entry.getKey() + ": &a" + entry.getValue());
         }
+        return lore;
+    }
+
+    private List<String> borderStatusLore(Player player) {
+        if (!borderStatusFile.exists()) {
+            return List.of(
+                    "&7Current country: &fUnknown",
+                    "&7Access: &fUnknown",
+                    "&8PassportBorders has not exported status yet."
+            );
+        }
+        YamlConfiguration borderStatus = YamlConfiguration.loadConfiguration(borderStatusFile);
+        String path = "players." + player.getUniqueId();
+        String country = borderStatus.getString(path + ".country-name", "");
+        boolean allowed = borderStatus.getBoolean(path + ".allowed", true);
+        String requiredVisa = borderStatus.getString(path + ".required-visa", "");
+        String updatedAt = shortDate(borderStatus.getString(path + ".updated-at", ""));
+        List<String> lore = new ArrayList<>();
+        lore.add("&7Current country: &f" + emptyLabel(country, "Wilderness / unknown"));
+        lore.add(allowed ? "&7Access: &aAllowed" : "&7Access: &cDenied");
+        lore.add("&7Required visa: &f" + emptyLabel(requiredVisa, "-"));
+        lore.add("&7Updated: &f" + emptyLabel(updatedAt, "-"));
+        lore.add("&8Live border status from PassportBorders.");
         return lore;
     }
 

@@ -29,6 +29,18 @@ messages:
   entered: "&aDu går ind i &f%country%&a."
   denied: "&cDu skal bruge pas/visum for at komme ind i &f%country%&c."
   wilderness: "&7Du forlader et land."
+  denied-actionbar: "Visa required for %country%"
+  denied-title: "Border closed"
+  denied-subtitle: "Visa required: %visa%"
+visual-border:
+  enabled: true
+  particle: END_ROD
+  count: 18
+  radius: 1.6
+  y-offset: 1.0
+status-export:
+  enabled: true
+  file: "../EarthLivingCore/border-status.yml"
 menu:
   enabled: true
   slot: 8

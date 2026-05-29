@@ -1,5 +1,5 @@
 name: PassportBorders
-version: 0.4.0
+version: 0.5.0
 main: dk.earthliving.passportborders.PassportBordersPlugin
 api-version: '1.21'
 author: Codex
@@ -22,4 +22,7 @@ permissions:
     default: op
   passportborders.bypass:
     description: Allows entering all countries.
+    default: op
+  earthliving.border.bypass:
+    description: Allows bypassing EarthLiving country border checks.
     default: op

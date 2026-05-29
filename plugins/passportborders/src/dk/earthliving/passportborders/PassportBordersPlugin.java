@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,10 +28,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 
 import net.milkbowl.vault.economy.Economy;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +55,8 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
     private Economy economy;
     private File passportsFile;
     private YamlConfiguration passportsConfig;
+    private File borderStatusFile;
+    private YamlConfiguration borderStatusConfig;
     private double scale;
     private double tiles;
 
@@ -82,17 +89,22 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
 
         if (targetCountry != null && !canEnter(player, targetCountry)) {
             event.setCancelled(true);
+            event.setTo(from);
+            exportBorderStatus(player, targetCountry, false, to);
+            showBorderParticles(player, to);
             sendDenied(player, targetCountry);
             return;
         }
 
         if (targetCountry == null) {
             currentCountry.remove(player.getUniqueId());
+            exportBorderStatus(player, null, true, to);
             send(player, getConfig().getString("messages.wilderness", "&7Du forlader et land."));
             return;
         }
 
         currentCountry.put(player.getUniqueId(), targetCountry.id);
+        exportBorderStatus(player, targetCountry, true, to);
         send(player, getConfig().getString("messages.entered", "&aDu går ind i &f%country%&a.")
                 .replace("%country%", targetCountry.name));
     }
@@ -100,6 +112,11 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Bukkit.getScheduler().runTaskLater(this, () -> giveMenuItem(event.getPlayer()), 20L);
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            Player player = event.getPlayer();
+            Country country = countryAt(player.getLocation());
+            exportBorderStatus(player, country, country == null || canEnter(player, country), player.getLocation());
+        }, 40L);
     }
 
     @EventHandler
@@ -545,6 +562,7 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
         scale = getConfig().getDouble("scale", 5120.0);
         tiles = getConfig().getDouble("tiles", 15.0);
         borderService.load(new File(getDataFolder(), "countries.yml"));
+        loadBorderStatusExport();
         currentCountry.clear();
         getLogger().info("Loaded " + borderService.countries().size() + " countries.");
     }
@@ -615,6 +633,7 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
 
     private boolean canEnter(Player player, Country country) {
         return player.hasPermission("passportborders.bypass")
+                || player.hasPermission("earthliving.border.bypass")
                 || ownsPassport(player, country)
                 || player.hasPermission(country.permission);
     }
@@ -700,8 +719,72 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
             return;
         }
         deniedMessageCooldown.put(player.getUniqueId(), now);
+        String visaName = visaDisplayName(defaultVisaType());
+        player.sendActionBar(Component.text(stripColor(getConfig().getString("messages.denied-actionbar", "Visa required for %country%")
+                .replace("%country%", country.name)
+                .replace("%visa%", visaName))));
+        player.showTitle(Title.title(
+                Component.text(stripColor(getConfig().getString("messages.denied-title", "Border closed"))),
+                Component.text(stripColor(getConfig().getString("messages.denied-subtitle", "Visa required: %visa%")
+                        .replace("%country%", country.name)
+                        .replace("%visa%", visaName))),
+                Title.Times.times(Duration.ofMillis(150), Duration.ofMillis(1200), Duration.ofMillis(300))
+        ));
         send(player, getConfig().getString("messages.denied", "&cDu skal bruge pas/visum for at komme ind i &f%country%&c.")
                 .replace("%country%", country.name));
+    }
+
+    private void showBorderParticles(Player player, Location center) {
+        if (!getConfig().getBoolean("visual-border.enabled", true)) {
+            return;
+        }
+        Particle particle;
+        try {
+            particle = Particle.valueOf(getConfig().getString("visual-border.particle", "END_ROD"));
+        } catch (IllegalArgumentException exception) {
+            particle = Particle.END_ROD;
+        }
+        int count = Math.max(4, getConfig().getInt("visual-border.count", 18));
+        double radius = Math.max(0.4, getConfig().getDouble("visual-border.radius", 1.6));
+        double yOffset = getConfig().getDouble("visual-border.y-offset", 1.0);
+        Location base = center.clone().add(0.0, yOffset, 0.0);
+        for (int index = 0; index < count; index++) {
+            double angle = (Math.PI * 2.0D * index) / count;
+            Location point = base.clone().add(Math.cos(angle) * radius, 0.0, Math.sin(angle) * radius);
+            player.spawnParticle(particle, point, 1, 0.0, 0.05, 0.0, 0.0);
+        }
+    }
+
+    private void loadBorderStatusExport() {
+        String configured = getConfig().getString("status-export.file", "../EarthLivingCore/border-status.yml");
+        borderStatusFile = new File(getDataFolder(), configured);
+        if (!borderStatusFile.isAbsolute()) {
+            borderStatusFile = new File(getDataFolder(), configured);
+        }
+        borderStatusConfig = YamlConfiguration.loadConfiguration(borderStatusFile);
+    }
+
+    private void exportBorderStatus(Player player, Country country, boolean allowed, Location location) {
+        if (!getConfig().getBoolean("status-export.enabled", true) || borderStatusConfig == null || borderStatusFile == null) {
+            return;
+        }
+        String path = "players." + player.getUniqueId();
+        GeoPoint geo = toGeo(location);
+        borderStatusConfig.set(path + ".player-name", player.getName());
+        borderStatusConfig.set(path + ".updated-at", Instant.now().toString());
+        borderStatusConfig.set(path + ".country-id", country == null ? "" : country.id);
+        borderStatusConfig.set(path + ".country-name", country == null ? "" : country.name);
+        borderStatusConfig.set(path + ".allowed", allowed);
+        borderStatusConfig.set(path + ".required-visa", country == null || allowed ? "" : defaultVisaType());
+        borderStatusConfig.set(path + ".required-permission", country == null || allowed ? "" : country.permission);
+        borderStatusConfig.set(path + ".latitude", geo.latitude);
+        borderStatusConfig.set(path + ".longitude", geo.longitude);
+        try {
+            borderStatusFile.getParentFile().mkdirs();
+            borderStatusConfig.save(borderStatusFile);
+        } catch (Exception exception) {
+            getLogger().warning("Could not save border status export: " + exception.getMessage());
+        }
     }
 
     private void send(Player player, String message) {
@@ -737,5 +820,9 @@ public final class PassportBordersPlugin extends JavaPlugin implements Listener 
 
     private String color(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    private String stripColor(String message) {
+        return ChatColor.stripColor(color(message == null ? "" : message));
     }
 }
