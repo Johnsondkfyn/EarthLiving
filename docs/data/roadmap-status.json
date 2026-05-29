@@ -6,7 +6,7 @@
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "EarthLivingCore 0.9.0 adds VS2 code for Wallet, simple Jobs rewards, Guide and EarthOS gameplay buttons. Build passed; production deployment is pending.",
-    "da": "EarthLivingCore 0.9.0 tilføjer VS2-kode til Wallet, simple Jobs-belønninger, Guide og EarthOS gameplay-knapper. Build er bestået; produktion-deploy mangler."
+    "en": "PassportBorders 0.5.0 and EarthLivingCore 0.9.1 are live with the first visual border enforcement slice: access check, denial feedback, particles and EarthOS Passport border status.",
+    "da": "PassportBorders 0.5.0 og EarthLivingCore 0.9.1 er live med første visuelle border enforcement-slice: adgangstjek, denial-feedback, particles og EarthOS Passport border-status."
   }
 }
