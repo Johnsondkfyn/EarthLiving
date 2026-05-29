@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-05-28",
+  "updatedAt": "2026-05-29",
   "source": "Notion Earth Living Roadmap",
   "completed": 27,
   "inProgress": 4,
   "planned": 66,
   "progressPercent": 28,
   "phase": {
-    "en": "ArchitectModule 0.2.2 is live with specialist tower/landmark templates, and the Citizens/Constructor/Denizen builder chain is installed for admin-controlled slow-build testing.",
-    "da": "ArchitectModule 0.2.2 er live med specialiserede tower/landmark-templates, og Citizens/Constructor/Denizen-byggekæden er installeret til admin-styret slow-build test."
+    "en": "EarthLivingCore 0.9.0 adds VS2 code for Wallet, simple Jobs rewards, Guide and EarthOS gameplay buttons. Build passed; production deployment is pending.",
+    "da": "EarthLivingCore 0.9.0 tilføjer VS2-kode til Wallet, simple Jobs-belønninger, Guide og EarthOS gameplay-knapper. Build er bestået; produktion-deploy mangler."
   }
 }
