@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public final class BorderControlBuildGenerator {
     private final NotificationService notifications;
     private final Map<UUID, PreviewSession> previews = new HashMap<>();
     private final Map<UUID, List<SavedBlock>> undoHistory = new HashMap<>();
-    private List<GeneratedBlock> capture;
+    private Map<RelativeBlock, Material> capture;
     private BukkitTask previewTask;
 
     public BorderControlBuildGenerator(JavaPlugin plugin, NotificationService notifications) {
@@ -81,7 +82,7 @@ public final class BorderControlBuildGenerator {
             return false;
         }
         restorePreview(player, session);
-        Location origin = targetOrigin(player);
+        Location origin = session.lastOrigin() == null ? targetOrigin(player) : session.lastOrigin().clone();
         if (origin == null) {
             notifications.send(player, "&cLook at a solid block before placing the build.");
             return true;
@@ -147,7 +148,7 @@ public final class BorderControlBuildGenerator {
     }
 
     private List<GeneratedBlock> generatedBlocks() {
-        capture = new ArrayList<>();
+        capture = new LinkedHashMap<>();
         try {
             buildFoundation(null);
             buildRoads(null);
@@ -160,7 +161,13 @@ public final class BorderControlBuildGenerator {
             buildInterior(null);
             buildPlanters(null);
             buildSigns(null);
-            return List.copyOf(capture);
+            return capture.entrySet().stream()
+                    .map(entry -> new GeneratedBlock(
+                            entry.getKey().x(),
+                            entry.getKey().y(),
+                            entry.getKey().z(),
+                            entry.getValue().createBlockData()))
+                    .toList();
         } finally {
             capture = null;
         }
@@ -194,21 +201,29 @@ public final class BorderControlBuildGenerator {
     private void renderPreview(Player player, PreviewSession session) {
         Location origin = targetOrigin(player);
         if (origin == null) {
-            restorePreview(player, session);
             return;
         }
         if (session.lastOrigin() != null && sameBlock(origin, session.lastOrigin())) {
             return;
         }
-        restorePreview(player, session);
         World world = origin.getWorld();
-        Map<Location, BlockData> sent = new HashMap<>();
+        Map<Location, BlockData> nextBlocks = new HashMap<>();
         for (GeneratedBlock block : session.blocks()) {
             Location location = new Location(world, origin.getBlockX() + block.x(), origin.getBlockY() + block.y(), origin.getBlockZ() + block.z());
-            player.sendBlockChange(location, block.material().createBlockData());
-            sent.put(location, block.material().createBlockData());
+            nextBlocks.put(location, block.blockData());
         }
-        session.sentBlocks(sent);
+        for (Location location : session.sentBlocks().keySet()) {
+            if (!nextBlocks.containsKey(location)) {
+                player.sendBlockChange(location, location.getBlock().getBlockData());
+            }
+        }
+        for (Map.Entry<Location, BlockData> entry : nextBlocks.entrySet()) {
+            BlockData previous = session.sentBlocks().get(entry.getKey());
+            if (!entry.getValue().equals(previous)) {
+                player.sendBlockChange(entry.getKey(), entry.getValue());
+            }
+        }
+        session.sentBlocks(nextBlocks);
         session.lastOrigin(origin.clone());
     }
 
@@ -430,8 +445,11 @@ public final class BorderControlBuildGenerator {
 
     private void set(Location origin, int x, int y, int z, Material material) {
         if (capture != null) {
-            if (material != Material.AIR) {
-                capture.add(new GeneratedBlock(x, y, z, material));
+            RelativeBlock relativeBlock = new RelativeBlock(x, y, z);
+            if (material == Material.AIR) {
+                capture.remove(relativeBlock);
+            } else {
+                capture.put(relativeBlock, material);
             }
             return;
         }
@@ -443,7 +461,10 @@ public final class BorderControlBuildGenerator {
         return world.getBlockAt(origin.getBlockX() + x, origin.getBlockY() + y, origin.getBlockZ() + z);
     }
 
-    private record GeneratedBlock(int x, int y, int z, Material material) {
+    private record RelativeBlock(int x, int y, int z) {
+    }
+
+    private record GeneratedBlock(int x, int y, int z, BlockData blockData) {
     }
 
     private record SavedBlock(Location location, BlockData blockData) {

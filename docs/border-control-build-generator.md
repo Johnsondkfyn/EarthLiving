@@ -14,7 +14,7 @@ Preview the building first:
 /elbuild bordercontrol preview
 ```
 
-In preview mode a client-side ghost of the building follows the block you are looking at. Left-click places the building at the preview origin.
+In preview mode a client-side ghost of the building follows the block you are looking at. Left-click places the building at the currently visible preview origin. The renderer reuses unchanged ghost blocks while moving to reduce flicker.
 
 Use `/elbuild bordercontrol preview` for the actual building preview. The older `/el preview ...` command only shows a generic particle footprint and is still kept for measuring custom areas.
 
