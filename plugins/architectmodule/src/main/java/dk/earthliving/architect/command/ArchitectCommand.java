@@ -3,6 +3,7 @@ package dk.earthliving.architect.command;
 import dk.earthliving.architect.ArchitectModulePlugin;
 import dk.earthliving.architect.blueprint.ArchitectService;
 import dk.earthliving.architect.blueprint.BlueprintJob;
+import dk.earthliving.architect.blueprint.ConstructorBridge;
 import dk.earthliving.architect.blueprint.SchematicPreviewService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,16 +18,18 @@ import java.util.Locale;
 
 public final class ArchitectCommand implements CommandExecutor, TabCompleter {
     private static final String PERMISSION = "earthliving.architect.admin";
-    private static final List<String> SUBCOMMANDS = List.of("search", "generate", "preview", "paste", "undo", "cancel", "list", "reload");
+    private static final List<String> SUBCOMMANDS = List.of("search", "generate", "preview", "paste", "builder", "undo", "cancel", "list", "reload");
 
     private final ArchitectModulePlugin plugin;
     private final ArchitectService architectService;
+    private final ConstructorBridge constructorBridge;
     private final SchematicPreviewService previewService;
 
-    public ArchitectCommand(ArchitectModulePlugin plugin, ArchitectService architectService,
+    public ArchitectCommand(ArchitectModulePlugin plugin, ArchitectService architectService, ConstructorBridge constructorBridge,
                             SchematicPreviewService previewService) {
         this.plugin = plugin;
         this.architectService = architectService;
+        this.constructorBridge = constructorBridge;
         this.previewService = previewService;
     }
 
@@ -48,6 +51,7 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
             case "generate" -> generate(sender, remaining);
             case "preview" -> preview(sender, remaining);
             case "paste" -> paste(sender, remaining);
+            case "builder" -> builder(sender, remaining);
             case "undo" -> undo(sender);
             case "cancel" -> cancel(sender);
             case "list" -> list(sender);
@@ -138,10 +142,29 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
             return;
         }
         boolean pasteAtLook = args.length == 2 && "look".equalsIgnoreCase(args[1]);
+        if (constructorBridge.npcOnlyPlacement()) {
+            plugin.tell(sender, pasteAtLook
+                    ? "&7Forbereder NPC-byggeordre paa blokken du kigger paa..."
+                    : "&7Forbereder NPC-byggeordre ved din nuvaerende placering...");
+            constructorBridge.queueBuild(player, job, pasteAtLook ? targetLocation(player) : player.getLocation(), 0);
+            return;
+        }
         plugin.tell(sender, pasteAtLook
                 ? "&7Loader schematic async. Paste sker paa blokken du kigger paa..."
                 : "&7Loader schematic async. Paste sker ved din nuvaerende placering...");
         architectService.pasteAsync(player, job, pasteAtLook);
+    }
+
+    private void builder(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player player)) {
+            plugin.tell(sender, "&cBuilder skal vaelges in-game.");
+            return;
+        }
+        if (args.length != 1 || !isInteger(args[0])) {
+            plugin.tell(sender, "&cBrug: &f/architect builder <citizens-npc-id>");
+            return;
+        }
+        constructorBridge.selectBuilder(player, Integer.parseInt(args[0]));
     }
 
     private void undo(CommandSender sender) {
@@ -188,6 +211,7 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
         plugin.tell(sender, "&f/architect generate <building> [scale] [style]");
         plugin.tell(sender, "&f/architect preview <id> [look]");
         plugin.tell(sender, "&f/architect paste <id> [look]");
+        plugin.tell(sender, "&f/architect builder <citizens-npc-id>");
         plugin.tell(sender, "&f/architect undo");
         plugin.tell(sender, "&f/architect cancel");
         plugin.tell(sender, "&f/architect list");
@@ -222,6 +246,11 @@ public final class ArchitectCommand implements CommandExecutor, TabCompleter {
         } catch (NumberFormatException ignored) {
             return false;
         }
+    }
+
+    private org.bukkit.Location targetLocation(Player player) {
+        org.bukkit.block.Block block = player.getTargetBlockExact(120);
+        return block == null ? player.getLocation() : block.getLocation().add(0, 1, 0);
     }
 
     private static List<String> startsWith(List<String> values, String input) {

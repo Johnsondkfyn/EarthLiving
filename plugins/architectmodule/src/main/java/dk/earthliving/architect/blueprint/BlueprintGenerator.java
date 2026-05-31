@@ -243,9 +243,9 @@ public final class BlueprintGenerator {
 
     private void drawEiffelTower(BlockArrayClipboard clipboard, BuildingShape shape) {
         BlockState base = state(Material.SMOOTH_STONE);
-        BlockState iron = state(Material.IRON_BLOCK);
-        BlockState dark = state(Material.GRAY_CONCRETE);
-        BlockState platform = state(Material.POLISHED_DEEPSLATE);
+        BlockState iron = state(Material.LIGHT_GRAY_CONCRETE);
+        BlockState dark = state(Material.POLISHED_DEEPSLATE);
+        BlockState platform = state(Material.SMOOTH_STONE_SLAB);
         BlockState light = state(Material.SEA_LANTERN);
         int cx = shape.width() / 2;
         int cz = shape.depth() / 2;
@@ -267,13 +267,13 @@ public final class BlueprintGenerator {
             set(clipboard, maxX, y, minZ, iron);
             set(clipboard, minX, y, maxZ, iron);
             set(clipboard, maxX, y, maxZ, iron);
-            if (y % 3 == 0) {
+            if (y % 5 == 0 || y == floorOne || y == floorTwo || y == floorThree) {
                 lineX(clipboard, minX, maxX, y, minZ, dark, 2);
                 lineX(clipboard, minX, maxX, y, maxZ, dark, 2);
                 lineZ(clipboard, minX, y, minZ, maxZ, dark, 2);
                 lineZ(clipboard, maxX, y, minZ, maxZ, dark, 2);
             }
-            if (y % 5 == 0) {
+            if (y % 8 == 0) {
                 set(clipboard, cx, y, cz, light);
             }
         }
@@ -294,9 +294,9 @@ public final class BlueprintGenerator {
 
     private void drawLatticeTower(BlockArrayClipboard clipboard, BuildingShape shape, BlueprintStyle style) {
         BlockState base = state(Material.SMOOTH_STONE);
-        BlockState metal = state(Material.IRON_BLOCK);
-        BlockState darkMetal = state(Material.GRAY_CONCRETE);
-        BlockState platform = state(Material.POLISHED_DEEPSLATE);
+        BlockState metal = state(Material.LIGHT_GRAY_CONCRETE);
+        BlockState darkMetal = state(Material.POLISHED_DEEPSLATE);
+        BlockState platform = state(Material.SMOOTH_STONE_SLAB);
         BlockState light = state(Material.SEA_LANTERN);
 
         fill(clipboard, 0, 0, 0, shape.width() - 1, 0, shape.depth() - 1, base);
@@ -321,19 +321,15 @@ public final class BlueprintGenerator {
             set(clipboard, minX, y, maxZ, metal);
             set(clipboard, maxX, y, maxZ, metal);
 
-            if (y % 2 == 0) {
-                lineX(clipboard, minX, maxX, y, minZ, darkMetal, 3);
-                lineX(clipboard, minX, maxX, y, maxZ, darkMetal, 3);
-                lineZ(clipboard, minX, y, minZ, maxZ, darkMetal, 3);
-                lineZ(clipboard, maxX, y, minZ, maxZ, darkMetal, 3);
+            if (y % 5 == 0) {
+                lineX(clipboard, minX, maxX, y, minZ, darkMetal, 2);
+                lineX(clipboard, minX, maxX, y, maxZ, darkMetal, 2);
+                lineZ(clipboard, minX, y, minZ, maxZ, darkMetal, 2);
+                lineZ(clipboard, maxX, y, minZ, maxZ, darkMetal, 2);
             }
 
-            if (y % 4 == 0) {
+            if (y % 7 == 0) {
                 set(clipboard, cx, y, cz, light);
-                set(clipboard, cx - 1, y, cz, darkMetal);
-                set(clipboard, cx + 1, y, cz, darkMetal);
-                set(clipboard, cx, y, cz - 1, darkMetal);
-                set(clipboard, cx, y, cz + 1, darkMetal);
             }
         }
 

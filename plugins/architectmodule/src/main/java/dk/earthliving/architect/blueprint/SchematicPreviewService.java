@@ -30,15 +30,18 @@ import java.util.concurrent.CompletableFuture;
 public final class SchematicPreviewService implements Listener {
     private final ArchitectModulePlugin plugin;
     private final ArchitectService architectService;
+    private final ConstructorBridge constructorBridge;
     private final Map<UUID, PreviewSession> sessions = new HashMap<>();
     private int range;
     private int seconds;
     private int updateTicks;
     private int maxVisualBlocks;
 
-    public SchematicPreviewService(ArchitectModulePlugin plugin, ArchitectService architectService) {
+    public SchematicPreviewService(ArchitectModulePlugin plugin, ArchitectService architectService,
+                                   ConstructorBridge constructorBridge) {
         this.plugin = plugin;
         this.architectService = architectService;
+        this.constructorBridge = constructorBridge;
         reload();
     }
 
@@ -70,7 +73,7 @@ public final class SchematicPreviewService implements Listener {
                     0L, updateTicks);
             session.timeoutTask = plugin.getServer().getScheduler().runTaskLater(plugin, () -> cancel(player, true),
                     seconds * 20L);
-            plugin.tell(player, "&aVisuel preview startet. &fVenstreklik &afor at placere. &f/architect cancel &7annullerer.");
+            plugin.tell(player, "&aVisuel preview startet. &fVenstreklik &aopretter NPC-byggeordren. &f/architect cancel &7annullerer.");
         }));
     }
 
@@ -113,7 +116,7 @@ public final class SchematicPreviewService implements Listener {
         }
         event.setCancelled(true);
         Player player = event.getPlayer();
-        Location origin = targetLocation(player);
+        Location origin = session.lastOrigin();
         if (origin == null) {
             plugin.tell(player, "&cKig paa en blok for at placere previewet.");
             return;
@@ -121,6 +124,10 @@ public final class SchematicPreviewService implements Listener {
         sessions.remove(player.getUniqueId());
         session.cancelTasks();
         restore(player, session);
+        if (constructorBridge.npcOnlyPlacement()) {
+            constructorBridge.queueBuild(player, session.job(), session.loadedPreview().clipboard(), origin, session.rotation());
+            return;
+        }
         try {
             architectService.pasteLoaded(player, session.job(), session.loadedPreview().clipboard(), origin, session.rotation());
         } catch (Exception exception) {
@@ -144,7 +151,7 @@ public final class SchematicPreviewService implements Listener {
         session.lastOrigin(null);
         clearPreview(event.getPlayer(), session);
         render(event.getPlayer(), session);
-        plugin.tell(event.getPlayer(), "&7Rotation: &f" + (session.rotation() * 90) + " grader&7. Venstreklik placerer.");
+        plugin.tell(event.getPlayer(), "&7Rotation: &f" + (session.rotation() * 90) + " grader&7. Venstreklik opretter NPC-byggeordren.");
     }
 
     @EventHandler

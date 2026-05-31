@@ -497,6 +497,7 @@ Commands:
 /architect preview <id> look
 /architect paste <id>
 /architect paste <id> look
+/architect builder <citizens-npc-id>
 /architect undo
 /architect cancel
 /architect list
@@ -586,6 +587,23 @@ Immediate test workflow:
 - confirm no console errors, stuck NPC loops or chunk issues
 
 If Constructor behaves poorly, replace it with a custom EarthLiving BuilderNPCModule later instead of depending on the old plugin. Keep direct Constructor/Denizen commands admin-only; players should later interact through EarthOS.
+
+## NPC-only build bridge V1
+
+ArchitectModule `0.2.5` is deployed on hub/test and Main. Hub testing on 2026-05-31 confirmed the first safe wrapper flow:
+
+```text
+/npc create EarthLivingBuilder
+/npc id
+/architect builder <npc-id>
+/architect generate test tower 1 modern
+/architect list
+/architect preview <id> look
+```
+
+The admin positions the client-side ghost, rotates with the mouse wheel and left-clicks when the placement is correct. ArchitectModule exports a rotated copy under `plugins/Constructor/schematics/architect/` and submits it through Constructor's public `ConstructorAPI.npcBuild(...)` API. Constructor and Citizens then perform the visible slow build. The old Constructor `3.5` jar is deliberately left unchanged.
+
+Main loaded ArchitectModule `0.2.5` cleanly on 2026-05-31. Main still needs its first `EarthLivingBuilder` NPC created in-game before the flow can be used there.
 
 ## Placement preview V1
 

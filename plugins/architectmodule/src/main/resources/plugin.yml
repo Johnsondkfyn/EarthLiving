@@ -1,5 +1,5 @@
 name: ArchitectModule
-version: 0.2.2
+version: 0.2.5
 main: dk.earthliving.architect.ArchitectModulePlugin
 api-version: '1.21'
 author: Codex
@@ -12,7 +12,7 @@ softdepend:
 commands:
   architect:
     description: Generate and manage EarthLiving blueprints.
-    usage: /architect <search|generate|preview|paste|list|reload>
+    usage: /architect <search|generate|preview|paste|builder|list|reload>
     permission: earthliving.architect.admin
 permissions:
   earthliving.architect.admin:

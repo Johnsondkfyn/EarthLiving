@@ -15,6 +15,7 @@ Generated builds are not exact replicas. They are blocky Minecraft interpretatio
 /architect generate <building> [scale] [style]
 /architect preview <id>
 /architect paste <id>
+/architect builder <citizens-npc-id>
 /architect undo
 /architect list
 /architect reload
@@ -52,11 +53,15 @@ WorldEdit or FAWE with WorldEdit API
    ```text
    /architect preview arch-abc123 look
    ```
-   While the visual preview is active, use the mouse wheel/hotbar scroll to rotate 90 degrees at a time. Left-click places the schematic. Cancel with:
+   While the visual preview is active, use the mouse wheel/hotbar scroll to rotate 90 degrees at a time. Left-click sends the selected placement to the Constructor builder NPC. Cancel with:
    ```text
    /architect cancel
    ```
-5. Or stand at the target paste origin and paste directly:
+5. Select the Citizens builder NPC before placing:
+   ```text
+   /architect builder <citizens-npc-id>
+   ```
+6. Or stand at the target origin and send the NPC build order directly:
    ```text
    /architect paste arch-abc123
    ```
@@ -64,7 +69,12 @@ WorldEdit or FAWE with WorldEdit API
    ```text
    /architect paste arch-abc123 look
    ```
-6. If the last paste was wrong, undo it:
+7. Constructor builds are canceled through Constructor:
+   ```text
+   /constructor cancel
+   ```
+   `/architect undo` remains available for legacy direct WorldEdit paste when NPC-only placement is disabled.
+8. If the last legacy direct paste was wrong, undo it:
    ```text
    /architect undo
    ```
@@ -76,13 +86,13 @@ WorldEdit or FAWE with WorldEdit API
 - Generates local `.schem` files without web or AI secrets.
 - Supports visual client-side preview with look placement.
 - Supports mouse wheel/hotbar rotation during preview.
-- Supports left-click placement from preview.
-- Supports direct paste and look paste.
+- Supports left-click NPC build orders from preview.
+- Supports direct NPC build orders and look placement.
 - Supports `/architect undo` through WorldEdit history for the last paste.
 
 ## V2 Public Lookup
 
-ArchitectModule `0.2.2` can use public Wikipedia/MediaWiki data when enabled:
+ArchitectModule `0.2.4` can use public Wikipedia/MediaWiki data when enabled:
 
 ```yaml
 generation:
@@ -115,6 +125,12 @@ V2.2 adds the first specialist local templates:
 - skyscraper/high-rise
 - obelisk
 
+V2.3 makes tower templates cleaner by replacing floating blocky support dots with thinner connected bar/wall beams and simpler platform rings.
+
+V2.4 changes tower beams back to simple solid blocks with fewer crossbeams because large bar/wall structures can cause client render lag when lighting updates, for example after `/time set day`.
+
+V2.5 adds the first Constructor/Citizens bridge. ArchitectModule remains the planning tool: admins generate and position a ghost preview, then Constructor performs the visible block-by-block build through the selected Citizens NPC. The old Constructor jar is not modified.
+
 ## Generated Files
 
 Schematics are saved under:
@@ -140,6 +156,8 @@ Each generated ID creates:
 - Pasting is run through WorldEdit on the main thread because Bukkit world edits must be synchronous unless a safe FAWE integration is added later.
 - Citizens, Constructor and Denizen are installed on hub/test and Main for builder-NPC experiments.
 - EarthLivingCore should own the long-term build approval/queue workflow; ArchitectModule should continue to generate `.schem` files and provide visual placement tools.
+- V2.5 stores exported Constructor copies under `plugins/Constructor/schematics/architect/`.
+- NPC selection is currently per admin session through `/architect builder <citizens-npc-id>`.
 
 ## Safety
 

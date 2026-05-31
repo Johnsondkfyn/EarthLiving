@@ -1,6 +1,7 @@
 package dk.earthliving.architect;
 
 import dk.earthliving.architect.blueprint.ArchitectService;
+import dk.earthliving.architect.blueprint.ConstructorBridge;
 import dk.earthliving.architect.blueprint.SchematicPreviewService;
 import dk.earthliving.architect.command.ArchitectCommand;
 import org.bukkit.ChatColor;
@@ -11,6 +12,7 @@ import java.util.Objects;
 
 public final class ArchitectModulePlugin extends JavaPlugin {
     private ArchitectService architectService;
+    private ConstructorBridge constructorBridge;
     private SchematicPreviewService previewService;
     private String prefix;
 
@@ -19,9 +21,10 @@ public final class ArchitectModulePlugin extends JavaPlugin {
         saveDefaultConfig();
         reloadLocalConfig();
         architectService = new ArchitectService(this);
-        previewService = new SchematicPreviewService(this, architectService);
+        constructorBridge = new ConstructorBridge(this, architectService);
+        previewService = new SchematicPreviewService(this, architectService, constructorBridge);
 
-        ArchitectCommand architectCommand = new ArchitectCommand(this, architectService, previewService);
+        ArchitectCommand architectCommand = new ArchitectCommand(this, architectService, constructorBridge, previewService);
         PluginCommand command = Objects.requireNonNull(getCommand("architect"));
         command.setExecutor(architectCommand);
         command.setTabCompleter(architectCommand);
@@ -38,6 +41,9 @@ public final class ArchitectModulePlugin extends JavaPlugin {
         if (previewService != null) {
             previewService.shutdown();
         }
+        if (constructorBridge != null) {
+            constructorBridge.shutdown();
+        }
     }
 
     public void reloadModule() {
@@ -48,6 +54,9 @@ public final class ArchitectModulePlugin extends JavaPlugin {
         }
         if (previewService != null) {
             previewService.reload();
+        }
+        if (constructorBridge != null) {
+            constructorBridge.reload();
         }
     }
 

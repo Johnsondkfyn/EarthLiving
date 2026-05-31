@@ -19,6 +19,13 @@ preview:
   update-ticks: 8
   max-visual-blocks: 3500
 
+constructor:
+  enabled: true
+  npc-only-placement: true
+  default-npc-id: -1
+  npc-speed: 1.0
+  schematics-folder: "Constructor/schematics/architect"
+
 styles:
   modern:
     wall: "WHITE_CONCRETE"
