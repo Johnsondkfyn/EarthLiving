@@ -21,7 +21,8 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-3 md:flex">
+          <Button href="/panel" variant="secondary">Owner Panel</Button>
           <Button href={discordUrl}>Join Discord</Button>
         </div>
 
