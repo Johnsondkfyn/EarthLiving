@@ -34,6 +34,39 @@ const featureCards = [
   },
 ];
 
+const projectCards = [
+  {
+    icon: VisionIcon,
+    title: "Vision",
+    text: "Se retningen for den levende Earth-verden og de systemer der skal skabe samfundet.",
+    href: "/vision",
+  },
+  {
+    icon: RoadmapIcon,
+    title: "Roadmap",
+    text: "Følg faserne fra website foundation til Fabric, closed beta og public beta.",
+    href: "/roadmap",
+  },
+  {
+    icon: DevlogIcon,
+    title: "Devlog",
+    text: "Læs korte udviklingsopdateringer om migration, modpack og website-arbejde.",
+    href: "/devlog",
+  },
+  {
+    icon: NewsletterIcon,
+    title: "Newsletter",
+    text: "Tilmeld dig for udviklingsnyt, beta-invitationer og launch-opdateringer.",
+    href: "/newsletter",
+  },
+  {
+    icon: ContactIcon,
+    title: "Contact",
+    text: "Kontakt projektet, del feedback eller spørg ind til Earth Living.",
+    href: "/contact",
+  },
+];
+
 const imagePanels = [
   { title: "Transport", src: "/earthliving-panels/transport.png" },
   { title: "Cities", src: "/earthliving-panels/city.png" },
@@ -86,6 +119,7 @@ export default function HomePage() {
         <HeroHeader />
         <PanelShowcase />
         <FeatureGrid />
+        <ProjectFeatureGrid />
         <section className="grid border-y border-white/10 lg:grid-cols-[1.5fr_0.58fr_0.45fr]">
           <RoadmapPanel />
           <StatusPanel />
@@ -181,6 +215,53 @@ function FeatureGrid() {
           </article>
         );
       })}
+    </section>
+  );
+}
+
+function ProjectFeatureGrid() {
+  return (
+    <section className="border-b border-white/10 bg-[#020912] px-6 py-10">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-7 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-earth-accent">
+              Udforsk projektet
+            </p>
+            <h2 className="mt-2 text-3xl font-black uppercase tracking-tight text-white md:text-4xl">
+              Earth Living hub
+            </h2>
+          </div>
+          <p className="max-w-xl text-sm leading-6 text-white/62">
+            Fem hurtige indgange til projektets vigtigste sider, bygget som et responsivt feature grid.
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {projectCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <Link
+                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.045] p-5 shadow-2xl shadow-black/20 transition duration-300 hover:-translate-y-1 hover:border-earth-accent/50 hover:bg-earth-accent/[0.08] hover:shadow-green-glow"
+                href={card.href}
+                key={card.title}
+              >
+                <div className="absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100">
+                  <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-earth-accent/20 blur-2xl" />
+                </div>
+                <Icon className="relative h-9 w-9 text-earth-accent" />
+                <h3 className="relative mt-6 text-lg font-black uppercase tracking-[0.08em] text-white">
+                  {card.title}
+                </h3>
+                <p className="relative mt-3 text-sm leading-6 text-white/68">{card.text}</p>
+                <span className="relative mt-5 inline-flex text-xs font-black uppercase tracking-[0.18em] text-earth-accent">
+                  Åbn
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 }
@@ -335,6 +416,53 @@ function PhoneIcon({ className }: IconProps) {
     <svg className={className} fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
       <rect height="34" rx="4" stroke="currentColor" strokeWidth="3" width="20" x="14" y="7" />
       <path d="M21 34h6" stroke="currentColor" strokeLinecap="round" strokeWidth="3" />
+    </svg>
+  );
+}
+
+function VisionIcon({ className }: IconProps) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 24s7-12 19-12 19 12 19 12-7 12-19 12S5 24 5 24Z" stroke="currentColor" strokeWidth="3" />
+      <circle cx="24" cy="24" r="6" stroke="currentColor" strokeWidth="3" />
+    </svg>
+  );
+}
+
+function RoadmapIcon({ className }: IconProps) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 37c6-18 24-8 30-26" stroke="currentColor" strokeLinecap="round" strokeWidth="3" />
+      <circle cx="10" cy="37" r="4" stroke="currentColor" strokeWidth="3" />
+      <circle cx="24" cy="24" r="4" stroke="currentColor" strokeWidth="3" />
+      <circle cx="38" cy="11" r="4" stroke="currentColor" strokeWidth="3" />
+    </svg>
+  );
+}
+
+function DevlogIcon({ className }: IconProps) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 7h19l5 5v29H12V7Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="3" />
+      <path d="M18 20h13M18 27h13M18 34h8" stroke="currentColor" strokeLinecap="round" strokeWidth="3" />
+    </svg>
+  );
+}
+
+function NewsletterIcon({ className }: IconProps) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 15h32v24H8V15Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="3" />
+      <path d="m9 17 15 13 15-13" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+    </svg>
+  );
+}
+
+function ContactIcon({ className }: IconProps) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 10h30v22H18L9 39V10Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="3" />
+      <path d="M17 19h14M17 25h9" stroke="currentColor" strokeLinecap="round" strokeWidth="3" />
     </svg>
   );
 }
