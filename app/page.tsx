@@ -180,10 +180,7 @@ function HeroHeader() {
       </Link>
 
       <div className="text-center md:pr-20">
-        <p className="bg-gradient-to-r from-earth-accent via-lime-200 to-amber-300 bg-clip-text text-5xl font-black uppercase tracking-[0.08em] text-transparent md:text-6xl">
-          Vision 1
-        </p>
-        <p className="mx-auto mt-3 max-w-3xl text-lg font-semibold leading-7 text-white/90">
+        <p className="mx-auto max-w-3xl text-lg font-semibold leading-7 text-white/90">
           Vi bygger en levende Earth-verden i Minecraft, hvor transport, økonomi, byer og mennesker skaber et dynamisk samfund.
         </p>
       </div>
