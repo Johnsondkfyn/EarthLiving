@@ -1,283 +1,118 @@
-# EarthLiving
+# Earth Living
 
-## A living Earth inside Minecraft
+## A single persistent Fabric-based Earth world
 
-EarthLiving is not just a survival server with extra plugins.
+Earth Living is a long-term Minecraft project focused on a realistic Earth world where transport, cities, businesses, jobs, tourism, events and a dynamic economy grow into a living society simulation.
 
-It is a large-scale Earth-map civilization sandbox built on top of Minecraft using Paper 1.26.1.2 and Java 25.
-
-The goal of EarthLiving is to create a living, reactive world where cities, transport, economy, tourism, mining, nightlife, logistics, infrastructure and player actions all connect together.
-
-Think of it as:
-
-- Earth SMP
-- city builder
-- transport simulator
-- economy sandbox
-- civilization simulator
-- MMO-style world
-
-...combined into one Minecraft experience.
-
----
-
-# Core Philosophy
-
-EarthLiving is designed around one main idea:
+The active project direction is:
 
 ```text
-The world should react to players.
+A single persistent Fabric-based Earth world.
 ```
 
-Cities are not just builds.
+The current restructure prepares one Fabric test server first, then a later production server after the Earth map migration has been verified.
 
-They have:
+## Project Vision
 
-- economy
-- tourism
-- transport pressure
-- nightlife
-- mining industry
-- logistics
-- public services
-- infrastructure
-- reputation
-- identity
+Earth Living should feel like a society being built on top of a Minecraft Earth map:
 
-Over time, regions develop their own strengths and personality.
+- realistic Earth world
+- transport systems
+- cities and infrastructure
+- businesses and jobs
+- dynamic economy
+- tourism and landmarks
+- community events
+- future custom phone system
+- future web dashboard and integrations
 
-Examples:
+## Current Development Focus
 
-- Tokyo may become a technology capital
-- Paris may become a tourism hotspot
-- Sweden may become a mining/export powerhouse
-- Rotterdam may become a logistics hub
+1. Website v0.1
+2. Fabric Test Server
+3. Earth Map Migration
+4. Modpack Prototype
+5. Closed Beta Preparation
 
----
-
-# EarthOS
-
-EarthLiving uses a GUI-first operating system inside Minecraft called:
+## Active Architecture
 
 ```text
-EarthOS
+Earth Living
+└─ Fabric Test Server
+   ├─ Minecraft 1.20.1
+   ├─ Fabric Loader
+   ├─ Java 21
+   ├─ Paid Earth map copy
+   └─ Fabric modpack foundation
+
+Later
+└─ Earth Living Production Server
 ```
 
-Instead of relying on large command lists, players interact with the world through menus and apps.
+Pterodactyl remains the technical backend for server administration.
 
-EarthOS is planned to handle:
-
-- transport
-- maps
-- economy
-- reports/support
-- mining
-- tourism
-- nightlife
-- passport/citizenship
-- language settings
-- companies
-- news/events
-- server status
-- player profile systems
-
-The goal is to make the server feel modern, immersive and easy to use.
-
----
-
-# Major Planned Systems
-
-## EarthPulse
-
-A world simulation engine where player activity affects cities and regions.
-
-Examples:
-
-- More tourism increases transport demand
-- Mining industries affect pollution and logistics
-- Nightlife affects culture and tourism
-- Overloaded infrastructure creates delays and problems
-
-## EarthMiningSystem
-
-Mining is region-based and inspired by real-world geography.
-
-Examples:
-
-| Region | Resource Bonus |
-|---|---|
-| Sweden | Iron |
-| Chile | Copper |
-| Saudi Arabia | Oil |
-| South Africa | Gold |
-
-Mining includes:
-
-- deposits
-- mining licenses
-- depletion systems
-- logistics integration
-- company ownership later
-
-## TransportModule
-
-Transport is a core gameplay system.
-
-Planned transport includes:
-
-- metros
-- trains
-- airports
-- flights
-- ships
-- cargo logistics
-- stations
-- traffic systems
-
-The world is large enough that transport should matter.
-
-## EarthNightlifeSystem
-
-Cities should feel alive at night.
-
-Planned nightlife systems:
-
-- bars
-- clubs/discos
-- dancing NPCs
-- DJs
-- VIP systems
-- nightlife events
-- tourism/nightlife scoring
-
-NPC dancers are planned using lightweight animation systems and armor stand animation loops for performance.
-
-## Company & Economy Systems
-
-Players may later own and manage:
-
-- mining companies
-- transport companies
-- logistics companies
-- hotels
-- clubs/bars
-- factories
-- shops
-- airlines
-
-The economy is intended to become highly player-driven.
-
----
-
-# Language & Accessibility
-
-EarthLiving is planned as an international server.
-
-New players will be able to choose their language through a GUI when joining for the first time.
-
-Planned supported languages include:
-
-- Danish
-- English
-- German
-- Swedish
-- Norwegian
-- French
-- Spanish
-
-All major systems are intended to support localization.
-
----
-
-# AI Integration
-
-EarthLiving is also designed around future AI-assisted management and development.
-
-Planned AI systems include:
-
-- AI report analysis
-- AI city planner
-- AI infrastructure suggestions
-- Codex development workflow integration
-- automated diagnostics and recommendations
-
-Example:
+Administration domain:
 
 ```text
-Copenhagen transport congestion is rising.
-Recommendation:
-- add metro line
-- expand station
-- reduce logistics pressure
+panel.earthliving.earth
 ```
 
----
+## Website
 
-# Technical Direction
+The website at `earthliving.earth` is the public project home.
 
-| Area | Choice |
-|---|---|
-| Server | Paper 1.26.1.2 |
-| Java | Java 25 |
-| Proxy | Velocity |
-| Panel | Pterodactyl |
-| Panel Framework | Blueprint Framework |
-| Map Style | Earth map 1:326 |
-| Main Design | GUI-first systems |
+Active website pages:
 
----
+- Home
+- Vision
+- Roadmap
+- Devlog
+- Newsletter
+- Contact
 
-# Current Repository Purpose
+The current website is static and uses placeholder form behavior until a backend is added.
 
-This repository is used for:
+## Migration Safety
 
-- Paper plugin source code
-- server systems
-- operational documentation
-- architecture planning
-- EarthLiving future systems
-- safe configuration examples
+The paid Earth map is currently treated as a protected production asset. The live Paper installation must not be modified during planning.
 
-It must NOT contain:
+Migration rules:
 
-- world files
-- backups
-- server logs with IP addresses
+- create a full backup before migration work
+- create a snapshot before world copy or server conversion
+- build a separate Fabric test server
+- copy world data into the test server only
+- verify world integrity before production decisions
+- keep old servers archived until migration is proven
+- do not permanently delete old infrastructure without explicit confirmation
+
+## Repository Structure
+
+```text
+archive/legacy-paper-network/  archived old direction and server files
+docs/                          public website and active project docs
+migration/                     Earth map migration planning
+modpack/fabric-1.20.1/         Fabric modpack foundation
+server/fabric-test/            Fabric test server notes
+server/production-future/      future production notes
+```
+
+## Key Documents
+
+- `docs/server-architecture.md`
+- `docs/fabric-migration-plan.md`
+- `docs/fabric-modpack.md`
+- `docs/migration-checklist.md`
+- `docs/archive-index.md`
+
+## Do Not Store Here
+
+This repository must not contain:
+
+- live world files
+- full backups
+- server logs with private IPs or player data
 - passwords
 - SSH keys
 - private credentials
 - private player/admin data
-
----
-
-# Current Development Direction
-
-The project currently focuses on:
-
-- EarthLivingCore
-- EarthOS
-- report systems
-- world simulation planning
-- transport systems
-- mining systems
-- GUI-first gameplay
-- infrastructure systems
-- long-term MMO-style world building
-
----
-
-# Vision
-
-EarthLiving aims to become:
-
-> A living Earth simulation inside Minecraft where players build cities, create companies, manage transport, shape economies and influence a persistent world through connected systems.
-
-Or shorter:
-
-```text
-Cities Skylines + MMO + Earth SMP + transport simulator + civilization sandbox
-inside Minecraft.
-```
-
-A completely unreasonable project.
-Which is exactly why it is interesting.
