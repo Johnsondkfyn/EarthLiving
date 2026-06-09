@@ -3,6 +3,8 @@ build/
 .gradle/
 out/
 target/
+.next/
+node_modules/
 
 # Packaged binaries and downloaded plugins
 *.war

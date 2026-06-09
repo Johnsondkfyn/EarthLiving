@@ -5,7 +5,16 @@ on:
     branches:
       - main
     paths:
-      - "docs/**"
+      - "app/**"
+      - "components/**"
+      - "data/**"
+      - "public/**"
+      - "styles/**"
+      - "next.config.mjs"
+      - "package.json"
+      - "postcss.config.mjs"
+      - "tailwind.config.ts"
+      - "tsconfig.json"
       - ".github/workflows/deploy-website.yml"
   workflow_dispatch:
 
@@ -23,8 +32,19 @@ jobs:
           cp -a repo/. .
           rm -rf repo
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build static website
+        run: npm run build
+
       - name: Prepare website package
-        run: tar -C docs -czf earthliving-site.tar.gz .
+        run: tar -C out -czf earthliving-site.tar.gz .
 
       - name: Check deploy secrets
         id: deploy_secrets
