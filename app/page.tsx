@@ -35,12 +35,12 @@ const featureCards = [
 ];
 
 const imagePanels = [
-  { title: "Transport", className: "from-sky-500/60 via-slate-700 to-emerald-900" },
-  { title: "Cities", className: "from-blue-400/70 via-slate-800 to-green-900" },
-  { title: "Industry", className: "from-orange-400/60 via-stone-800 to-slate-950" },
-  { title: "Society", className: "from-lime-500/60 via-stone-700 to-slate-950" },
-  { title: "Tourism", className: "from-cyan-500/60 via-blue-900 to-slate-950" },
-  { title: "EarthPhone", className: "from-amber-500/60 via-slate-800 to-black" },
+  { title: "Transport", src: "/earthliving-panels/transport.png" },
+  { title: "Cities", src: "/earthliving-panels/city.png" },
+  { title: "Industry", src: "/earthliving-panels/industry.png" },
+  { title: "Society", src: "/earthliving-panels/society.png" },
+  { title: "Tourism", src: "/earthliving-panels/harbor.png" },
+  { title: "EarthPhone", src: "/earthliving-panels/earthphone.png" },
 ];
 
 const roadmap = [
@@ -138,12 +138,20 @@ function PanelShowcase() {
     <section className="grid min-h-[345px] grid-cols-1 overflow-hidden border-b border-white/10 md:grid-cols-6">
       {imagePanels.map((panel, index) => (
         <article
-          className={`group relative min-h-[230px] overflow-hidden bg-gradient-to-br ${panel.className} md:min-h-[345px] md:-skew-x-[8deg] md:border-r md:border-black/70`}
+          className="group relative min-h-[230px] overflow-hidden bg-slate-900 md:min-h-[345px] md:-skew-x-[8deg] md:border-r md:border-black/70"
           key={panel.title}
         >
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_35%),radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.2),transparent_18rem)]" />
+          <Image
+            alt={`${panel.title} concept art`}
+            className="h-full w-full object-cover transition duration-700 group-hover:scale-105 md:skew-x-[8deg] md:scale-125"
+            fill
+            sizes="(min-width: 768px) 17vw, 100vw"
+            src={panel.src}
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_35%),radial-gradient(circle_at_50%_30%,rgba(34,197,94,0.16),transparent_18rem)]" />
+          <div className="absolute inset-0 bg-black/10" />
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/80 to-transparent" />
-          <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:42px_42px]" />
+          <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:42px_42px]" />
           <div className="absolute bottom-5 left-6 md:skew-x-[8deg]">
             <p className="text-xs font-black uppercase tracking-[0.25em] text-white/70">
               0{index + 1}
