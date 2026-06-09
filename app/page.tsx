@@ -67,6 +67,29 @@ const projectCards = [
   },
 ];
 
+const visionCards = [
+  {
+    icon: GlobeIcon,
+    title: "Realistic Earth Map",
+    text: "Et stort Earth-map bliver rammen for byer, rejser, handel og regioner med identitet.",
+  },
+  {
+    icon: TrainIcon,
+    title: "Transport System",
+    text: "Tog, metro, havne og ruter skal gøre afstande meningsfulde og forbinde samfundet.",
+  },
+  {
+    icon: EconomyIcon,
+    title: "Dynamic Economy",
+    text: "Marked, jobs og virksomheder bygges op omkring spilleraktivitet og lokale behov.",
+  },
+  {
+    icon: PeopleIcon,
+    title: "Active Society",
+    text: "Spillere, NPCs, events og turisme skal få verden til at føles levende hver dag.",
+  },
+];
+
 const imagePanels = [
   { title: "Transport", src: "/earthliving-panels/transport.png" },
   { title: "Cities", src: "/earthliving-panels/city.png" },
@@ -120,6 +143,7 @@ export default function HomePage() {
         <PanelShowcase />
         <FeatureGrid />
         <ProjectFeatureGrid />
+        <VisionSection />
         <section className="grid border-y border-white/10 lg:grid-cols-[1.5fr_0.58fr_0.45fr]">
           <RoadmapPanel />
           <StatusPanel />
@@ -258,6 +282,50 @@ function ProjectFeatureGrid() {
                   Åbn
                 </span>
               </Link>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VisionSection() {
+  return (
+    <section className="relative overflow-hidden border-b border-white/10 bg-[#06121e] px-6 py-14">
+      <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-earth-accent/10 blur-3xl" />
+      <div className="relative mx-auto max-w-7xl">
+        <div className="max-w-3xl">
+          <p className="text-xs font-black uppercase tracking-[0.28em] text-earth-accent">
+            Vision section
+          </p>
+          <h2 className="mt-3 text-4xl font-black uppercase leading-none tracking-[-0.04em] text-white md:text-6xl">
+            One World.
+            <br />
+            Endless Possibilities.
+          </h2>
+          <p className="mt-5 text-base leading-7 text-white/68 md:text-lg">
+            Earth Living samler geografi, transport, økonomi og mennesker i én persistent verden, hvor spillernes valg former fremtiden.
+          </p>
+        </div>
+
+        <div className="mt-9 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {visionCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <article
+                className="group rounded-3xl border border-white/10 bg-[#0a1824]/80 p-6 shadow-2xl shadow-black/30 transition duration-300 hover:-translate-y-1 hover:border-earth-accent/45 hover:bg-[#0d1f2e]"
+                key={card.title}
+              >
+                <div className="grid h-14 w-14 place-items-center rounded-2xl border border-earth-accent/30 bg-earth-accent/10 shadow-green-glow">
+                  <Icon className="h-8 w-8 text-earth-accent" />
+                </div>
+                <h3 className="mt-6 text-lg font-black uppercase tracking-[0.08em] text-white">
+                  {card.title}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-white/68">{card.text}</p>
+                <div className="mt-6 h-px bg-gradient-to-r from-earth-accent/60 to-transparent opacity-40 transition group-hover:opacity-100" />
+              </article>
             );
           })}
         </div>
@@ -463,6 +531,15 @@ function ContactIcon({ className }: IconProps) {
     <svg className={className} fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
       <path d="M9 10h30v22H18L9 39V10Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="3" />
       <path d="M17 19h14M17 25h9" stroke="currentColor" strokeLinecap="round" strokeWidth="3" />
+    </svg>
+  );
+}
+
+function GlobeIcon({ className }: IconProps) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="17" stroke="currentColor" strokeWidth="3" />
+      <path d="M8 24h32M24 7c5 5 7 11 7 17s-2 12-7 17M24 7c-5 5-7 11-7 17s2 12 7 17" stroke="currentColor" strokeLinecap="round" strokeWidth="3" />
     </svg>
   );
 }
