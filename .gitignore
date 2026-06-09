@@ -54,6 +54,7 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Temporary generated/downloaded source data
+# Temporary generated/downloaded legacy source data
 _coordjar/
-data/
+/archive/legacy-paper-network/root-artifacts/_coordjar/
+/archive/legacy-paper-network/root-artifacts/data/
