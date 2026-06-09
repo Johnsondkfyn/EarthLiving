@@ -1,0 +1,69 @@
+{
+  "name": "Earth Living Fabric Foundation",
+  "minecraftVersion": "1.20.1",
+  "fabricLoader": "0.17.2",
+  "java": "21",
+  "createdAt": "2026-06-09",
+  "mods": [
+    {
+      "name": "Fabric API",
+      "version": "0.92.9+1.20.1",
+      "filename": "fabric-api-0.92.9+1.20.1.jar",
+      "source": "https://modrinth.com/mod/fabric-api"
+    },
+    {
+      "name": "Create Fabric",
+      "version": "6.0.8.1+build.1744-mc1.20.1",
+      "filename": "create-fabric-6.0.8.1+build.1744-mc1.20.1.jar",
+      "source": "https://modrinth.com/mod/create-fabric"
+    },
+    {
+      "name": "Create: Steam 'n' Rails",
+      "version": "1.7.2+fabric-mc1.20.1",
+      "filename": "Steam_Rails-1.7.2+fabric-mc1.20.1.jar",
+      "source": "https://modrinth.com/mod/create-steam-n-rails"
+    },
+    {
+      "name": "Chipped",
+      "version": "3.0.7",
+      "filename": "chipped-fabric-1.20.1-3.0.7.jar",
+      "source": "https://modrinth.com/mod/chipped"
+    },
+    {
+      "name": "Handcrafted",
+      "version": "3.0.6",
+      "filename": "handcrafted-fabric-1.20.1-3.0.6.jar",
+      "source": "https://modrinth.com/mod/handcrafted"
+    },
+    {
+      "name": "Flan",
+      "version": "1.20.1-1.11.16-fabric",
+      "filename": "flan-1.20.1-1.11.16-fabric.jar",
+      "source": "https://modrinth.com/mod/flan"
+    },
+    {
+      "name": "Lithium",
+      "version": "mc1.20.1-0.11.4-fabric",
+      "filename": "lithium-fabric-mc1.20.1-0.11.4.jar",
+      "source": "https://modrinth.com/mod/lithium"
+    },
+    {
+      "name": "FerriteCore",
+      "version": "6.0.1",
+      "filename": "ferritecore-6.0.1-fabric.jar",
+      "source": "https://modrinth.com/mod/ferrite-core"
+    },
+    {
+      "name": "ModernFix",
+      "version": "5.25.2+mc1.20.1",
+      "filename": "modernfix-fabric-5.25.2+mc1.20.1.jar",
+      "source": "https://modrinth.com/mod/modernfix"
+    },
+    {
+      "name": "Krypton",
+      "version": "0.2.3",
+      "filename": "krypton-0.2.3.jar",
+      "source": "https://modrinth.com/mod/krypton"
+    }
+  ]
+}
