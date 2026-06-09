@@ -12,7 +12,7 @@ Status as of 2026-06-09:
 - Fabric Loader: `0.17.2`
 - Startup jar: `fabric-server-launch.jar`
 - Memory: `8192 MB`
-- Disk limit: `50000 MB`
+- Disk limit: `250000 MB`
 
 The server was created as a separate Pterodactyl server and has its own volume:
 

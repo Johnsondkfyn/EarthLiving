@@ -11,4 +11,4 @@ Current status as of 2026-06-09:
 - Live Paper installation has not been modified.
 - Fabric test server has been created separately.
 - No Earth map world data has been copied yet.
-- Before copying `world`, `world_nether` or `world_the_end`, confirm available disk space because the live Paper volume is approximately 181 GB and the Fabric test server currently has a 50 GB disk limit.
+- Before copying `world`, `world_nether` or `world_the_end`, take a consistent backup/snapshot. The live Paper `world` folder is approximately 177 GB and the Fabric test server disk limit has been raised to 250 GB.
