@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { panelUrl } from "@/data/navigation";
 
 const featureCards = [
   {
@@ -157,7 +158,7 @@ export default function HomePage() {
 
 function HeroHeader() {
   return (
-    <header className="grid gap-8 border-b border-white/10 bg-[#020912] px-7 py-6 md:grid-cols-[0.9fr_1.4fr] md:items-center">
+    <header className="grid gap-8 border-b border-white/10 bg-[#020912] px-7 py-6 md:grid-cols-[0.9fr_1.4fr_0.42fr] md:items-center">
       <Link className="flex items-center gap-5" href="/">
         <Image
           alt="Earth Living"
@@ -179,10 +180,19 @@ function HeroHeader() {
         </div>
       </Link>
 
-      <div className="text-center md:pr-20">
+      <div className="text-center">
         <p className="mx-auto max-w-3xl text-lg font-semibold leading-7 text-white/90">
           Vi bygger en levende Earth-verden i Minecraft, hvor transport, økonomi, byer og mennesker skaber et dynamisk samfund.
         </p>
+      </div>
+
+      <div className="flex justify-center md:justify-end">
+        <Link
+          className="inline-flex items-center justify-center rounded-xl border border-earth-accent/40 bg-earth-accent px-5 py-3 text-sm font-black uppercase tracking-[0.12em] text-[#06110b] shadow-green-glow transition hover:-translate-y-0.5"
+          href="/panel"
+        >
+          Owner Panel
+        </Link>
       </div>
     </header>
   );
@@ -407,6 +417,20 @@ function FollowPanel() {
         href="/newsletter"
       >
         Tilmeld dig
+      </Link>
+      <Link
+        className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-earth-accent/40 bg-white/5 px-5 py-4 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:-translate-y-0.5 hover:bg-earth-accent/10"
+        href="/panel"
+      >
+        Owner Panel
+      </Link>
+      <Link
+        className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-white/10 bg-black/25 px-5 py-4 text-xs font-black uppercase tracking-[0.12em] text-white/80 transition hover:border-earth-accent/40 hover:text-white"
+        href={panelUrl}
+        rel="noreferrer"
+        target="_blank"
+      >
+        Direkte login
       </Link>
     </section>
   );
